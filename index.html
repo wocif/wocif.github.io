@@ -3,7 +3,7 @@
 <head>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
-        /* Buttons */
+        /* Button Styling */
         .xr-button {
             position: fixed !important;
             bottom: 160px !important;
@@ -25,9 +25,22 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             z-index: 1001;
         }
+        #loading-bar {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            color: white;
+            font-size: 20px;
+            border-radius: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <div id="loading-bar">Lädt AR...</div>
     <button id="exit-button">Beenden</button>
 
     <a-scene embedded webxr="optionalFeatures: hit-test; plane-detection" 
@@ -35,15 +48,14 @@
         
         <a-camera position="0 1.6 0"></a-camera>
 
-        <!-- Plane Detection for detecting surfaces -->
+        <!-- Plane Detection -->
         <a-entity id="plane" geometry="primitive: plane; width: 10; height: 10" material="color: grey; opacity: 0.5" visible="false"></a-entity>
 
         <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable" line="color: red; opacity: 0.8;"></a-entity>
         <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable" line="color: red; opacity: 0.8;"></a-entity>
 
         <!-- Fenster und Raumobjekt -->
-        <a-plane id="window" class="clickable" width="1" height="1.5" color="black" opacity="0.3"
-                 visible="false"></a-plane>
+        <a-plane id="window" class="clickable" width="1" height="1.5" color="black" opacity="0.3" visible="false"></a-plane>
         <a-entity id="room" visible="false">
             <a-box position="0 0 -2" width="3" height="3" depth="0.1" color="white"></a-box>
         </a-entity>
@@ -56,6 +68,7 @@
                 const windowEl = document.getElementById("window");
                 const roomEl = document.getElementById("room");
                 const exitButton = document.getElementById("exit-button");
+                const loadingBar = document.getElementById("loading-bar");
 
                 let xrSession = null;
                 let xrHitTestSource = null;
@@ -64,14 +77,29 @@
                 let raycasterLeft = document.getElementById("leftHand").getAttribute('raycaster');
 
                 sceneEl.addEventListener('enter-ar', async function () {
-                    if (navigator.xr) {
-                        xrSession = await navigator.xr.requestSession('immersive-ar', { requiredFeatures: ['hit-test', 'plane-detection'] });
-                        xrReferenceSpace = await xrSession.requestReferenceSpace('local');
-                        const viewerReferenceSpace = await xrSession.requestReferenceSpace('viewer');
-                        xrHitTestSource = await xrSession.requestHitTestSource({ space: viewerReferenceSpace });
+                    // Ladebalken anzeigen
+                    loadingBar.style.display = "block";
 
-                        // AR UI und exit button anzeigen
-                        exitButton.style.display = "block";
+                    try {
+                        // AR-Session anfordern
+                        if (navigator.xr) {
+                            xrSession = await navigator.xr.requestSession('immersive-ar', { requiredFeatures: ['hit-test', 'plane-detection'] });
+
+                            // Referenzraum und HitTest-Quelle erstellen
+                            xrReferenceSpace = await xrSession.requestReferenceSpace('local');
+                            const viewerReferenceSpace = await xrSession.requestReferenceSpace('viewer');
+                            xrHitTestSource = await xrSession.requestHitTestSource({ space: viewerReferenceSpace });
+
+                            // Ladebalken ausblenden, AR ist bereit
+                            loadingBar.style.display = "none";
+
+                            // AR UI anzeigen
+                            exitButton.style.display = "block";
+                        }
+                    } catch (error) {
+                        // Ladebalken ausblenden und Fehler anzeigen
+                        loadingBar.style.display = "none";
+                        alert("Fehler beim Starten der AR-Session: " + error.message);
                     }
                 });
 
