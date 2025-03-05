@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-xr@1.2.0/dist/aframe-xr.min.js"></script>
+  </head>
+  <body>
+    <a-scene webxr="optionalFeatures: hit-test" ar-hit-test>
+      
+      <!-- Window -->
+      <a-plane id="window" position="0 1.5 -2" width="1" height="1.5" color="black" opacity="0.3"
+               visible="true"></a-plane>
+      
+      <!-- Virtual Room Inside -->
+      <a-entity id="room" visible="false">
+        <a-box position="0 0 -2" width="3" height="3" depth="0.1" color="white"></a-box>
+        <a-box position="-1.5 0 -2.5" width="0.1" height="3" depth="3" color="gray"></a-box>
+        <a-box position="1.5 0 -2.5" width="0.1" height="3" depth="3" color="gray"></a-box>
+      </a-entity>
+      
+      <!-- Camera -->
+      <a-camera position="0 1.5 0"></a-camera>
+    </a-scene>
+
+    <script>
+      AFRAME.registerComponent('ar-hit-test', {
+        init: function () {
+          let sceneEl = this.el;
+          let windowEl = document.getElementById("window");
+          let roomEl = document.getElementById("room");
+
+          this.el.sceneEl.addEventListener("xr-hit-test-select", (event) => {
+            let hitPoint = event.detail.position;
+
+            // Position the window where the user tapped
+            windowEl.setAttribute("position", `${hitPoint.x} ${hitPoint.y} ${hitPoint.z}`);
+            windowEl.setAttribute("visible", "true");
+
+            // Position the room behind the window
+            let roomPos = `${hitPoint.x} ${hitPoint.y} ${hitPoint.z - 0.5}`;
+            roomEl.setAttribute("position", roomPos);
+            roomEl.setAttribute("visible", "true");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
