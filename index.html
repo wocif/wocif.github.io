@@ -3,20 +3,13 @@
 <head>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
-        /* Gemeinsames Button-Styling */
-        .xr-button {
-            position: fixed !important;
-            bottom: 160px !important; /* Vervierfachter Abstand */
-            right: 20px !important;
-            z-index: 1000 !important;
-        }
-
         /* Beenden-Button Styling */
         #exit-button {
             display: none;
             position: fixed;
-            bottom: 160px; /* Gleicher Abstand wie AR/VR-Buttons */
-            right: 120px;  /* Daneben platzieren */
+            bottom: 100px; /* Weiter oben als AR/VR-Buttons */
+            left: 50%;
+            transform: translateX(-50%);
             padding: 12px 24px;
             background: red;
             color: white;
@@ -25,7 +18,15 @@
             border-radius: 8px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
+            z-index: 1001; /* Sicherstellen, dass er über allem liegt */
+        }
+
+        /* WebXR-UI-Buttons nach unten verschieben */
+        .a-enter-vr, .a-enter-ar {
+            position: fixed !important;
+            bottom: 20px !important; /* Buttons weiter unten platzieren */
+            right: 20px !important;  /* Etwas nach rechts verschieben */
+            z-index: 1000 !important; /* Sicherstellen, dass sie sichtbar bleiben */
         }
     </style>
 </head>
@@ -117,15 +118,6 @@
         });
 
         document.querySelector('a-scene').setAttribute('ar-hit-test', '');
-
-        // AR/VR-Buttons mit neuem Abstand versehen
-        window.onload = function () {
-            setTimeout(() => {
-                document.querySelectorAll('.a-enter-vr, .a-enter-ar').forEach(btn => {
-                    btn.classList.add("xr-button");
-                });
-            }, 500);
-        };
     </script>
 </body>
 </html>
