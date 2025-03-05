@@ -2,13 +2,32 @@
 <html lang="en">
 <head>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <style>
+        /* Stile für den Beenden-Button */
+        #exit-button {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background: red;
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
+    <button id="exit-button">Beenden</button>
+
     <a-scene 
         webxr="optionalFeatures: hit-test" 
         renderer="colorManagement: true, alpha: true" 
         embedded
-        xr-mode-ui="enabled: false">
+        xr-mode-ui="enabled: true">
 
         <!-- Kamera mit AR-Einstellungen -->
         <a-camera position="0 1.6 0"></a-camera>
@@ -31,6 +50,7 @@
                 const sceneEl = this.el;
                 const windowEl = document.getElementById("window");
                 const roomEl = document.getElementById("room");
+                const exitButton = document.getElementById("exit-button");
 
                 let xrSession = null;
                 let xrHitTestSource = null;
@@ -44,11 +64,15 @@
                         xrReferenceSpace = await xrSession.requestReferenceSpace('local');
                         const viewerReferenceSpace = await xrSession.requestReferenceSpace('viewer');
                         xrHitTestSource = await xrSession.requestHitTestSource({ space: viewerReferenceSpace });
+
+                        // Zeige den "Beenden"-Button an
+                        exitButton.style.display = "block";
                     }
                 });
 
                 sceneEl.addEventListener('exit-vr', function () {
                     xrHitTestSource = null;
+                    exitButton.style.display = "none"; // Verstecke den Button
                 });
 
                 sceneEl.addEventListener('click', async function () {
@@ -69,6 +93,14 @@
                             roomEl.setAttribute("position", `${position.x} ${position.y} ${position.z - 0.5}`);
                             roomEl.setAttribute("visible", "true");
                         }
+                    }
+                });
+
+                // Beenden-Button: XR-Sitzung beenden
+                exitButton.addEventListener('click', function () {
+                    if (xrSession) {
+                        xrSession.end();
+                        exitButton.style.display = "none"; // Button wieder verstecken
                     }
                 });
             }
