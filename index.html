@@ -7,7 +7,7 @@
         #exit-button {
             display: none;
             position: fixed;
-            bottom: 100px; /* Höher gesetzt, damit er sichtbar bleibt */
+            bottom: 100px; /* Weiter oben als AR/VR-Buttons */
             left: 50%;
             transform: translateX(-50%);
             padding: 12px 24px;
@@ -18,12 +18,15 @@
             border-radius: 8px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1001; /* Sicherstellen, dass er über allem liegt */
         }
 
         /* WebXR-UI-Buttons nach unten verschieben */
         .a-enter-vr, .a-enter-ar {
-            bottom: 40px !important; /* Buttons weiter unten platzieren */
-            top: unset !important;
+            position: fixed !important;
+            bottom: 20px !important; /* Buttons weiter unten platzieren */
+            right: 20px !important;  /* Etwas nach rechts verschieben */
+            z-index: 1000 !important; /* Sicherstellen, dass sie sichtbar bleiben */
         }
     </style>
 </head>
