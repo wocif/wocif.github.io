@@ -3,24 +3,32 @@
 <head>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
-        /* Stile für den Beenden-Button */
+        /* Beenden-Button Styling */
         #exit-button {
             display: none;
             position: fixed;
-            bottom: 20px;
+            bottom: 100px; /* Höher gesetzt, damit er sichtbar bleibt */
             left: 50%;
             transform: translateX(-50%);
-            padding: 10px 20px;
+            padding: 12px 24px;
             background: red;
             color: white;
-            border: none;
             font-size: 18px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* WebXR-UI-Buttons nach unten verschieben */
+        .a-enter-vr, .a-enter-ar {
+            bottom: 40px !important; /* Buttons weiter unten platzieren */
+            top: unset !important;
         }
     </style>
 </head>
 <body>
+    <!-- Beenden-Button -->
     <button id="exit-button">Beenden</button>
 
     <a-scene 
