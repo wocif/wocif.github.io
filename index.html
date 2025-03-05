@@ -3,13 +3,13 @@
 <head>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
+        /* Buttons */
         .xr-button {
             position: fixed !important;
             bottom: 160px !important;
             right: 20px !important;
             z-index: 1000 !important;
         }
-
         #exit-button {
             display: none;
             position: fixed;
@@ -30,28 +30,22 @@
 <body>
     <button id="exit-button">Beenden</button>
 
-    <a-scene webxr="optionalFeatures: hit-test" 
-             renderer="colorManagement: true, alpha: true" 
-             embedded 
-             xr-mode-ui="enabled: true">
+    <a-scene embedded webxr="optionalFeatures: hit-test; plane-detection" 
+             renderer="colorManagement: true, alpha: true" xr-mode-ui="enabled: true">
         
         <a-camera position="0 1.6 0"></a-camera>
 
-        <!-- 🟢 VR/AR-Controller mit Laser-Pointer -->
-        <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable" 
-                  line="color: red; opacity: 0.8;"></a-entity>
-        <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable" 
-                  line="color: red; opacity: 0.8;"></a-entity>
+        <!-- Plane Detection for detecting surfaces -->
+        <a-entity id="plane" geometry="primitive: plane; width: 10; height: 10" material="color: grey; opacity: 0.5" visible="false"></a-entity>
 
-        <!-- Fenster-Element -->
+        <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable" line="color: red; opacity: 0.8;"></a-entity>
+        <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable" line="color: red; opacity: 0.8;"></a-entity>
+
+        <!-- Fenster und Raumobjekt -->
         <a-plane id="window" class="clickable" width="1" height="1.5" color="black" opacity="0.3"
                  visible="false"></a-plane>
-
-        <!-- Einfaches Raumobjekt -->
         <a-entity id="room" visible="false">
             <a-box position="0 0 -2" width="3" height="3" depth="0.1" color="white"></a-box>
-            <a-box position="-1.5 0 -2.5" width="0.1" height="3" depth="3" color="gray"></a-box>
-            <a-box position="1.5 0 -2.5" width="0.1" height="3" depth="3" color="gray"></a-box>
         </a-entity>
     </a-scene>
 
@@ -62,44 +56,21 @@
                 const windowEl = document.getElementById("window");
                 const roomEl = document.getElementById("room");
                 const exitButton = document.getElementById("exit-button");
-                const rightHand = document.getElementById("rightHand");
-                const leftHand = document.getElementById("leftHand");
 
                 let xrSession = null;
                 let xrHitTestSource = null;
                 let xrReferenceSpace = null;
-                let raycasterRight = rightHand.getAttribute('raycaster');
-                let raycasterLeft = leftHand.getAttribute('raycaster');
+                let raycasterRight = document.getElementById("rightHand").getAttribute('raycaster');
+                let raycasterLeft = document.getElementById("leftHand").getAttribute('raycaster');
 
                 sceneEl.addEventListener('enter-ar', async function () {
                     if (navigator.xr) {
-                        xrSession = await navigator.xr.requestSession('immersive-ar', { requiredFeatures: ['hit-test'] });
-
+                        xrSession = await navigator.xr.requestSession('immersive-ar', { requiredFeatures: ['hit-test', 'plane-detection'] });
                         xrReferenceSpace = await xrSession.requestReferenceSpace('local');
                         const viewerReferenceSpace = await xrSession.requestReferenceSpace('viewer');
                         xrHitTestSource = await xrSession.requestHitTestSource({ space: viewerReferenceSpace });
 
-                        // 🟢 Event für VR-Controller-Button oder Touchpad-Tap
-                        xrSession.addEventListener('select', function () {
-                            console.log("WebXR Select Event ausgelöst!");
-
-                            const frame = sceneEl.xrFrame;
-                            if (frame && xrHitTestSource) {
-                                const hitTestResults = frame.getHitTestResults(xrHitTestSource);
-                                if (hitTestResults.length > 0) {
-                                    const hitPose = hitTestResults[0].getPose(xrReferenceSpace);
-                                    const position = hitPose.transform.position;
-
-                                    windowEl.setAttribute("position", `${position.x} ${position.y} ${position.z}`);
-                                    windowEl.setAttribute("visible", "true");
-
-                                    roomEl.setAttribute("position", `${position.x} ${position.y} ${position.z - 0.5}`);
-                                    roomEl.setAttribute("visible", "true");
-                                }
-                            }
-                        });
-
-                        // Exit-Button in AR anzeigen
+                        // AR UI und exit button anzeigen
                         exitButton.style.display = "block";
                     }
                 });
@@ -117,24 +88,19 @@
                     }
                 });
 
-                // 🟢 Click-Event für Controller-Laser (Alternative Steuerung)
-                rightHand.addEventListener('selectstart', function () {
-                    console.log("Rechter Controller hat geklickt!");
-                    placeWindow();
-                });
+                // Plane detection event listener
+                sceneEl.addEventListener('plane-detected', function (event) {
+                    const plane = event.detail.plane;
+                    console.log("Plane erkannt!", plane);
 
-                leftHand.addEventListener('selectstart', function () {
-                    console.log("Linker Controller hat geklickt!");
-                    placeWindow();
-                });
-
-                function placeWindow() {
-                    console.log("Fenster platziert durch Controller!");
+                    windowEl.setAttribute("position", plane.position);
                     windowEl.setAttribute("visible", "true");
-                    roomEl.setAttribute("visible", "true");
-                }
 
-                // 🟢 Dynamische Raycaster-Länge anpassen, basierend auf Treffer
+                    roomEl.setAttribute("position", plane.position);
+                    roomEl.setAttribute("visible", "true");
+                });
+
+                // Dynamische Anpassung der Raycaster-Länge
                 function adjustRaycasterLength() {
                     const frame = sceneEl.xrFrame;
                     if (frame && xrHitTestSource) {
@@ -142,18 +108,14 @@
                         if (hitTestResults.length > 0) {
                             const hitPose = hitTestResults[0].getPose(xrReferenceSpace);
                             const hitPosition = hitPose.transform.position;
-
-                            // Berechne die Distanz zwischen Controller und der Wand
                             const distance = Math.sqrt(Math.pow(hitPosition.x, 2) + Math.pow(hitPosition.y, 2) + Math.pow(hitPosition.z, 2));
 
-                            // Setze die Länge des Raycasters dynamisch
                             raycasterRight.far = distance;
                             raycasterLeft.far = distance;
                         }
                     }
                 }
 
-                // Aktualisiere Raycaster-Länge kontinuierlich
                 sceneEl.addEventListener('renderstart', function () {
                     adjustRaycasterLength();
                 });
