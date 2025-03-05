@@ -34,10 +34,14 @@
              renderer="colorManagement: true, alpha: true" 
              embedded 
              xr-mode-ui="enabled: true">
-
+        
         <a-camera position="0 1.6 0"></a-camera>
 
-        <a-plane id="window" width="1" height="1.5" color="black" opacity="0.3"
+        <!-- 🟢 VR/AR-Controller mit Laser-Pointer -->
+        <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
+        <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable"></a-entity>
+
+        <a-plane id="window" class="clickable" width="1" height="1.5" color="black" opacity="0.3"
                  visible="false"></a-plane>
 
         <a-entity id="room" visible="false">
@@ -54,6 +58,8 @@
                 const windowEl = document.getElementById("window");
                 const roomEl = document.getElementById("room");
                 const exitButton = document.getElementById("exit-button");
+                const rightHand = document.getElementById("rightHand");
+                const leftHand = document.getElementById("leftHand");
 
                 let xrSession = null;
                 let xrHitTestSource = null;
@@ -67,7 +73,7 @@
                         const viewerReferenceSpace = await xrSession.requestReferenceSpace('viewer');
                         xrHitTestSource = await xrSession.requestHitTestSource({ space: viewerReferenceSpace });
 
-                        // Event für Controller-Tap oder Touchpad-Tap
+                        // 🟢 Event für VR-Controller-Button oder Touchpad-Tap
                         xrSession.addEventListener('select', function () {
                             console.log("WebXR Select Event ausgelöst!");
 
@@ -87,7 +93,7 @@
                             }
                         });
 
-                        // Zeige Exit-Button in AR
+                        // Exit-Button in AR anzeigen
                         exitButton.style.display = "block";
                     }
                 });
@@ -104,6 +110,23 @@
                         exitButton.style.display = "none";
                     }
                 });
+
+                // 🟢 Click-Event für Controller-Laser (Alternative Steuerung)
+                rightHand.addEventListener('selectstart', function () {
+                    console.log("Rechter Controller hat geklickt!");
+                    placeWindow();
+                });
+
+                leftHand.addEventListener('selectstart', function () {
+                    console.log("Linker Controller hat geklickt!");
+                    placeWindow();
+                });
+
+                function placeWindow() {
+                    console.log("Fenster platziert durch Controller!");
+                    windowEl.setAttribute("visible", "true");
+                    roomEl.setAttribute("visible", "true");
+                }
             }
         });
 
