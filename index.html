@@ -38,12 +38,16 @@
         <a-camera position="0 1.6 0"></a-camera>
 
         <!-- 🟢 VR/AR-Controller mit Laser-Pointer -->
-        <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
-        <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable"></a-entity>
+        <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable" 
+                  line="color: red; opacity: 0.8;"></a-entity>
+        <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable" 
+                  line="color: red; opacity: 0.8;"></a-entity>
 
+        <!-- Fenster-Element -->
         <a-plane id="window" class="clickable" width="1" height="1.5" color="black" opacity="0.3"
                  visible="false"></a-plane>
 
+        <!-- Einfaches Raumobjekt -->
         <a-entity id="room" visible="false">
             <a-box position="0 0 -2" width="3" height="3" depth="0.1" color="white"></a-box>
             <a-box position="-1.5 0 -2.5" width="0.1" height="3" depth="3" color="gray"></a-box>
@@ -64,6 +68,8 @@
                 let xrSession = null;
                 let xrHitTestSource = null;
                 let xrReferenceSpace = null;
+                let raycasterRight = rightHand.getAttribute('raycaster');
+                let raycasterLeft = leftHand.getAttribute('raycaster');
 
                 sceneEl.addEventListener('enter-ar', async function () {
                     if (navigator.xr) {
@@ -127,6 +133,30 @@
                     windowEl.setAttribute("visible", "true");
                     roomEl.setAttribute("visible", "true");
                 }
+
+                // 🟢 Dynamische Raycaster-Länge anpassen, basierend auf Treffer
+                function adjustRaycasterLength() {
+                    const frame = sceneEl.xrFrame;
+                    if (frame && xrHitTestSource) {
+                        const hitTestResults = frame.getHitTestResults(xrHitTestSource);
+                        if (hitTestResults.length > 0) {
+                            const hitPose = hitTestResults[0].getPose(xrReferenceSpace);
+                            const hitPosition = hitPose.transform.position;
+
+                            // Berechne die Distanz zwischen Controller und der Wand
+                            const distance = Math.sqrt(Math.pow(hitPosition.x, 2) + Math.pow(hitPosition.y, 2) + Math.pow(hitPosition.z, 2));
+
+                            // Setze die Länge des Raycasters dynamisch
+                            raycasterRight.far = distance;
+                            raycasterLeft.far = distance;
+                        }
+                    }
+                }
+
+                // Aktualisiere Raycaster-Länge kontinuierlich
+                sceneEl.addEventListener('renderstart', function () {
+                    adjustRaycasterLength();
+                });
             }
         });
 
