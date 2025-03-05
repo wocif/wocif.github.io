@@ -3,13 +3,18 @@
 <head>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
-        /* Beenden-Button Styling */
+        .xr-button {
+            position: fixed !important;
+            bottom: 160px !important;
+            right: 20px !important;
+            z-index: 1000 !important;
+        }
+
         #exit-button {
             display: none;
             position: fixed;
-            bottom: 100px; /* Weiter oben als AR/VR-Buttons */
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 160px;
+            right: 120px;
             padding: 12px 24px;
             background: red;
             color: white;
@@ -18,36 +23,23 @@
             border-radius: 8px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            z-index: 1001; /* Sicherstellen, dass er über allem liegt */
-        }
-
-        /* WebXR-UI-Buttons nach unten verschieben */
-        .a-enter-vr, .a-enter-ar {
-            position: fixed !important;
-            bottom: 20px !important; /* Buttons weiter unten platzieren */
-            right: 20px !important;  /* Etwas nach rechts verschieben */
-            z-index: 1000 !important; /* Sicherstellen, dass sie sichtbar bleiben */
+            z-index: 1001;
         }
     </style>
 </head>
 <body>
-    <!-- Beenden-Button -->
     <button id="exit-button">Beenden</button>
 
-    <a-scene 
-        webxr="optionalFeatures: hit-test" 
-        renderer="colorManagement: true, alpha: true" 
-        embedded
-        xr-mode-ui="enabled: true">
+    <a-scene webxr="optionalFeatures: hit-test" 
+             renderer="colorManagement: true, alpha: true" 
+             embedded 
+             xr-mode-ui="enabled: true">
 
-        <!-- Kamera mit AR-Einstellungen -->
         <a-camera position="0 1.6 0"></a-camera>
 
-        <!-- Virtuelles Fenster (zuerst unsichtbar) -->
         <a-plane id="window" width="1" height="1.5" color="black" opacity="0.3"
                  visible="false"></a-plane>
 
-        <!-- Virtueller Raum (zuerst unsichtbar) -->
         <a-entity id="room" visible="false">
             <a-box position="0 0 -2" width="3" height="3" depth="0.1" color="white"></a-box>
             <a-box position="-1.5 0 -2.5" width="0.1" height="3" depth="3" color="gray"></a-box>
@@ -67,57 +59,63 @@
                 let xrHitTestSource = null;
                 let xrReferenceSpace = null;
 
-                sceneEl.addEventListener('enter-vr', async function () {
-                    if (sceneEl.xrSession) {
-                        xrSession = sceneEl.xrSession;
+                sceneEl.addEventListener('enter-ar', async function () {
+                    if (navigator.xr) {
+                        xrSession = await navigator.xr.requestSession('immersive-ar', { requiredFeatures: ['hit-test'] });
 
-                        // WebXR Reference Space für Hit-Testing
                         xrReferenceSpace = await xrSession.requestReferenceSpace('local');
                         const viewerReferenceSpace = await xrSession.requestReferenceSpace('viewer');
                         xrHitTestSource = await xrSession.requestHitTestSource({ space: viewerReferenceSpace });
 
-                        // Zeige den "Beenden"-Button an
+                        // Event für Controller-Tap oder Touchpad-Tap
+                        xrSession.addEventListener('select', function () {
+                            console.log("WebXR Select Event ausgelöst!");
+
+                            const frame = sceneEl.xrFrame;
+                            if (frame && xrHitTestSource) {
+                                const hitTestResults = frame.getHitTestResults(xrHitTestSource);
+                                if (hitTestResults.length > 0) {
+                                    const hitPose = hitTestResults[0].getPose(xrReferenceSpace);
+                                    const position = hitPose.transform.position;
+
+                                    windowEl.setAttribute("position", `${position.x} ${position.y} ${position.z}`);
+                                    windowEl.setAttribute("visible", "true");
+
+                                    roomEl.setAttribute("position", `${position.x} ${position.y} ${position.z - 0.5}`);
+                                    roomEl.setAttribute("visible", "true");
+                                }
+                            }
+                        });
+
+                        // Zeige Exit-Button in AR
                         exitButton.style.display = "block";
                     }
                 });
 
-                sceneEl.addEventListener('exit-vr', function () {
+                sceneEl.addEventListener('exit-ar', function () {
+                    xrSession = null;
                     xrHitTestSource = null;
-                    exitButton.style.display = "none"; // Verstecke den Button
+                    exitButton.style.display = "none";
                 });
 
-                sceneEl.addEventListener('click', async function () {
-                    if (!xrSession || !xrHitTestSource) return;
-
-                    const frame = sceneEl.xrFrame;
-                    if (frame) {
-                        const hitTestResults = frame.getHitTestResults(xrHitTestSource);
-                        if (hitTestResults.length > 0) {
-                            const hitPose = hitTestResults[0].getPose(xrReferenceSpace);
-                            const position = hitPose.transform.position;
-
-                            // Fenster an die erkannte Wand setzen
-                            windowEl.setAttribute("position", `${position.x} ${position.y} ${position.z}`);
-                            windowEl.setAttribute("visible", "true");
-
-                            // Raum hinter das Fenster setzen
-                            roomEl.setAttribute("position", `${position.x} ${position.y} ${position.z - 0.5}`);
-                            roomEl.setAttribute("visible", "true");
-                        }
-                    }
-                });
-
-                // Beenden-Button: XR-Sitzung beenden
                 exitButton.addEventListener('click', function () {
                     if (xrSession) {
                         xrSession.end();
-                        exitButton.style.display = "none"; // Button wieder verstecken
+                        exitButton.style.display = "none";
                     }
                 });
             }
         });
 
         document.querySelector('a-scene').setAttribute('ar-hit-test', '');
+
+        window.onload = function () {
+            setTimeout(() => {
+                document.querySelectorAll('.a-enter-vr, .a-enter-ar').forEach(btn => {
+                    btn.classList.add("xr-button");
+                });
+            }, 500);
+        };
     </script>
 </body>
 </html>
