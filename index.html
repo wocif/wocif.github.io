@@ -60,24 +60,12 @@
 
       // Reticle bleibt für die Orientierung erhalten.
       reticle = new THREE.Mesh(
-        new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI/2),
-        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-      );
-      reticle.matrixAutoUpdate = false;
-      reticle.visible = false;
-      scene.add(reticle);
-
-      // Blueprint (Wand)
-      blueprint = new THREE.Mesh(
         new THREE.PlaneGeometry(3, 5),
         new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
       );
-      blueprint.matrixAutoUpdate = false;
-      // Speichere die initiale Z-Position der Kamera und setze den Blueprint 2 Einheiten davor.
-      initialCameraZ = camera.position.z;
-      blueprint.position.set(camera.position.x, camera.position.y, initialCameraZ + BLUEPRINT_Z_OFFSET);
-      blueprint.visible = true;
-      scene.add(blueprint);
+      reticle.matrixAutoUpdate = false;
+      reticle.visible = true;
+      scene.add(reticle);
 
       // Controller
       controller = renderer.xr.getController(0);
