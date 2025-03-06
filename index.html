@@ -90,7 +90,7 @@
       // Beim ersten Select: Blueprint fixieren und Ankerpunkt für das Rechteck festlegen.
       if (!isPointSelected) {
         // Nutze hier den aktuellen Blueprint-Standort als Ankerpunkt.
-        rectangleOrigin = blueprint.position.clone();
+        rectangleOrigin = reticle.position.clone();
         rectangle.position.copy(rectangleOrigin);
         rectangle.visible = true;
         isPointSelected = true;
@@ -101,7 +101,7 @@
       } else {
         // Beim dritten Select: Finalisiere die Skalierung und blendet den Blueprint aus.
         isRectangleBeingScaled = false;
-        blueprint.visible = false;
+        reticle.visible = false;
       }
     }
 
@@ -136,17 +136,10 @@
         }
       }
 
-      // Aktualisiere den Blueprint, solange er nicht fixiert ist.
-      if (!isBlueprintFixed) {
-        // Wir wollen, dass der Blueprint sich mit dem Kopf (Kamera) in X und Y bewegt,
-        // aber seine Z-Position (Tiefe) bleibt konstant.
-        blueprint.position.x = camera.position.x;
-        blueprint.position.y = camera.position.y;
-        // blueprint.position.z bleibt unverändert (initialer Z-Wert + BLUEPRINT_Z_OFFSET)
-      }
 
-      if (rotating && blueprint.visible) {
-        blueprint.rotation.y += 0.05;
+
+      if (rotating && reticle.visible) {
+        reticle.rotation.y += 0.05;
       }
 
       if (isRectangleBeingScaled && rectangle.visible) {
