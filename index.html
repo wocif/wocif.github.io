@@ -30,12 +30,13 @@
         import { ARButton } from 'ARButton';
 
         let camera, scene, renderer, controller;
-        let blueprint, reticle;
+        let rectangle, reticle;
         let hitTestSource = null;
         let hitTestSourceRequested = false;
-        let rotating = false;
-        let rectangle, rectangleOrigin, isRectangleBeingScaled = false;
-        let isPointSelected = false;  // Track if the point on the blueprint is selected
+        let selecting = false;  // Flag for tracking selection state
+        let blueprintFixed = false;  // Flag for tracking blueprint fixation state
+        let rectangleScale = new THREE.Vector3(1, 1.5, 1);  // Initial scale of the rectangle
+        let rectangleOrigin = new THREE.Vector3(0, 0, 0);  // Origin point for rectangle creation
 
         function init() {
             scene = new THREE.Scene();
@@ -54,24 +55,14 @@
 
             reticle = new THREE.Mesh(
                 new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-                new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+                new THREE.MeshBasicMaterial({ color: 0x0000ff })  // Blueprint color changed to blue
             );
             reticle.matrixAutoUpdate = false;
-            reticle.visible = false;
+            reticle.visible = true;  // Blueprint visible from the start
             scene.add(reticle);
-
-            blueprint = new THREE.Mesh(
-                new THREE.PlaneGeometry(3, 5), // Large blueprint size (width and height)
-                new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
-            );
-            blueprint.matrixAutoUpdate = false;
-            blueprint.visible = true; // Initially visible
-            scene.add(blueprint);
 
             controller = renderer.xr.getController(0);
             controller.addEventListener('select', onSelect);
-            controller.addEventListener('squeezestart', () => rotating = true);
-            controller.addEventListener('squeezeend', () => rotating = false);
             scene.add(controller);
 
             createRectangle();
@@ -79,29 +70,31 @@
         }
 
         function createRectangle() {
-            const geometry = new THREE.PlaneGeometry(1, 1.5);
+            const geometry = new THREE.PlaneGeometry(rectangleScale.x, rectangleScale.y);
             const material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
             rectangle = new THREE.Mesh(geometry, material);
-            rectangle.visible = false;
+            rectangle.visible = false;  // Rectangle is initially hidden
             scene.add(rectangle);
         }
 
         function onSelect() {
-            if (!rectangle || !reticle.visible) return;
+            if (!reticle.visible || blueprintFixed) return;
 
-            if (!isPointSelected) {
-                // Select point on the blueprint to anchor rectangle
-                rectangleOrigin = new THREE.Vector3().setFromMatrixPosition(reticle.matrix);
-                rectangle.position.copy(rectangleOrigin);
+            if (!selecting) {
+                // Fix the blueprint when the user selects a position
+                rectangleOrigin.setFromMatrixPosition(reticle.matrix);
+                reticle.visible = false;
+                blueprintFixed = true;
+                selecting = true;
+
+                // Create the rectangle starting from the selected position
+                rectangle.position.set(rectangleOrigin.x, rectangleOrigin.y, rectangleOrigin.z);
                 rectangle.visible = true;
-                isPointSelected = true;  // Point on the blueprint is now selected
-            } else if (!isRectangleBeingScaled) {
-                // Start scaling the rectangle
-                isRectangleBeingScaled = true;
             } else {
-                // Finalize rectangle and hide the blueprint
-                blueprint.visible = false;
-                isRectangleBeingScaled = false;
+                // If the user selects again, fix the rectangle size and remove blueprint
+                blueprintFixed = true;
+                selecting = false;
+                reticle.visible = false;  // Hide the blueprint
             }
         }
 
@@ -129,27 +122,15 @@
                     const hitTestResults = frame.getHitTestResults(hitTestSource);
                     if (hitTestResults.length) {
                         const pose = hitTestResults[0].getPose(renderer.xr.getReferenceSpace());
-                        reticle.visible = true;
                         reticle.matrix.fromArray(pose.transform.matrix);
-
-                        // Update the blueprint position while moving around
-                        if (!isPointSelected) {
-                            blueprint.matrix.identity().setPosition(reticle.position);
-                        }
-                    } else {
-                        reticle.visible = false;
                     }
                 }
             }
-            
-            if (rotating && blueprint.visible) {
-                blueprint.rotation.y += 0.05;
-            }
 
-            if (isRectangleBeingScaled && rectangle.visible) {
-                // Scale rectangle based on controller movement
-                const scaleFactor = controller.position.distanceTo(rectangle.position);
-                rectangle.scale.set(scaleFactor, scaleFactor, 1);
+            if (selecting && rectangle.visible && !blueprintFixed) {
+                // Adjust rectangle size based on controller movement
+                const controllerPosition = controller.position;
+                rectangle.scale.set(controllerPosition.x - rectangleOrigin.x, rectangleScale.y, controllerPosition.z - rectangleOrigin.z);
             }
 
             renderer.render(scene, camera);
