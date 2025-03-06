@@ -32,6 +32,7 @@
     let camera, scene, renderer, controller;
     let blueprint, rectangle;
     let stage = 0;
+    let isMovingBlueprint = false;
 
     function init() {
       scene = new THREE.Scene();
@@ -63,6 +64,8 @@
       scene.add(rectangle);
 
       controller = renderer.xr.getController(0);
+      controller.addEventListener('selectstart', () => isMovingBlueprint = (stage === 0));
+      controller.addEventListener('selectend', () => { if (stage === 0) stage = 1; isMovingBlueprint = false; });
       controller.addEventListener('select', onSelect);
       scene.add(controller);
 
@@ -70,12 +73,10 @@
     }
 
     function onSelect() {
-      if (stage === 0) {
-        blueprint.position.copy(camera.position);
-        blueprint.position.z -= 2;
-        stage = 1;
-      } else if (stage === 1) {
-        rectangle.position.copy(controller.position);
+      if (stage === 1) {
+        const controllerPosition = new THREE.Vector3();
+        controllerPosition.setFromMatrixPosition(controller.matrixWorld);
+        rectangle.position.set(controllerPosition.x, controllerPosition.y, blueprint.position.z + 0.01); 
         rectangle.visible = true;
         stage = 2;
       } else if (stage === 2) {
@@ -84,6 +85,9 @@
     }
 
     function render() {
+      if (isMovingBlueprint) {
+        blueprint.position.set(camera.position.x, camera.position.y, camera.position.z - 2);
+      }
       renderer.render(scene, camera);
     }
 
