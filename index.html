@@ -31,7 +31,7 @@
 
     let camera, scene, renderer, controller;
     let blueprint, rectangle;
-    let isMovingBlueprint = false;
+    let isBlueprintFixed = false;
 
     function init() {
       scene = new THREE.Scene();
@@ -52,7 +52,6 @@
         new THREE.PlaneGeometry(3, 5),
         new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
       );
-      blueprint.position.set(0, 1.5, -2);
       scene.add(blueprint);
 
       rectangle = new THREE.Mesh(
@@ -60,24 +59,19 @@
         new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide })
       );
       rectangle.visible = false;
-      rectangle.position.set(0, 1.5, blueprint.position.z + 0.01);
       scene.add(rectangle);
 
       controller = renderer.xr.getController(0);
-      controller.addEventListener('selectstart', onSelectStart);
-      controller.addEventListener('selectend', onSelectEnd);
+      controller.addEventListener('selectstart', onSelect);
       scene.add(controller);
 
       renderer.setAnimationLoop(render);
     }
 
-    function onSelectStart() {
-      isMovingBlueprint = true;
-    }
-
-    function onSelectEnd() {
-      isMovingBlueprint = false;
-      if (!rectangle.visible) {
+    function onSelect() {
+      if (!isBlueprintFixed) {
+        isBlueprintFixed = true;
+      } else if (!rectangle.visible) {
         rectangle.position.copy(blueprint.position);
         rectangle.position.z += 0.01; // Leicht vor dem Blueprint platzieren
         rectangle.visible = true;
@@ -85,7 +79,7 @@
     }
 
     function render() {
-      if (isMovingBlueprint) {
+      if (!isBlueprintFixed) {
         const cameraDirection = new THREE.Vector3();
         camera.getWorldDirection(cameraDirection);
         cameraDirection.multiplyScalar(-2); // Abstand vor der Kamera
