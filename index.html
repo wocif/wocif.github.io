@@ -30,12 +30,9 @@
         import { ARButton } from 'ARButton';
 
         let camera, scene, renderer, controller;
-        let rectangle, reticle, blueprint;
+        let rectangle, reticle;
         let hitTestSource = null;
         let hitTestSourceRequested = false;
-        let selecting = false;
-        let resizing = false;
-        let firstPoint = null;
 
         function init() {
             scene = new THREE.Scene();
@@ -60,59 +57,26 @@
             reticle.visible = false;
             scene.add(reticle);
 
-            blueprint = new THREE.Mesh(
-                new THREE.PlaneGeometry(3, 5), // Größeres Blueprint, das Wand darstellt
-                new THREE.MeshBasicMaterial({ color: 0x0000ff, transparent: true, opacity: 0.3 })
-            );
-            blueprint.visible = false;
-            scene.add(blueprint);
-
             controller = renderer.xr.getController(0);
             controller.addEventListener('select', onSelect);
-            controller.addEventListener('squeezestart', onResizeStart);
-            controller.addEventListener('squeezeend', onResizeEnd);
             scene.add(controller);
 
+            createRectangle();
             renderer.setAnimationLoop(render);
         }
 
+        function createRectangle() {
+            const geometry = new THREE.PlaneGeometry(1, 1.5);
+            const material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
+            rectangle = new THREE.Mesh(geometry, material);
+            rectangle.visible = false;
+            scene.add(rectangle);
+        }
+
         function onSelect() {
-            if (selecting) {
-                // Start der Rechteck-Erstellung
-                if (firstPoint) {
-                    resizing = true;
-                }
-            } else {
-                if (!blueprint.visible) {
-                    // Platzieren des Blueprints, der die Wand repräsentiert
-                    firstPoint = new THREE.Vector3().copy(reticle.position);
-                    blueprint.position.copy(firstPoint);
-                    blueprint.visible = true;
-                } else {
-                    // Platzieren des Ursprungs des Rechtecks
-                    rectangle = new THREE.Mesh(
-                        new THREE.PlaneGeometry(1, 1.5),
-                        new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide })
-                    );
-                    rectangle.position.copy(firstPoint);
-                    rectangle.visible = true;
-                    scene.add(rectangle);
-                    selecting = false;
-                }
-            }
-            selecting = !selecting;
-        }
-
-        function onResizeStart() {
-            if (rectangle && !selecting) {
-                resizing = true;
-            }
-        }
-
-        function onResizeEnd() {
-            if (rectangle) {
-                resizing = false;
-            }
+            if (!rectangle || !reticle.visible) return;
+            rectangle.position.setFromMatrixPosition(reticle.matrix);
+            rectangle.visible = true;
         }
 
         function requestHitTestSource(session) {
@@ -122,11 +86,31 @@
                 });
             });
 
+            session.addEventListener('planesdetected', onPlanesDetected);
             session.addEventListener('end', () => {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
             });
             hitTestSourceRequested = true;
+        }
+
+        function onPlanesDetected(event) {
+            event.planes.forEach(plane => {
+                const planeMesh = new THREE.Mesh(
+                    new THREE.PlaneGeometry(plane.extent.width, plane.extent.height),
+                    new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, transparent: true, opacity: 0.5 })
+                );
+
+                planeMesh.position.set(plane.transform.position.x, plane.transform.position.y, plane.transform.position.z);
+                planeMesh.quaternion.set(
+                    plane.transform.orientation.x,
+                    plane.transform.orientation.y,
+                    plane.transform.orientation.z,
+                    plane.transform.orientation.w
+                );
+
+                scene.add(planeMesh);
+            });
         }
 
         function render(timestamp, frame) {
@@ -146,18 +130,6 @@
                     }
                 }
             }
-
-            // Position des Blueprints aktualisieren
-            if (blueprint.visible) {
-                blueprint.position.copy(reticle.position);
-            }
-
-            // Wenn das Rechteck erstellt wurde, beginne mit der Anpassung der Größe
-            if (resizing && rectangle) {
-                const scaleFactor = reticle.position.distanceTo(firstPoint);
-                rectangle.scale.set(scaleFactor, scaleFactor * 1.5, 1); // Seitenverhältnis beibehalten
-            }
-
             renderer.render(scene, camera);
         }
 
