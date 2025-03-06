@@ -30,11 +30,12 @@
         import { ARButton } from 'ARButton';
 
         let camera, scene, renderer, controller;
-        let rectangle, reticle, blueprint;
+        let blueprint, reticle;
         let hitTestSource = null;
         let hitTestSourceRequested = false;
         let rotating = false;
-        let rectangleOrigin, scaling = false, initialDistance = 0;
+        let rectangle, rectangleOrigin, isRectangleBeingScaled = false;
+        let isPointSelected = false;  // Track if the point on the blueprint is selected
 
         function init() {
             scene = new THREE.Scene();
@@ -60,10 +61,11 @@
             scene.add(reticle);
 
             blueprint = new THREE.Mesh(
-                new THREE.PlaneGeometry(2, 2), // Initially large
+                new THREE.PlaneGeometry(3, 5), // Large blueprint size (width and height)
                 new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
             );
-            blueprint.visible = false;
+            blueprint.matrixAutoUpdate = false;
+            blueprint.visible = true; // Initially visible
             scene.add(blueprint);
 
             controller = renderer.xr.getController(0);
@@ -72,26 +74,34 @@
             controller.addEventListener('squeezeend', () => rotating = false);
             scene.add(controller);
 
+            createRectangle();
             renderer.setAnimationLoop(render);
+        }
+
+        function createRectangle() {
+            const geometry = new THREE.PlaneGeometry(1, 1.5);
+            const material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
+            rectangle = new THREE.Mesh(geometry, material);
+            rectangle.visible = false;
+            scene.add(rectangle);
         }
 
         function onSelect() {
             if (!rectangle || !reticle.visible) return;
 
-            if (!rectangle.visible) {
-                // Fix blueprint at selected position and begin point selection
-                blueprint.visible = true;
-                blueprint.position.setFromMatrixPosition(reticle.matrix);
-                reticle.visible = false;
+            if (!isPointSelected) {
+                // Select point on the blueprint to anchor rectangle
                 rectangleOrigin = new THREE.Vector3().setFromMatrixPosition(reticle.matrix);
                 rectangle.position.copy(rectangleOrigin);
                 rectangle.visible = true;
-                scaling = true;
-                initialDistance = controller.position.distanceTo(rectangleOrigin); // Store initial distance for scaling
+                isPointSelected = true;  // Point on the blueprint is now selected
+            } else if (!isRectangleBeingScaled) {
+                // Start scaling the rectangle
+                isRectangleBeingScaled = true;
             } else {
-                // Finalize rectangle, hide blueprint
+                // Finalize rectangle and hide the blueprint
                 blueprint.visible = false;
-                scaling = false;
+                isRectangleBeingScaled = false;
             }
         }
 
@@ -121,16 +131,25 @@
                         const pose = hitTestResults[0].getPose(renderer.xr.getReferenceSpace());
                         reticle.visible = true;
                         reticle.matrix.fromArray(pose.transform.matrix);
+
+                        // Update the blueprint position while moving around
+                        if (!isPointSelected) {
+                            blueprint.matrix.identity().setPosition(reticle.position);
+                        }
                     } else {
                         reticle.visible = false;
                     }
                 }
             }
+            
+            if (rotating && blueprint.visible) {
+                blueprint.rotation.y += 0.05;
+            }
 
-            if (scaling && rectangle.visible) {
-                const currentDistance = controller.position.distanceTo(rectangleOrigin);
-                const scale = currentDistance / initialDistance;
-                rectangle.scale.set(scale, 1, scale); // Scale based on controller movement
+            if (isRectangleBeingScaled && rectangle.visible) {
+                // Scale rectangle based on controller movement
+                const scaleFactor = controller.position.distanceTo(rectangle.position);
+                rectangle.scale.set(scaleFactor, scaleFactor, 1);
             }
 
             renderer.render(scene, camera);
