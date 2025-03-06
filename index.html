@@ -30,22 +30,14 @@
     import { ARButton } from 'ARButton';
 
     let camera, scene, renderer, controller;
-    let blueprint, reticle;
-    let hitTestSource = null;
-    let hitTestSourceRequested = false;
-    let rotating = false;
-    let rectangle, rectangleOrigin;
-    let isRectangleBeingScaled = false;
-    let isPointSelected = false;   // Wird true, sobald der Nutzer einen Punkt auswählt
-    let isBlueprintFixed = false;    // Wird true, wenn der Blueprint fixiert wird
-
-    // Fester Z-Offset (Tiefe) für den Blueprint relativ zur Kamera
-    const BLUEPRINT_Z_OFFSET = -2;
-    let initialCameraZ = 0;
+    let blueprint, reticle, rectangle;
+    let isBlueprintFixed = false;
+    let isRectanglePlaced = false;
+    let isScalingRectangle = false;
 
     function init() {
       scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.01, 20);
+      camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.xr.enabled = true;
@@ -58,115 +50,49 @@
       const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
       scene.add(light);
 
-      // Reticle bleibt für die Orientierung erhalten.
-      reticle = new THREE.Mesh(
-        new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI/2),
-        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-      );
-      reticle.matrixAutoUpdate = false;
-      reticle.visible = false;
-      scene.add(reticle);
-
-      // Blueprint (Wand)
       blueprint = new THREE.Mesh(
         new THREE.PlaneGeometry(3, 5),
         new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
       );
-      blueprint.matrixAutoUpdate = false;
-      // Speichere die initiale Z-Position der Kamera und setze den Blueprint 2 Einheiten davor.
-      initialCameraZ = camera.position.z;
-      blueprint.position.set(camera.position.x, camera.position.y, initialCameraZ + BLUEPRINT_Z_OFFSET);
-      blueprint.visible = true;
+      blueprint.visible = false;
       scene.add(blueprint);
 
-      // Controller
+      rectangle = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1.5),
+        new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide })
+      );
+      rectangle.visible = false;
+      scene.add(rectangle);
+
       controller = renderer.xr.getController(0);
       controller.addEventListener('select', onSelect);
-      controller.addEventListener('squeezestart', () => { rotating = true; });
-      controller.addEventListener('squeezeend', () => { rotating = false; });
       scene.add(controller);
 
-      createRectangle();
       renderer.setAnimationLoop(render);
     }
 
-    function createRectangle() {
-      const geometry = new THREE.PlaneGeometry(1, 1.5);
-      const material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
-      rectangle = new THREE.Mesh(geometry, material);
-      rectangle.visible = false;
-      scene.add(rectangle);
-    }
-
     function onSelect() {
-      // Beim ersten Select: Blueprint fixieren und Ankerpunkt für das Rechteck festlegen.
-      if (!isPointSelected) {
-        // Nutze hier den aktuellen Blueprint-Standort als Ankerpunkt.
-        rectangleOrigin = blueprint.position.clone();
-        rectangle.position.copy(rectangleOrigin);
-        rectangle.visible = true;
-        isPointSelected = true;
-        isBlueprintFixed = true; // Jetzt fixieren wir den Blueprint.
-      } else if (!isRectangleBeingScaled) {
-        // Beim zweiten Select: Starte die Skalierung des Rechtecks.
-        isRectangleBeingScaled = true;
-      } else {
-        // Beim dritten Select: Finalisiere die Skalierung und blendet den Blueprint aus.
-        isRectangleBeingScaled = false;
-        blueprint.visible = false;
-      }
-    }
-
-    function requestHitTestSource(session) {
-      session.requestReferenceSpace('viewer').then(referenceSpace => {
-        session.requestHitTestSource({ space: referenceSpace }).then(source => {
-          hitTestSource = source;
-        });
-      });
-      session.addEventListener('end', () => {
-        hitTestSourceRequested = false;
-        hitTestSource = null;
-      });
-      hitTestSourceRequested = true;
-    }
-
-    function render(timestamp, frame) {
-      if (frame) {
-        const session = renderer.xr.getSession();
-        if (!hitTestSourceRequested) {
-          requestHitTestSource(session);
-        }
-        if (hitTestSource) {
-          const hitTestResults = frame.getHitTestResults(hitTestSource);
-          if (hitTestResults.length) {
-            const pose = hitTestResults[0].getPose(renderer.xr.getReferenceSpace());
-            reticle.visible = true;
-            reticle.matrix.fromArray(pose.transform.matrix);
-          } else {
-            reticle.visible = false;
-          }
-        }
-      }
-
-      // Aktualisiere den Blueprint, solange er nicht fixiert ist.
       if (!isBlueprintFixed) {
-        // Wir wollen, dass der Blueprint sich mit dem Kopf (Kamera) in X und Y bewegt,
-        // aber seine Z-Position (Tiefe) bleibt konstant.
-        blueprint.position.x = camera.position.x;
-        blueprint.position.y = camera.position.y;
-        // blueprint.position.z bleibt unverändert (initialer Z-Wert + BLUEPRINT_Z_OFFSET)
+        blueprint.position.copy(camera.position);
+        blueprint.position.z -= 2;
+        blueprint.visible = true;
+        isBlueprintFixed = true;
+      } else if (!isRectanglePlaced) {
+        rectangle.position.copy(controller.position);
+        rectangle.visible = true;
+        isRectanglePlaced = true;
+      } else if (!isScalingRectangle) {
+        isScalingRectangle = true;
+      } else {
+        isScalingRectangle = false;
       }
+    }
 
-      if (rotating && blueprint.visible) {
-        blueprint.rotation.y += 0.05;
-      }
-
-      if (isRectangleBeingScaled && rectangle.visible) {
-        // Skaliere das Rechteck basierend auf der Distanz des Controllers zum Rechteck.
+    function render() {
+      if (isScalingRectangle) {
         const scaleFactor = controller.position.distanceTo(rectangle.position);
         rectangle.scale.set(scaleFactor, scaleFactor, 1);
       }
-
       renderer.render(scene, camera);
     }
 
