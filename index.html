@@ -65,7 +65,7 @@
                 new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
             );
             blueprint.matrixAutoUpdate = false;
-            blueprint.visible = true; // Initially visible
+            blueprint.visible = true; // Initially visible and movable
             scene.add(blueprint);
 
             controller = renderer.xr.getController(0);
@@ -134,7 +134,7 @@
 
                         // Update the blueprint position while moving around
                         if (!isPointSelected) {
-                            blueprint.matrix.identity().setPosition(reticle.position);
+                            blueprint.matrix.identity().setPosition(reticle.position); // Blueprint is still movable
                         }
                     } else {
                         reticle.visible = false;
