@@ -31,7 +31,7 @@
 
     let camera, scene, renderer, controller;
     let blueprint, rectangle;
-    let isBlueprintFixed = false;
+    let isBlueprintFixed = false; // Wird true, wenn der Blueprint fixiert wurde
 
     function init() {
       scene = new THREE.Scene();
@@ -48,12 +48,16 @@
       const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
       scene.add(light);
 
+      // Blauer Blueprint (Wand)
       blueprint = new THREE.Mesh(
         new THREE.PlaneGeometry(3, 5),
         new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
       );
+      // Als Fallback: Standardposition vor der Kamera
+      blueprint.position.set(0, 1.5, -2);
       scene.add(blueprint);
 
+      // Rotes Rechteck (Fenster)
       rectangle = new THREE.Mesh(
         new THREE.PlaneGeometry(1, 1.5),
         new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide })
@@ -62,7 +66,8 @@
       scene.add(rectangle);
 
       controller = renderer.xr.getController(0);
-      controller.addEventListener('selectstart', onSelect);
+      // Einmaliges Drücken von Select fixiert den Blueprint und platziert das Fenster
+      controller.addEventListener('select', onSelect);
       scene.add(controller);
 
       renderer.setAnimationLoop(render);
@@ -70,21 +75,32 @@
 
     function onSelect() {
       if (!isBlueprintFixed) {
+        // Beim ersten Select: Position des Blueprints fixieren
         isBlueprintFixed = true;
       } else if (!rectangle.visible) {
+        // Beim zweiten Select: Rotes Rechteck an der fixierten Blueprint-Position platzieren
         rectangle.position.copy(blueprint.position);
-        rectangle.position.z += 0.01; // Leicht vor dem Blueprint platzieren
+        // Leicht vor dem Blueprint platzieren, damit es sichtbar ist
+        rectangle.position.z += 0.01;
         rectangle.visible = true;
       }
     }
 
     function render() {
+      // Falls der Blueprint noch nicht fixiert ist, soll er mit der Kamera in X und Y folgen.
+      // Wenn die Kamera noch auf (0,0,0) steht (z. B. kein AR), verwende den Fallback.
       if (!isBlueprintFixed) {
-        const cameraDirection = new THREE.Vector3();
-        camera.getWorldDirection(cameraDirection);
-        cameraDirection.multiplyScalar(-2); // Abstand vor der Kamera
-        blueprint.position.copy(camera.position).add(cameraDirection);
-        blueprint.position.y = 1.5; // Höhe auf der y-Achse fixieren
+        if (camera.position.length() < 0.001) {
+          blueprint.position.set(0, 1.5, -2);
+        } else {
+          // Bestimme die Blickrichtung der Kamera und platziere den Blueprint in einem festen Abstand vor der Kamera
+          const cameraDirection = new THREE.Vector3();
+          camera.getWorldDirection(cameraDirection);
+          cameraDirection.multiplyScalar(-2); // 2 Einheiten vor der Kamera
+          blueprint.position.copy(camera.position).add(cameraDirection);
+          // Stelle sicher, dass die Höhe nicht unter 1,5 fällt:
+          blueprint.position.y = Math.max(blueprint.position.y, 1.5);
+        }
       }
       renderer.render(scene, camera);
     }
