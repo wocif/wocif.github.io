@@ -30,10 +30,8 @@
     import { ARButton } from 'ARButton';
 
     let camera, scene, renderer, controller;
-    let blueprint, reticle, rectangle;
-    let isBlueprintFixed = false;
-    let isRectanglePlaced = false;
-    let isScalingRectangle = false;
+    let blueprint, rectangle;
+    let stage = 0;
 
     function init() {
       scene = new THREE.Scene();
@@ -54,7 +52,7 @@
         new THREE.PlaneGeometry(3, 5),
         new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
       );
-      blueprint.visible = false;
+      blueprint.position.set(0, 1.5, -2);
       scene.add(blueprint);
 
       rectangle = new THREE.Mesh(
@@ -72,27 +70,20 @@
     }
 
     function onSelect() {
-      if (!isBlueprintFixed) {
+      if (stage === 0) {
         blueprint.position.copy(camera.position);
         blueprint.position.z -= 2;
-        blueprint.visible = true;
-        isBlueprintFixed = true;
-      } else if (!isRectanglePlaced) {
+        stage = 1;
+      } else if (stage === 1) {
         rectangle.position.copy(controller.position);
         rectangle.visible = true;
-        isRectanglePlaced = true;
-      } else if (!isScalingRectangle) {
-        isScalingRectangle = true;
-      } else {
-        isScalingRectangle = false;
+        stage = 2;
+      } else if (stage === 2) {
+        stage = 3;
       }
     }
 
     function render() {
-      if (isScalingRectangle) {
-        const scaleFactor = controller.position.distanceTo(rectangle.position);
-        rectangle.scale.set(scaleFactor, scaleFactor, 1);
-      }
       renderer.render(scene, camera);
     }
 
