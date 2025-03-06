@@ -36,7 +36,8 @@
         let rotating = false;
         let rectangle, rectangleOrigin, isRectangleBeingScaled = false;
         let isPointSelected = false;  // Track if the point on the blueprint is selected
-        let isBlueprintMovable = true;  // Flag to indicate if the blueprint is movable
+        let isBlueprintMoving = false; // Track if the blueprint is being moved with the thumbstick
+        let blueprintPosition = new THREE.Vector3(0, 0, 0); // Starting position of the blueprint
 
         function init() {
             scene = new THREE.Scene();
@@ -66,7 +67,8 @@
                 new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
             );
             blueprint.matrixAutoUpdate = false;
-            blueprint.visible = true; // Blueprint is visible from the start
+            blueprint.position.copy(blueprintPosition); // Ensure it's at the initial position
+            blueprint.visible = true; // Initially visible
             scene.add(blueprint);
 
             controller = renderer.xr.getController(0);
@@ -133,17 +135,9 @@
                         reticle.visible = true;
                         reticle.matrix.fromArray(pose.transform.matrix);
 
-                        // Move blueprint with right thumbstick
-                        if (isBlueprintMovable) {
-                            const controllerInput = controller.inputSource.gamepad;
-                            if (controllerInput && controllerInput.axes) {
-                                const xMove = controllerInput.axes[0]; // Right thumbstick X axis
-                                const yMove = controllerInput.axes[1]; // Right thumbstick Y axis
-
-                                // Adjust blueprint position based on thumbstick input
-                                blueprint.position.x += xMove * 0.1; // Scale movement speed
-                                blueprint.position.z += yMove * 0.1; // Scale movement speed
-                            }
+                        // Update the blueprint position while moving around
+                        if (!isPointSelected) {
+                            blueprint.matrix.identity().setPosition(reticle.position);
                         }
                     } else {
                         reticle.visible = false;
@@ -153,6 +147,18 @@
 
             if (rotating && blueprint.visible) {
                 blueprint.rotation.y += 0.05;
+            }
+
+            if (isBlueprintMoving) {
+                // Move the blueprint based on the right controller thumbstick
+                const controllerInput = controller.inputSource.gamepad;
+                if (controllerInput) {
+                    const xMove = controllerInput.axes[0]; // X-axis movement (left-right)
+                    const yMove = controllerInput.axes[1]; // Y-axis movement (up-down)
+
+                    blueprint.position.x += xMove * 0.1; // Update position
+                    blueprint.position.y += yMove * 0.1; // Update position
+                }
             }
 
             if (isRectangleBeingScaled && rectangle.visible) {
