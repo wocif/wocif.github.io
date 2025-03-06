@@ -43,8 +43,9 @@
             document.body.appendChild(renderer.domElement);
 
             document.getElementById('ar-button-container').appendChild(ARButton.createButton(renderer, {
-                requiredFeatures: ['hit-test']
+                requiredFeatures: ['hit-test', 'plane-detection']
             }));
+
 
             const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
             scene.add(light);
