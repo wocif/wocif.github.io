@@ -35,8 +35,8 @@
         let hitTestSourceRequested = false;
         let rotating = false;
         let rectangle, rectangleOrigin, isRectangleBeingScaled = false;
-        let isPointSelected = false;
-        let isBlueprintMovable = true; // Flag to keep blueprint movable until select
+        let isPointSelected = false;  // Track if the point on the blueprint is selected
+        let isBlueprintMovable = true;  // Flag to indicate if the blueprint is movable
 
         function init() {
             scene = new THREE.Scene();
@@ -66,8 +66,7 @@
                 new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
             );
             blueprint.matrixAutoUpdate = false;
-            blueprint.visible = false; // Initially invisible
-            blueprint.position.set(0, 0, -1); // Set a neutral position for initial display
+            blueprint.visible = true; // Blueprint is visible from the start
             scene.add(blueprint);
 
             controller = renderer.xr.getController(0);
@@ -134,16 +133,24 @@
                         reticle.visible = true;
                         reticle.matrix.fromArray(pose.transform.matrix);
 
-                        // Move blueprint to reticle position
+                        // Move blueprint with right thumbstick
                         if (isBlueprintMovable) {
-                            blueprint.matrix.identity().setPosition(reticle.position); // Blueprint is movable
+                            const controllerInput = controller.inputSource.gamepad;
+                            if (controllerInput) {
+                                const xMove = controllerInput.axes[0]; // Right thumbstick X axis
+                                const yMove = controllerInput.axes[1]; // Right thumbstick Y axis
+
+                                // Adjust blueprint position based on thumbstick input
+                                blueprint.position.x += xMove * 0.1; // Scale movement speed
+                                blueprint.position.z += yMove * 0.1; // Scale movement speed
+                            }
                         }
                     } else {
                         reticle.visible = false;
                     }
                 }
             }
-            
+
             if (rotating && blueprint.visible) {
                 blueprint.rotation.y += 0.05;
             }
