@@ -35,7 +35,7 @@
         let hitTestSourceRequested = false;
         let rotating = false;
         let rectangle, rectangleOrigin, isRectangleBeingScaled = false;
-        let isPointSelected = false;  // Track if the point on the blueprint is selected
+        let isPointSelected = false;
         let isBlueprintMovable = true; // Flag to keep blueprint movable until select
 
         function init() {
@@ -66,7 +66,8 @@
                 new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
             );
             blueprint.matrixAutoUpdate = false;
-            blueprint.visible = true; // Initially visible
+            blueprint.visible = false; // Initially invisible
+            blueprint.position.set(0, 0, -1); // Set a neutral position for initial display
             scene.add(blueprint);
 
             controller = renderer.xr.getController(0);
@@ -133,7 +134,7 @@
                         reticle.visible = true;
                         reticle.matrix.fromArray(pose.transform.matrix);
 
-                        // Update the blueprint position while moving around
+                        // Move blueprint to reticle position
                         if (isBlueprintMovable) {
                             blueprint.matrix.identity().setPosition(reticle.position); // Blueprint is movable
                         }
