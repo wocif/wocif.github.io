@@ -36,8 +36,7 @@
         let rotating = false;
         let rectangle, rectangleOrigin, isRectangleBeingScaled = false;
         let isPointSelected = false;  // Track if the point on the blueprint is selected
-        let isBlueprintMoving = false; // Track if the blueprint is being moved with the thumbstick
-        let blueprintPosition = new THREE.Vector3(0, 0, 0); // Starting position of the blueprint
+        let isBlueprintFixed = false; // Track if the blueprint is fixed
 
         function init() {
             scene = new THREE.Scene();
@@ -67,7 +66,6 @@
                 new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
             );
             blueprint.matrixAutoUpdate = false;
-            blueprint.position.copy(blueprintPosition); // Ensure it's at the initial position
             blueprint.visible = true; // Initially visible
             scene.add(blueprint);
 
@@ -135,9 +133,11 @@
                         reticle.visible = true;
                         reticle.matrix.fromArray(pose.transform.matrix);
 
-                        // Update the blueprint position while moving around
-                        if (!isPointSelected) {
-                            blueprint.matrix.identity().setPosition(reticle.position);
+                        // Update the blueprint position while moving around, only if it's not fixed
+                        if (!isBlueprintFixed) {
+                            blueprint.position.x = camera.position.x + (reticle.position.x - camera.position.x);
+                            blueprint.position.y = camera.position.y + (reticle.position.y - camera.position.y);
+                            blueprint.position.z = camera.position.z + (reticle.position.z - camera.position.z);
                         }
                     } else {
                         reticle.visible = false;
@@ -147,24 +147,6 @@
 
             if (rotating && blueprint.visible) {
                 blueprint.rotation.y += 0.05;
-            }
-
-            if (isBlueprintMoving) {
-                // Move the blueprint based on the right controller thumbstick
-                const controllerInput = controller.inputSource.gamepad;
-                if (controllerInput) {
-                    const xMove = controllerInput.axes[0]; // X-axis movement (left-right)
-                    const yMove = controllerInput.axes[1]; // Y-axis movement (up-down)
-
-                    blueprint.position.x += xMove * 0.1; // Update position
-                    blueprint.position.y += yMove * 0.1; // Update position
-                }
-            }
-
-            if (isRectangleBeingScaled && rectangle.visible) {
-                // Scale rectangle based on controller movement
-                const scaleFactor = controller.position.distanceTo(rectangle.position);
-                rectangle.scale.set(scaleFactor, scaleFactor, 1);
             }
 
             renderer.render(scene, camera);
