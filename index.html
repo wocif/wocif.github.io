@@ -81,18 +81,36 @@
         }
 
         function requestHitTestSource(session) {
-            session.requestReferenceSpace('viewer').then(referenceSpace => {
-                session.requestHitTestSource({ space: referenceSpace }).then(source => {
-                    hitTestSource = source;
-                });
-            });
+    session.requestReferenceSpace('viewer').then(referenceSpace => {
+        session.requestHitTestSource({ space: referenceSpace }).then(source => {
+            hitTestSource = source;
+        });
+    });
 
-            session.addEventListener('end', () => {
-                hitTestSourceRequested = false;
-                hitTestSource = null;
-            });
-            hitTestSourceRequested = true;
-        }
+    session.addEventListener('end', () => {
+        hitTestSourceRequested = false;
+        hitTestSource = null;
+    });
+
+    session.addEventListener('planesdetected', onPlanesDetected); // <-- Hier Flächen-Erkennung aktivieren
+    hitTestSourceRequested = true;
+}
+
+function onPlanesDetected(event) {
+    console.log("Planes detected:", event.planes);
+
+    event.planes.forEach(plane => {
+        const planeMesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(plane.extent.width, plane.extent.height),
+            new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, transparent: true, opacity: 0.5 })
+        );
+
+        planeMesh.position.set(plane.transform.position.x, plane.transform.position.y, plane.transform.position.z);
+        planeMesh.quaternion.set(plane.transform.orientation.x, plane.transform.orientation.y, plane.transform.orientation.z, plane.transform.orientation.w);
+
+        scene.add(planeMesh);
+    });
+}
 
         function render(timestamp, frame) {
             if (frame) {
