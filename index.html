@@ -37,10 +37,11 @@
     let rectangle, rectangleOrigin;
     let isRectangleBeingScaled = false;
     let isPointSelected = false;   // Wird true, sobald der Nutzer einen Punkt auswählt
-    let isBlueprintFixed = false;    // Wird true, wenn der Blueprint fixiert werden soll
+    let isBlueprintFixed = false;    // Wird true, wenn der Blueprint fixiert wird
 
-    // Fester Z-Offset für den Blueprint (z. B. 2 Einheiten vor der Kamera)
+    // Fester Z-Offset (Tiefe) für den Blueprint relativ zur Kamera
     const BLUEPRINT_Z_OFFSET = -2;
+    let initialCameraZ = 0;
 
     function init() {
       scene = new THREE.Scene();
@@ -57,7 +58,7 @@
       const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
       scene.add(light);
 
-      // Reticle (grüner Kreis) – bleibt zur Orientierung erhalten
+      // Reticle bleibt für die Orientierung erhalten.
       reticle = new THREE.Mesh(
         new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI/2),
         new THREE.MeshBasicMaterial({ color: 0x00ff00 })
@@ -66,15 +67,15 @@
       reticle.visible = false;
       scene.add(reticle);
 
-      // Blueprint (Wand) – soll sofort sichtbar sein und sich mit dem Kopf bewegen,
-      // aber nur X und Y, während der Z-Offset fest bleibt.
+      // Blueprint (Wand)
       blueprint = new THREE.Mesh(
         new THREE.PlaneGeometry(3, 5),
         new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
       );
       blueprint.matrixAutoUpdate = false;
-      // Initial: Setze Blueprint relativ zur Kamera, aber mit festem Z-Offset
-      blueprint.position.set(camera.position.x, camera.position.y, camera.position.z + BLUEPRINT_Z_OFFSET);
+      // Speichere die initiale Z-Position der Kamera und setze den Blueprint 2 Einheiten davor.
+      initialCameraZ = camera.position.z;
+      blueprint.position.set(camera.position.x, camera.position.y, initialCameraZ + BLUEPRINT_Z_OFFSET);
       blueprint.visible = true;
       scene.add(blueprint);
 
@@ -98,18 +99,19 @@
     }
 
     function onSelect() {
-      // Beim ersten Select: Blueprint fixieren und Ankerpunkt für Rechteck setzen
+      // Beim ersten Select: Blueprint fixieren und Ankerpunkt für das Rechteck festlegen.
       if (!isPointSelected) {
-        rectangleOrigin = new THREE.Vector3().setFromMatrixPosition(reticle.matrix);
+        // Nutze hier den aktuellen Blueprint-Standort als Ankerpunkt.
+        rectangleOrigin = blueprint.position.clone();
         rectangle.position.copy(rectangleOrigin);
         rectangle.visible = true;
         isPointSelected = true;
-        isBlueprintFixed = true; // Jetzt fixieren wir den Blueprint – er bewegt sich nicht mehr mit dem Kopf
+        isBlueprintFixed = true; // Jetzt fixieren wir den Blueprint.
       } else if (!isRectangleBeingScaled) {
-        // Beim zweiten Select: Beginne die Skalierung des Rechtecks
+        // Beim zweiten Select: Starte die Skalierung des Rechtecks.
         isRectangleBeingScaled = true;
       } else {
-        // Beim dritten Select: Finalisiere die Rechteck-Skalierung und blende den Blueprint aus
+        // Beim dritten Select: Finalisiere die Skalierung und blendet den Blueprint aus.
         isRectangleBeingScaled = false;
         blueprint.visible = false;
       }
@@ -146,19 +148,13 @@
         }
       }
 
-      // Wenn der Blueprint noch nicht fixiert ist, aktualisiere X und Y:
+      // Aktualisiere den Blueprint, solange er nicht fixiert ist.
       if (!isBlueprintFixed) {
-        if (reticle.visible) {
-          // Verwende die X- und Y-Koordinaten des Reticles
-          blueprint.position.x = camera.position.x + (reticle.position.x - camera.position.x);
-          blueprint.position.y = camera.position.y + (reticle.position.y - camera.position.y);
-          // Z bleibt konstant (fester Offset)
-        } else {
-          // Fallback: Wenn kein Hit-Test-Ergebnis vorliegt, setze Blueprint relativ zur Kamera
-          blueprint.position.x = camera.position.x;
-          blueprint.position.y = camera.position.y;
-          // Z bleibt unverändert
-        }
+        // Wir wollen, dass der Blueprint sich mit dem Kopf (Kamera) in X und Y bewegt,
+        // aber seine Z-Position (Tiefe) bleibt konstant.
+        blueprint.position.x = camera.position.x;
+        blueprint.position.y = camera.position.y;
+        // blueprint.position.z bleibt unverändert (initialer Z-Wert + BLUEPRINT_Z_OFFSET)
       }
 
       if (rotating && blueprint.visible) {
@@ -166,7 +162,7 @@
       }
 
       if (isRectangleBeingScaled && rectangle.visible) {
-        // Skaliere das Rechteck basierend auf der Distanz des Controllers zum Rechteck
+        // Skaliere das Rechteck basierend auf der Distanz des Controllers zum Rechteck.
         const scaleFactor = controller.position.distanceTo(rectangle.position);
         rectangle.scale.set(scaleFactor, scaleFactor, 1);
       }
