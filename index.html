@@ -1,164 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebXR AR Knight</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/RGBELoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/webxr/ARButton.js"></script>
     <style>
-        /* Button Styling */
-        .xr-button {
-            position: fixed !important;
-            bottom: 160px !important;
-            right: 20px !important;
-            z-index: 1000 !important;
-        }
-        #exit-button {
-            display: none;
-            position: fixed;
-            bottom: 160px;
-            right: 120px;
-            padding: 12px 24px;
-            background: red;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-        }
-        #loading-bar {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            color: white;
-            font-size: 20px;
-            border-radius: 5px;
-            display: none;
-        }
+        body { margin: 0; overflow: hidden; }
     </style>
 </head>
 <body>
-    <div id="loading-bar">Lädt AR...</div>
-    <button id="exit-button">Beenden</button>
-
-    <a-scene embedded webxr="optionalFeatures: hit-test; plane-detection" 
-             renderer="colorManagement: true, alpha: true" xr-mode-ui="enabled: true">
-        
-        <a-camera position="0 1.6 0"></a-camera>
-
-        <!-- Plane Detection -->
-        <a-entity id="plane" geometry="primitive: plane; width: 10; height: 10" material="color: grey; opacity: 0.5" visible="false"></a-entity>
-
-        <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable" line="color: red; opacity: 0.8;"></a-entity>
-        <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable" line="color: red; opacity: 0.8;"></a-entity>
-
-        <!-- Fenster und Raumobjekt -->
-        <a-plane id="window" class="clickable" width="1" height="1.5" color="black" opacity="0.3" visible="false"></a-plane>
-        <a-entity id="room" visible="false">
-            <a-box position="0 0 -2" width="3" height="3" depth="0.1" color="white"></a-box>
-        </a-entity>
-    </a-scene>
-
     <script>
-        AFRAME.registerComponent('ar-hit-test', {
-            init: function () {
-                const sceneEl = this.el;
-                const windowEl = document.getElementById("window");
-                const roomEl = document.getElementById("room");
-                const exitButton = document.getElementById("exit-button");
-                const loadingBar = document.getElementById("loading-bar");
+        class App {
+            constructor() {
+                const container = document.createElement('div');
+                document.body.appendChild(container);
+                
+                this.clock = new THREE.Clock();
+                
+                this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+                this.camera.position.set(0, 1.6, 3);
+                
+                this.scene = new THREE.Scene();
+                const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
+                ambient.position.set(0.5, 1, 0.25);
+                this.scene.add(ambient);
+                
+                const light = new THREE.DirectionalLight();
+                light.position.set(0.2, 1, 1);
+                this.scene.add(light);
+                
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                this.renderer.setPixelRatio(window.devicePixelRatio);
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.outputEncoding = THREE.sRGBEncoding;
+                this.renderer.xr.enabled = true;
+                container.appendChild(this.renderer.domElement);
+                
+                this.setEnvironment();
+                this.initScene();
+                this.setupXR();
+                
+                window.addEventListener('resize', this.resize.bind(this));
+            }
 
-                let xrSession = null;
-                let xrHitTestSource = null;
-                let xrReferenceSpace = null;
-                let raycasterRight = document.getElementById("rightHand").getAttribute('raycaster');
-                let raycasterLeft = document.getElementById("leftHand").getAttribute('raycaster');
-
-                sceneEl.addEventListener('enter-ar', async function () {
-                    // Ladebalken anzeigen
-                    loadingBar.style.display = "block";
-
-                    try {
-                        // AR-Session anfordern
-                        if (navigator.xr) {
-                            xrSession = await navigator.xr.requestSession('immersive-ar', { requiredFeatures: ['hit-test', 'plane-detection'] });
-
-                            // Referenzraum und HitTest-Quelle erstellen
-                            xrReferenceSpace = await xrSession.requestReferenceSpace('local');
-                            const viewerReferenceSpace = await xrSession.requestReferenceSpace('viewer');
-                            xrHitTestSource = await xrSession.requestHitTestSource({ space: viewerReferenceSpace });
-
-                            // Ladebalken ausblenden, AR ist bereit
-                            loadingBar.style.display = "none";
-
-                            // AR UI anzeigen
-                            exitButton.style.display = "block";
-                        }
-                    } catch (error) {
-                        // Ladebalken ausblenden und Fehler anzeigen
-                        loadingBar.style.display = "none";
-                        alert("Fehler beim Starten der AR-Session: " + error.message);
-                    }
-                });
-
-                sceneEl.addEventListener('exit-ar', function () {
-                    xrSession = null;
-                    xrHitTestSource = null;
-                    exitButton.style.display = "none";
-                });
-
-                exitButton.addEventListener('click', function () {
-                    if (xrSession) {
-                        xrSession.end();
-                        exitButton.style.display = "none";
-                    }
-                });
-
-                // Plane detection event listener
-                sceneEl.addEventListener('plane-detected', function (event) {
-                    const plane = event.detail.plane;
-                    console.log("Plane erkannt!", plane);
-
-                    windowEl.setAttribute("position", plane.position);
-                    windowEl.setAttribute("visible", "true");
-
-                    roomEl.setAttribute("position", plane.position);
-                    roomEl.setAttribute("visible", "true");
-                });
-
-                // Dynamische Anpassung der Raycaster-Länge
-                function adjustRaycasterLength() {
-                    const frame = sceneEl.xrFrame;
-                    if (frame && xrHitTestSource) {
-                        const hitTestResults = frame.getHitTestResults(xrHitTestSource);
-                        if (hitTestResults.length > 0) {
-                            const hitPose = hitTestResults[0].getPose(xrReferenceSpace);
-                            const hitPosition = hitPose.transform.position;
-                            const distance = Math.sqrt(Math.pow(hitPosition.x, 2) + Math.pow(hitPosition.y, 2) + Math.pow(hitPosition.z, 2));
-
-                            raycasterRight.far = distance;
-                            raycasterLeft.far = distance;
-                        }
-                    }
-                }
-
-                sceneEl.addEventListener('renderstart', function () {
-                    adjustRaycasterLength();
+            setEnvironment() {
+                const loader = new THREE.RGBELoader().setDataType(THREE.UnsignedByteType);
+                const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+                pmremGenerator.compileEquirectangularShader();
+                
+                loader.load('https://threejs.org/examples/textures/equirectangular/venice_sunset_1k.hdr', (texture) => {
+                    const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+                    pmremGenerator.dispose();
+                    this.scene.environment = envMap;
+                }, undefined, () => {
+                    console.error('Error loading environment');
                 });
             }
-        });
 
-        document.querySelector('a-scene').setAttribute('ar-hit-test', '');
+            resize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
 
-        window.onload = function () {
-            setTimeout(() => {
-                document.querySelectorAll('.a-enter-vr, .a-enter-ar').forEach(btn => {
-                    btn.classList.add("xr-button");
+            loadKnight() {
+                const loader = new THREE.GLTFLoader();
+                loader.load('https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf', (gltf) => {
+                    this.knight = gltf.scene;
+                    this.knight.scale.set(0.5, 0.5, 0.5);
+                    this.knight.visible = false;
+                    this.scene.add(this.knight);
+                }, undefined, () => {
+                    console.log('Error loading model');
                 });
-            }, 500);
-        };
+            }
+
+            initScene() {
+                this.reticle = new THREE.Mesh(
+                    new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+                    new THREE.MeshBasicMaterial()
+                );
+                this.reticle.matrixAutoUpdate = false;
+                this.reticle.visible = false;
+                this.scene.add(this.reticle);
+                
+                this.loadKnight();
+            }
+
+            setupXR() {
+                document.body.appendChild(THREE.ARButton.createButton(this.renderer));
+                this.controller = this.renderer.xr.getController(0);
+                this.controller.addEventListener('select', () => {
+                    if (!this.knight || !this.reticle.visible) return;
+                    this.knight.position.setFromMatrixPosition(this.reticle.matrix);
+                    this.knight.visible = true;
+                });
+                this.scene.add(this.controller);
+            }
+
+            render() {
+                this.renderer.setAnimationLoop(() => {
+                    this.renderer.render(this.scene, this.camera);
+                });
+            }
+        }
+        new App();
     </script>
 </body>
 </html>
