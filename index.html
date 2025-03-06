@@ -136,7 +136,7 @@
                         // Move blueprint with right thumbstick
                         if (isBlueprintMovable) {
                             const controllerInput = controller.inputSource.gamepad;
-                            if (controllerInput) {
+                            if (controllerInput && controllerInput.axes) {
                                 const xMove = controllerInput.axes[0]; // Right thumbstick X axis
                                 const yMove = controllerInput.axes[1]; // Right thumbstick Y axis
 
