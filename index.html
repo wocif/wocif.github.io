@@ -1,158 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Scene</title>
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.136/build/three.module.js",
-                "ARButton": "https://cdn.jsdelivr.net/npm/three@0.136/examples/jsm/webxr/ARButton.js"
-            }
+let camera, scene, renderer, controller;
+let blueprint, reticle;
+let hitTestSource = null;
+let hitTestSourceRequested = false;
+let rotating = false;
+let isBlueprintFixed = false; // Track if the blueprint is fixed
+let isPointSelected = false;  // Track if the point on the blueprint is selected
+
+function init() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.xr.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    document.getElementById('ar-button-container').appendChild(ARButton.createButton(renderer, {
+        requiredFeatures: ['hit-test', 'plane-detection']
+    }));
+
+    const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
+    scene.add(light);
+
+    reticle = new THREE.Mesh(
+        new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    );
+    reticle.matrixAutoUpdate = false;
+    reticle.visible = false;
+    scene.add(reticle);
+
+    // Blueprint (wall) is now visible and movable
+    blueprint = new THREE.Mesh(
+        new THREE.PlaneGeometry(3, 5), // Large blueprint size (width and height)
+        new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
+    );
+    blueprint.matrixAutoUpdate = false;
+    blueprint.visible = true; // Initially visible
+    scene.add(blueprint);
+
+    controller = renderer.xr.getController(0);
+    controller.addEventListener('select', onSelect);
+    controller.addEventListener('squeezestart', () => rotating = true);
+    controller.addEventListener('squeezeend', () => rotating = false);
+    scene.add(controller);
+
+    createRectangle();
+    renderer.setAnimationLoop(render);
+}
+
+function createRectangle() {
+    const geometry = new THREE.PlaneGeometry(1, 1.5);
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
+    rectangle = new THREE.Mesh(geometry, material);
+    rectangle.visible = false;
+    scene.add(rectangle);
+}
+
+function onSelect() {
+    if (!rectangle || !reticle.visible) return;
+
+    if (!isPointSelected) {
+        // Select point on the blueprint to anchor rectangle
+        rectangleOrigin = new THREE.Vector3().setFromMatrixPosition(reticle.matrix);
+        rectangle.position.copy(rectangleOrigin);
+        rectangle.visible = true;
+        isPointSelected = true;  // Point on the blueprint is now selected
+    } else if (!isRectangleBeingScaled) {
+        // Start scaling the rectangle
+        isRectangleBeingScaled = true;
+    } else {
+        // Finalize rectangle and hide the blueprint
+        blueprint.visible = false;
+        isRectangleBeingScaled = false;
+        isBlueprintFixed = true;  // Fix the blueprint after select
+    }
+}
+
+function requestHitTestSource(session) {
+    session.requestReferenceSpace('viewer').then(referenceSpace => {
+        session.requestHitTestSource({ space: referenceSpace }).then(source => {
+            hitTestSource = source;
+        });
+    });
+
+    session.addEventListener('end', () => {
+        hitTestSourceRequested = false;
+        hitTestSource = null;
+    });
+    hitTestSourceRequested = true;
+}
+
+function render(timestamp, frame) {
+    if (frame) {
+        const session = renderer.xr.getSession();
+        if (!hitTestSourceRequested) {
+            requestHitTestSource(session);
         }
-    </script>
-    <style>
-        body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
-        #ar-button-container {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-    </style>
-</head>
-<body>
-    <div id="ar-button-container"></div>
-    <script type="module">
-        import * as THREE from 'three';
-        import { ARButton } from 'ARButton';
+        if (hitTestSource) {
+            const hitTestResults = frame.getHitTestResults(hitTestSource);
+            if (hitTestResults.length) {
+                const pose = hitTestResults[0].getPose(renderer.xr.getReferenceSpace());
+                reticle.visible = true;
+                reticle.matrix.fromArray(pose.transform.matrix);
 
-        let camera, scene, renderer, controller;
-        let blueprint, reticle;
-        let hitTestSource = null;
-        let hitTestSourceRequested = false;
-        let rotating = false;
-        let rectangle, rectangleOrigin, isRectangleBeingScaled = false;
-        let isPointSelected = false;  // Track if the point on the blueprint is selected
-        let isBlueprintFixed = false; // Track if the blueprint is fixed
-
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.xr.enabled = true;
-            document.body.appendChild(renderer.domElement);
-
-            document.getElementById('ar-button-container').appendChild(ARButton.createButton(renderer, {
-                requiredFeatures: ['hit-test', 'plane-detection']
-            }));
-
-            const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
-            scene.add(light);
-
-            reticle = new THREE.Mesh(
-                new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-                new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-            );
-            reticle.matrixAutoUpdate = false;
-            reticle.visible = false;
-            scene.add(reticle);
-
-            blueprint = new THREE.Mesh(
-                new THREE.PlaneGeometry(3, 5), // Large blueprint size (width and height)
-                new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide, opacity: 0.5, transparent: true })
-            );
-            blueprint.matrixAutoUpdate = false;
-            blueprint.visible = true; // Initially visible
-            scene.add(blueprint);
-
-            controller = renderer.xr.getController(0);
-            controller.addEventListener('select', onSelect);
-            controller.addEventListener('squeezestart', () => rotating = true);
-            controller.addEventListener('squeezeend', () => rotating = false);
-            scene.add(controller);
-
-            createRectangle();
-            renderer.setAnimationLoop(render);
-        }
-
-        function createRectangle() {
-            const geometry = new THREE.PlaneGeometry(1, 1.5);
-            const material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
-            rectangle = new THREE.Mesh(geometry, material);
-            rectangle.visible = false;
-            scene.add(rectangle);
-        }
-
-        function onSelect() {
-            if (!rectangle || !reticle.visible) return;
-
-            if (!isPointSelected) {
-                // Select point on the blueprint to anchor rectangle
-                rectangleOrigin = new THREE.Vector3().setFromMatrixPosition(reticle.matrix);
-                rectangle.position.copy(rectangleOrigin);
-                rectangle.visible = true;
-                isPointSelected = true;  // Point on the blueprint is now selected
-            } else if (!isRectangleBeingScaled) {
-                // Start scaling the rectangle
-                isRectangleBeingScaled = true;
+                // Update the blueprint position while moving around (moving with head)
+                if (!isBlueprintFixed) {  // Only move blueprint while it's not fixed
+                    blueprint.matrix.identity().setPosition(reticle.position);
+                }
             } else {
-                // Finalize rectangle and hide the blueprint
-                blueprint.visible = false;
-                isRectangleBeingScaled = false;
+                reticle.visible = false;
             }
         }
+    }
+    
+    if (rotating && blueprint.visible) {
+        blueprint.rotation.y += 0.05;
+    }
 
-        function requestHitTestSource(session) {
-            session.requestReferenceSpace('viewer').then(referenceSpace => {
-                session.requestHitTestSource({ space: referenceSpace }).then(source => {
-                    hitTestSource = source;
-                });
-            });
+    if (isRectangleBeingScaled && rectangle.visible) {
+        // Scale rectangle based on controller movement
+        const scaleFactor = controller.position.distanceTo(rectangle.position);
+        rectangle.scale.set(scaleFactor, scaleFactor, 1);
+    }
 
-            session.addEventListener('end', () => {
-                hitTestSourceRequested = false;
-                hitTestSource = null;
-            });
-            hitTestSourceRequested = true;
-        }
+    renderer.render(scene, camera);
+}
 
-        function render(timestamp, frame) {
-            if (frame) {
-                const session = renderer.xr.getSession();
-                if (!hitTestSourceRequested) {
-                    requestHitTestSource(session);
-                }
-                if (hitTestSource) {
-                    const hitTestResults = frame.getHitTestResults(hitTestSource);
-                    if (hitTestResults.length) {
-                        const pose = hitTestResults[0].getPose(renderer.xr.getReferenceSpace());
-                        reticle.visible = true;
-                        reticle.matrix.fromArray(pose.transform.matrix);
-
-                        // Update the blueprint position while moving around, only if it's not fixed
-                        if (!isBlueprintFixed) {
-                            blueprint.position.x = camera.position.x + (reticle.position.x - camera.position.x);
-                            blueprint.position.y = camera.position.y + (reticle.position.y - camera.position.y);
-                            blueprint.position.z = camera.position.z + (reticle.position.z - camera.position.z);
-                        }
-                    } else {
-                        reticle.visible = false;
-                    }
-                }
-            }
-
-            if (rotating && blueprint.visible) {
-                blueprint.rotation.y += 0.05;
-            }
-
-            renderer.render(scene, camera);
-        }
-
-        window.addEventListener('load', init);
-    </script>
-</body>
-</html>
+window.addEventListener('load', init);
