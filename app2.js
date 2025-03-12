@@ -16,15 +16,10 @@ function init() {
     renderer.xr.enabled = true;
     document.body.appendChild(renderer.domElement);
 
-    // AR-Button mit spezifischem Styling hinzufügen
-    const arButton = ARButton.createButton(renderer, {
+    // Füge den AR-Button in den Container ein
+    document.getElementById('ar-button-container').appendChild(ARButton.createButton(renderer, {
         requiredFeatures: ['hit-test', 'plane-detection']
-    });
-    arButton.style.position = 'absolute';
-    arButton.style.top = '20px';
-    arButton.style.left = '20px';
-    arButton.style.zIndex = '10';
-    document.body.appendChild(arButton);
+    }));
 
     // Einfaches Licht hinzufügen
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
