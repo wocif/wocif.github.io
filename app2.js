@@ -8,7 +8,7 @@ let reticle;
 
 function init() {
     scene = new THREE.Scene();
-    
+
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
     
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -16,10 +16,13 @@ function init() {
     renderer.xr.enabled = true;
     document.body.appendChild(renderer.domElement);
 
-    // Füge den AR-Button in den Container ein
-    document.getElementById('ar-button-container').appendChild(ARButton.createButton(renderer, {
+    // AR-Button erstellen und in den Container einfügen
+    const arButton = ARButton.createButton(renderer, {
         requiredFeatures: ['hit-test', 'plane-detection']
-    }));
+    });
+
+    // AR-Button zu 'ar-button-container' hinzufügen
+    document.getElementById('ar-button-container').appendChild(arButton);
 
     // Einfaches Licht hinzufügen
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
