@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Babylon.js AR Plane Detection auf Meta Quest 3</title>
-    <!-- Babylon.js und Babylon.js-Loader laden -->
+    <!-- Babylon.js und Loader -->
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <!-- Earcut wird für die Polygonerstellung benötigt -->
@@ -22,165 +22,146 @@
         height: 100%;
         touch-action: none;
       }
+      /* Button mit genügend Abstand vom Rand */
+      #startXRButton {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        padding: 12px 24px;
+        font-size: 16px;
+        z-index: 10;
+      }
     </style>
   </head>
   <body>
     <canvas id="renderCanvas"></canvas>
+    <button id="startXRButton" onclick="startXR()">Start XR</button>
     <script>
       // Canvas und Engine initialisieren
       var canvas = document.getElementById("renderCanvas");
       var engine = new BABYLON.Engine(canvas, true);
+      var scene = createScene(); // Szene wird erstellt
 
-      // Erstelle die Szene und initialisiere XR-Plane-Detection
-      var createScene = function () {
+      // Erstelle die Szene
+      function createScene() {
         var scene = new BABYLON.Scene(engine);
-        // Transparenter Hintergrund (optional, falls du den Passthrough nutzen möchtest)
+        // Transparenten Hintergrund aktivieren (optional für Passthrough)
         scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
-        // Eine Kamera (für den Fall, dass XR nicht verfügbar ist)
-        var camera = new BABYLON.ArcRotateCamera(
-          "camera",
-          Math.PI / 2,
-          Math.PI / 3,
-          4,
-          BABYLON.Vector3.Zero(),
-          scene
-        );
+        // Standard-Kamera (falls XR nicht aktiviert wird)
+        var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 3, 4, BABYLON.Vector3.Zero(), scene);
         camera.attachControl(canvas, true);
 
-        // Licht hinzufügen
-        var light = new BABYLON.HemisphericLight(
-          "light",
-          new BABYLON.Vector3(0, 1, 0),
-          scene
-        );
+        // Hemispheric Light hinzufügen
+        var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 1.0;
 
-        // Material, das für erkannte Ebenen verwendet wird
-        var planeMat = new BABYLON.StandardMaterial("planeMat", scene);
-        planeMat.diffuseColor = new BABYLON.Color3(1, 1, 1);
-        planeMat.alpha = 0.5;
+        return scene;
+      }
 
-        // Starte die XR-Erfahrung (AR) und aktiviere die Plane Detection
-        scene
-          .createDefaultXRExperienceAsync({
-            disableDefaultUI: true,
-            disableTeleportation: true,
-          })
-          .then(function (xr) {
-            // Aktiviere das Feature zur Erkennung von Ebenen
-            var xrPlanes = xr.baseExperience.featuresManager.enableFeature(
-              BABYLON.WebXRFeatureName.PLANE_DETECTION,
-              "latest"
-            );
-            console.log("Enabled plane detection.");
+      // XR Session starten und Plane Detection aktivieren
+      function startXR() {
+        // Deaktiviere den Button, damit er nicht mehrfach geklickt wird
+        document.getElementById("startXRButton").disabled = true;
+        scene.createDefaultXRExperienceAsync({
+          disableDefaultUI: true,
+          disableTeleportation: true,
+        }).then(function (xr) {
+          // Aktiviere die Plane Detection
+          var xrPlanes = xr.baseExperience.featuresManager.enableFeature(BABYLON.WebXRFeatureName.PLANE_DETECTION, "latest");
+          console.log("Enabled plane detection.");
 
-            // Objekt zur Verwaltung der erkannten Ebenen
-            var planes = {};
+          var planes = {};
 
-            // Wenn eine neue Ebene erkannt wird
-            xrPlanes.onPlaneAddedObservable.add(function (webXRPlane) {
-              console.log("Plane added.");
-              var plane = webXRPlane;
-              // Schließe das Polygon, indem der erste Punkt erneut hinzugefügt wird
-              plane.polygonDefinition.push(plane.polygonDefinition[0]);
-              try {
-                var polygon = BABYLON.MeshBuilder.CreatePolygon(
-                  "plane" + plane.id,
-                  { shape: plane.polygonDefinition },
-                  scene,
-                  BABYLON.Earcut
-                );
-                var tube = BABYLON.MeshBuilder.CreateTube(
-                  "tube" + plane.id,
-                  {
-                    path: plane.polygonDefinition,
-                    radius: 0.005,
-                    sideOrientation: BABYLON.Mesh.FRONTSIDE,
-                    updatable: true,
-                  },
-                  scene
-                );
-                tube.parent = polygon;
-                planes[plane.id] = polygon;
-                polygon.material = planeMat;
-                polygon.rotationQuaternion = BABYLON.Quaternion.Identity();
+          // Neue Ebene erkannt
+          xrPlanes.onPlaneAddedObservable.add(function (webXRPlane) {
+            console.log("Plane added.");
+            var plane = webXRPlane;
+            // Schließe das Polygon, indem der erste Punkt erneut angehängt wird
+            plane.polygonDefinition.push(plane.polygonDefinition[0]);
+            try {
+              var polygon = BABYLON.MeshBuilder.CreatePolygon("plane" + plane.id, { shape: plane.polygonDefinition }, scene, BABYLON.Earcut);
+              var tube = BABYLON.MeshBuilder.CreateTube("tube" + plane.id, {
+                path: plane.polygonDefinition,
+                radius: 0.005,
+                sideOrientation: BABYLON.Mesh.FRONTSIDE,
+                updatable: true,
+              }, scene);
+              tube.parent = polygon;
+              planes[plane.id] = polygon;
+              // Halbtransparentes Material
+              var planeMat = new BABYLON.StandardMaterial("planeMat", scene);
+              planeMat.diffuseColor = new BABYLON.Color3(1, 1, 1);
+              planeMat.alpha = 0.5;
+              polygon.material = planeMat;
+              polygon.rotationQuaternion = BABYLON.Quaternion.Identity();
 
-                var scaling = new BABYLON.Vector3();
-                var rotation = new BABYLON.Quaternion();
-                var position = new BABYLON.Vector3();
-                plane.transformationMatrix.decompose(scaling, rotation, position);
-                polygon.scaling = scaling;
-                polygon.rotationQuaternion = rotation;
-                polygon.position = position;
-              } catch (ex) {
-                console.error(ex);
-              }
-            });
-
-            // Wenn eine erkannte Ebene aktualisiert wird
-            xrPlanes.onPlaneUpdatedObservable.add(function (webXRPlane) {
-              console.log("Plane updated.");
-              var plane = webXRPlane;
-              if (planes[plane.id]) {
-                planes[plane.id].dispose();
-              }
-              // Falls es ungültige Punkte gibt, breche ab
-              if (plane.polygonDefinition.some(function (p) { return !p; })) {
-                return;
-              }
-              plane.polygonDefinition.push(plane.polygonDefinition[0]);
-              try {
-                var polygon = BABYLON.MeshBuilder.CreatePolygon(
-                  "plane" + plane.id,
-                  { shape: plane.polygonDefinition },
-                  scene,
-                  BABYLON.Earcut
-                );
-                var tube = BABYLON.MeshBuilder.CreateTube(
-                  "tube" + plane.id,
-                  {
-                    path: plane.polygonDefinition,
-                    radius: 0.005,
-                    sideOrientation: BABYLON.Mesh.FRONTSIDE,
-                    updatable: true,
-                  },
-                  scene
-                );
-                tube.parent = polygon;
-                planes[plane.id] = polygon;
-                polygon.material = planeMat;
-                polygon.rotationQuaternion = BABYLON.Quaternion.Identity();
-
-                var scaling = new BABYLON.Vector3();
-                var rotation = new BABYLON.Quaternion();
-                var position = new BABYLON.Vector3();
-                plane.transformationMatrix.decompose(scaling, rotation, position);
-                polygon.scaling = scaling;
-                polygon.rotationQuaternion = rotation;
-                polygon.position = position;
-                polygon.receiveShadows = true;
-              } catch (ex) {
-                console.error(ex);
-              }
-            });
-
-            // Wenn eine Ebene nicht mehr vorhanden ist
-            xrPlanes.onPlaneRemovedObservable.add(function (webXRPlane) {
-              console.log("Plane removed.");
-              var plane = webXRPlane;
-              if (planes[plane.id]) {
-                planes[plane.id].dispose();
-                delete planes[plane.id];
-              }
-            });
+              var scaling = new BABYLON.Vector3();
+              var rotation = new BABYLON.Quaternion();
+              var position = new BABYLON.Vector3();
+              plane.transformationMatrix.decompose(scaling, rotation, position);
+              polygon.scaling = scaling;
+              polygon.rotationQuaternion = rotation;
+              polygon.position = position;
+            } catch (ex) {
+              console.error(ex);
+            }
           });
 
-        return scene;
-      };
+          // Ebene aktualisiert
+          xrPlanes.onPlaneUpdatedObservable.add(function (webXRPlane) {
+            console.log("Plane updated.");
+            var plane = webXRPlane;
+            if (planes[plane.id]) {
+              planes[plane.id].dispose();
+            }
+            if (plane.polygonDefinition.some(function (p) { return !p; })) {
+              return;
+            }
+            plane.polygonDefinition.push(plane.polygonDefinition[0]);
+            try {
+              var polygon = BABYLON.MeshBuilder.CreatePolygon("plane" + plane.id, { shape: plane.polygonDefinition }, scene, BABYLON.Earcut);
+              var tube = BABYLON.MeshBuilder.CreateTube("tube" + plane.id, {
+                path: plane.polygonDefinition,
+                radius: 0.005,
+                sideOrientation: BABYLON.Mesh.FRONTSIDE,
+                updatable: true,
+              }, scene);
+              tube.parent = polygon;
+              planes[plane.id] = polygon;
+              // Verwende dasselbe Material wie bei "onPlaneAdded"
+              var planeMat = new BABYLON.StandardMaterial("planeMat", scene);
+              planeMat.diffuseColor = new BABYLON.Color3(1, 1, 1);
+              planeMat.alpha = 0.5;
+              polygon.material = planeMat;
+              polygon.rotationQuaternion = BABYLON.Quaternion.Identity();
 
-      // Erstelle und rendere die Szene
-      var scene = createScene();
+              var scaling = new BABYLON.Vector3();
+              var rotation = new BABYLON.Quaternion();
+              var position = new BABYLON.Vector3();
+              plane.transformationMatrix.decompose(scaling, rotation, position);
+              polygon.scaling = scaling;
+              polygon.rotationQuaternion = rotation;
+              polygon.position = position;
+              polygon.receiveShadows = true;
+            } catch (ex) {
+              console.error(ex);
+            }
+          });
+
+          // Ebene entfernt
+          xrPlanes.onPlaneRemovedObservable.add(function (webXRPlane) {
+            console.log("Plane removed.");
+            var plane = webXRPlane;
+            if (planes[plane.id]) {
+              planes[plane.id].dispose();
+              delete planes[plane.id];
+            }
+          });
+        });
+      }
+
+      // Szene rendern
       engine.runRenderLoop(function () {
         scene.render();
       });
