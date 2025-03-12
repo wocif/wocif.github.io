@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title>AR mit adaptivem Retikel</title>
+  <title>AR Rechteck mit Retikel & Drehfunktion</title>
   <style>
     body { margin: 0; overflow: hidden; }
   </style>
@@ -35,7 +35,7 @@
       // AR-Button hinzufügen
       document.body.appendChild(ARButton.createButton(this.renderer, { requiredFeatures: ['hit-test'] }));
 
-      // Erstelle den Retikel: standardmäßig horizontal (um -90° um die X-Achse rotiert)
+      // Erstelle den Retikel: Ein grüner Ring, der initial unsichtbar ist.
       this.reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
         new THREE.MeshBasicMaterial({ color: 0x00ff00 })
@@ -44,11 +44,11 @@
       this.reticle.visible = false;
       this.scene.add(this.reticle);
 
-      // Setup für XR und Hit-Test
+      // Setup XR und Hit-Test
       this.setupXR();
 
-      // Beispiel: Ein einfacher roter Kegel als Platzhaltermodell
-      this.createCone();
+      // Erzeuge das Rechteck (als Plane) – zunächst unsichtbar
+      this.createRectangle();
 
       window.addEventListener('resize', this.resize.bind(this));
     }
@@ -58,12 +58,17 @@
       this.hitTestSourceRequested = false;
       this.hitTestSource = null;
 
-      // Beim Select-Event wird der Kegel an die Position des Retikels gesetzt
+      // Beim Tippen: Wird das Rechteck noch nicht platziert, dann setze es an die Retikel-Position.
+      // Ist es bereits platziert, so rotiert es um 15° (Y-Achse).
       function onSelect() {
-        if (!self.cone) return;
-        if (self.reticle.visible) {
-          self.cone.position.setFromMatrixPosition(self.reticle.matrix);
-          self.cone.visible = true;
+        if (!self.rectangle) return;
+        if (!self.rectangle.visible) {
+          self.rectangle.position.setFromMatrixPosition(self.reticle.matrix);
+          // Optional: Gleiche Ausrichtung wie das Retikel übernehmen.
+          self.rectangle.rotation.y = self.reticle.rotation.y;
+          self.rectangle.visible = true;
+        } else {
+          self.rectangle.rotation.y += THREE.Math.degToRad(15);
         }
       }
 
@@ -78,13 +83,13 @@
       this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    createCone() {
-      // Erstelle einen roten Kegel als einfaches Modell
-      const geometry = new THREE.ConeGeometry(0.1, 0.2, 32);
-      const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-      this.cone = new THREE.Mesh(geometry, material);
-      this.cone.visible = false;
-      this.scene.add(this.cone);
+    createRectangle() {
+      // Erzeuge ein Rechteck (PlaneGeometry) mit einer Größe von 0.4 x 0.2 Meter
+      const geometry = new THREE.PlaneGeometry(0.4, 0.2);
+      const material = new THREE.MeshStandardMaterial({ color: 0x0000ff, side: THREE.DoubleSide });
+      this.rectangle = new THREE.Mesh(geometry, material);
+      this.rectangle.visible = false;
+      this.scene.add(this.rectangle);
       // Starte die Render-Schleife
       this.renderer.setAnimationLoop(this.render.bind(this));
     }
@@ -113,27 +118,8 @@
         const referenceSpace = this.renderer.xr.getReferenceSpace();
         const hit = hitTestResults[0];
         const pose = hit.getPose(referenceSpace);
-        
-        // Lese die Treffer-Matrix aus
-        const hitMatrix = new THREE.Matrix4().fromArray(pose.transform.matrix);
-        
-        // Extrahiere den Up-Vektor (zweite Spalte der Matrix)
-        const up = new THREE.Vector3();
-        up.setFromMatrixColumn(hitMatrix, 1).normalize();
-
-        // Berechne den Skalarprodukt mit dem Welt-Up-Vektor (0,1,0)
-        const dot = up.dot(new THREE.Vector3(0, 1, 0));
-        
-        // Wenn dot nahe 1 ist, liegt eine horizontale Fläche vor.
-        // Liegt der Wert deutlich darunter (z. B. < 0.5), gehen wir davon aus, dass
-        // die horizontale Fläche zu Ende ist und eine vertikale Fläche vorliegt.
-        if (dot < 0.5) {
-          // Drehung um 90° (π/2) um die X-Achse: das Retikel kippt ins Vertikale.
-          hitMatrix.multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2));
-        }
-        
-        this.reticle.matrix.copy(hitMatrix);
         this.reticle.visible = true;
+        this.reticle.matrix.fromArray(pose.transform.matrix);
       } else {
         this.reticle.visible = false;
       }
