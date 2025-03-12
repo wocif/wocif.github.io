@@ -117,9 +117,8 @@
 
             if (this.state === 1) { // Rotation
               this.rectangle.rotation.y += xAxis * 0.05;
-            } else if (this.state === 2) { //Höhe
+            } else if (this.state === 2) { //Höhe Position
                 this.rectangle.position.z += yAxis * 0.05;
-            }
             } else if (this.state === 3) { // Skalierung
               const scale = Math.max(0.1, this.rectangle.scale.x + yAxis * 0.02);
               this.rectangle.scale.set(scale, scale, scale);
