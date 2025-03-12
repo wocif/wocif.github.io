@@ -23,12 +23,18 @@
             renderer.xr.enabled = true;
             document.body.appendChild(renderer.domElement);
 
-            // AR-Button einfügen
-            const arButton = ARButton.createButton(renderer, {
-                requiredFeatures: ['hit-test', 'plane-detection']
-            });
-
-            document.getElementById('ar-button-container').appendChild(arButton);
+            // AR-Button sicher einfügen
+            const arButtonContainer = document.getElementById('ar-button-container');
+            if (arButtonContainer) {
+                arButtonContainer.innerHTML = ''; // Vorherigen Inhalt löschen
+                const arButton = ARButton.createButton(renderer, {
+                    requiredFeatures: ['hit-test', 'plane-detection']
+                });
+                arButtonContainer.appendChild(arButton);
+                console.log("AR-Button hinzugefügt.");
+            } else {
+                console.error("Fehler: #ar-button-container nicht gefunden.");
+            }
 
             // Licht hinzufügen
             const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
@@ -112,8 +118,9 @@
             margin: 0;
             overflow: hidden;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
         }
         #ar-button-container {
@@ -125,6 +132,8 @@
     </style>
 </head>
 <body>
-    <div id="ar-button-container"></div>
+    <div id="ar-button-container">
+        <p>AR-Button wird geladen...</p>
+    </div>
 </body>
 </html>
