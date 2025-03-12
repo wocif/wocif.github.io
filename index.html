@@ -1,139 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Scene</title>
-    <script type="module">
-        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.136/build/three.module.js';
-        import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.136/examples/jsm/webxr/ARButton.js';
-
-        let camera, scene, renderer, controller;
-        let hitTestSource = null;
-        let hitTestSourceRequested = false;
-        let reticle;
-
-        function init() {
-            scene = new THREE.Scene();
-
-            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.xr.enabled = true;
-            document.body.appendChild(renderer.domElement);
-
-            // AR-Button sicher einfügen
-            const arButtonContainer = document.getElementById('ar-button-container');
-            if (arButtonContainer) {
-                arButtonContainer.innerHTML = ''; // Vorherigen Inhalt löschen
-                const arButton = ARButton.createButton(renderer, {
-                    requiredFeatures: ['hit-test', 'plane-detection']
-                });
-                arButtonContainer.appendChild(arButton);
-                console.log("AR-Button hinzugefügt.");
-            } else {
-                console.error("Fehler: #ar-button-container nicht gefunden.");
-            }
-
-            // Licht hinzufügen
-            const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
-            scene.add(light);
-
-            // Reticle für Hit-Test-Visualisierung
-            reticle = new THREE.Mesh(
-                new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-                new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-            );
-            reticle.matrixAutoUpdate = false;
-            reticle.visible = false;
-            scene.add(reticle);
-
-            // Controller initialisieren
-            controller = renderer.xr.getController(0);
-            controller.addEventListener('select', onSelect);
-            scene.add(controller);
-
-            window.addEventListener('resize', onWindowResize);
-
-            renderer.setAnimationLoop(render);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function onSelect() {
-            if (reticle.visible) {
-                console.log("Object placed at reticle position");
-            }
-        }
-
-        function requestHitTestSource(session) {
-            session.requestReferenceSpace('viewer').then(referenceSpace => {
-                session.requestHitTestSource({ space: referenceSpace }).then(source => {
-                    hitTestSource = source;
-                }).catch(err => console.error('Error requesting hit test source:', err));
-            }).catch(err => console.error('Error requesting reference space:', err));
-
-            session.addEventListener('end', () => {
-                hitTestSourceRequested = false;
-                hitTestSource = null;
-            });
-
-            hitTestSourceRequested = true;
-        }
-
-        function render(timestamp, frame) {
-            if (frame) {
-                const session = renderer.xr.getSession();
-                if (!hitTestSourceRequested) {
-                    requestHitTestSource(session);
-                }
-                if (hitTestSource) {
-                    const hitTestResults = frame.getHitTestResults(hitTestSource);
-                    if (hitTestResults.length) {
-                        const referenceSpace = renderer.xr.getReferenceSpace();
-                        const pose = hitTestResults[0].getPose(referenceSpace);
-                        if (pose) {
-                            reticle.visible = true;
-                            reticle.matrix.fromArray(pose.transform.matrix);
-                        } else {
-                            reticle.visible = false;
-                        }
-                    } else {
-                        reticle.visible = false;
-                    }
-                }
-            }
-            renderer.render(scene, camera);
-        }
-
-        window.addEventListener('load', init);
-    </script>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        #ar-button-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AR-Szene</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.136/build/three.module.js",
+        "ARButton": "https://cdn.jsdelivr.net/npm/three@0.136/examples/jsm/webxr/ARButton.js"
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
+    #ar-button-container {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
 </head>
 <body>
-    <div id="ar-button-container">
-        <p>AR-Button wird geladen...</p>
-    </div>
+  <div id="ar-button-container"></div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { ARButton } from 'ARButton';
+
+    let camera, scene, renderer, controller;
+    let reticle;
+
+    function init() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.xr.enabled = true;
+      document.body.appendChild(renderer.domElement);
+
+      // Sicherstellen, dass der AR-Button-Container existiert
+      let buttonContainer = document.getElementById('ar-button-container');
+      if (!buttonContainer) {
+        buttonContainer = document.createElement('div');
+        buttonContainer.id = 'ar-button-container';
+        document.body.appendChild(buttonContainer);
+      }
+
+      // AR-Button in den Container einfügen
+      buttonContainer.appendChild(ARButton.createButton(renderer, {
+        requiredFeatures: ['hit-test', 'plane-detection']
+      }));
+
+      const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
+      scene.add(light);
+
+      reticle = new THREE.Mesh(
+        new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+      );
+      reticle.matrixAutoUpdate = false;
+      reticle.visible = false;
+      scene.add(reticle);
+
+      controller = renderer.xr.getController(0);
+      controller.addEventListener('select', onSelect);
+      scene.add(controller);
+
+      renderer.setAnimationLoop(render);
+    }
+
+    function onSelect() {
+      if (reticle.visible) {
+        console.log("Objekt an Reticle-Position platziert.");
+      }
+    }
+
+    function render() {
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('load', init);
+  </script>
 </body>
 </html>
