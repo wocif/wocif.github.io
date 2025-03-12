@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title>AR Rechteck mit Retikel & Drehfunktion</title>
+  <title>AR Rechteck mit Retikel, Drehfunktion und B-Taste</title>
   <style>
     body { margin: 0; overflow: hidden; }
   </style>
@@ -50,6 +50,9 @@
       // Erzeuge das Rechteck (als Plane) – zunächst unsichtbar
       this.createRectangle();
 
+      // Zustand für die B-Taste (um Mehrfachauslösungen zu vermeiden)
+      this.bPressed = false;
+
       window.addEventListener('resize', this.resize.bind(this));
     }
 
@@ -58,13 +61,14 @@
       this.hitTestSourceRequested = false;
       this.hitTestSource = null;
 
-      // Beim Tippen: Wird das Rechteck noch nicht platziert, dann setze es an die Retikel-Position.
-      // Ist es bereits platziert, so rotiert es um 15° (Y-Achse).
+      // Beim Tippen (Select):
+      // - Ist das Rechteck noch nicht sichtbar, wird es an der Retikel-Position platziert.
+      // - Ist es bereits sichtbar, wird es um 15° um die Y-Achse rotiert.
       function onSelect() {
         if (!self.rectangle) return;
         if (!self.rectangle.visible) {
           self.rectangle.position.setFromMatrixPosition(self.reticle.matrix);
-          // Optional: Gleiche Ausrichtung wie das Retikel übernehmen.
+          // Optionale Ausrichtung: Übernehme ggf. die Y-Rotation des Retikels
           self.rectangle.rotation.y = self.reticle.rotation.y;
           self.rectangle.visible = true;
         } else {
@@ -130,11 +134,37 @@
         if (!this.hitTestSourceRequested) this.requestHitTestSource();
         if (this.hitTestSource) this.getHitTestResults(frame);
       }
+      
+      // Prüfe, ob der B-Button (angenommen Button-Index 1) auf dem rechten Controller gedrückt wird.
+      const session = this.renderer.xr.getSession();
+      if (session) {
+        const inputSources = session.inputSources;
+        for (const inputSource of inputSources) {
+          // Wir gehen davon aus, dass der rechte Controller die Eigenschaft handedness === 'right' hat
+          if (inputSource.gamepad && inputSource.handedness === 'right') {
+            const gamepad = inputSource.gamepad;
+            // Prüfe, ob der B-Button vorhanden ist (angenommen Index 1)
+            if (gamepad.buttons.length > 1) {
+              if (gamepad.buttons[1].pressed && !this.bPressed) {
+                // B-Taste wurde gerade gedrückt.
+                if (this.rectangle.visible) {
+                  // Zurück in den Platzierungsmodus: Das Rechteck wird ausgeblendet.
+                  this.rectangle.visible = false;
+                }
+                this.bPressed = true;
+              } else if (!gamepad.buttons[1].pressed) {
+                this.bPressed = false;
+              }
+            }
+          }
+        }
+      }
+      
       this.renderer.render(this.scene, this.camera);
     }
   }
 
-  // Erzeuge die App-Instanz
+  // Erzeuge die App-Instanz.
   const app = new App();
 </script>
 </body>
