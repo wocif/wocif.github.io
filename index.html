@@ -1,237 +1,105 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Babylon.js AR Plane Detection with ARButton</title>
-    <!-- Babylon.js und Loader -->
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    <!-- Earcut wird für die Polygonerstellung benötigt -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/earcut/2.2.2/earcut.min.js"></script>
-    <style>
-      html,
-      body {
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #renderCanvas {
-        width: 100%;
-        height: 100%;
-        touch-action: none;
-      }
-      /* ARButton-Style: ausreichend Abstand vom Rand */
-      .ar-button {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        padding: 12px 24px;
-        font-size: 16px;
-        z-index: 10;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="renderCanvas"></canvas>
-    <!-- Wir verwenden ein Module-Script, um ARButton zu importieren -->
-    <script type="module">
-      // ARButton importieren (aus den Three.js Beispielen)
-      import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/examples/jsm/webxr/ARButton.js';
+// AR-Button Integration Code using three.js and ARButton
+import * as THREE from 'three';
+import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.136/examples/jsm/webxr/ARButton.js';
 
-      // Babylon.js: Engine und Canvas initialisieren
-      const canvas = document.getElementById("renderCanvas");
-      const engine = new BABYLON.Engine(canvas, true);
+let camera, scene, renderer, controller;
+let hitTestSource = null;
+let hitTestSourceRequested = false;
+let reticle;
 
-      // Erstelle die Szene (mit Standardkamera und Licht)
-      function createScene() {
-        const scene = new BABYLON.Scene(engine);
-        // Transparenter Hintergrund (optional – für Passthrough)
-        scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+function init() {
+    scene = new THREE.Scene();
+    
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+    
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.xr.enabled = true;
+    document.body.appendChild(renderer.domElement);
 
-        // Standard-Kamera (für den Fall, dass XR nicht aktiviert wird)
-        const camera = new BABYLON.ArcRotateCamera(
-          "camera",
-          Math.PI / 2,
-          Math.PI / 3,
-          4,
-          BABYLON.Vector3.Zero(),
-          scene
-        );
-        camera.attachControl(canvas, true);
+    // Füge den AR-Button mit den erforderlichen Features hinzu (Hit-Test und Plane Detection)
+    document.body.appendChild(ARButton.createButton(renderer, {
+        requiredFeatures: ['hit-test', 'plane-detection']
+    }));
 
-        // HemisphericLight hinzufügen
-        const light = new BABYLON.HemisphericLight(
-          "light",
-          new BABYLON.Vector3(0, 1, 0),
-          scene
-        );
-        light.intensity = 1.0;
-        return scene;
-      }
+    // Einfaches Licht hinzufügen
+    const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
+    scene.add(light);
 
-      const scene = createScene();
+    // Reticle zur Visualisierung der Hit-Test-Ergebnisse
+    reticle = new THREE.Mesh(
+        new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    );
+    reticle.matrixAutoUpdate = false;
+    reticle.visible = false;
+    scene.add(reticle);
 
-      // Funktion, um die XR-Session zu starten und die Plane Detection zu aktivieren
-      function startXR() {
-        // Sobald XR gestartet wird, blendet sich der ARButton aus
-        arButton.style.display = "none";
-        scene
-          .createDefaultXRExperienceAsync({
-            disableDefaultUI: true,
-            disableTeleportation: true,
-          })
-          .then((xr) => {
-            // Aktiviere die Plane Detection
-            const xrPlanes = xr.baseExperience.featuresManager.enableFeature(
-              BABYLON.WebXRFeatureName.PLANE_DETECTION,
-              "latest"
-            );
-            console.log("Enabled plane detection.");
+    // Controller aus der AR-Session holen und Eventlistener hinzufügen
+    controller = renderer.xr.getController(0);
+    controller.addEventListener('select', onSelect);
+    scene.add(controller);
 
-            const planes = {};
+    // Fenstergrößenanpassung behandeln
+    window.addEventListener('resize', onWindowResize, false);
 
-            // Neue Ebene erkannt
-            xrPlanes.onPlaneAddedObservable.add((webXRPlane) => {
-              console.log("Plane added.");
-              let plane = webXRPlane;
-              // Schließe das Polygon, indem der erste Punkt erneut angehängt wird
-              plane.polygonDefinition.push(plane.polygonDefinition[0]);
-              try {
-                const polygon = BABYLON.MeshBuilder.CreatePolygon(
-                  "plane" + plane.id,
-                  { shape: plane.polygonDefinition },
-                  scene,
-                  BABYLON.Earcut
-                );
-                const tube = BABYLON.MeshBuilder.CreateTube(
-                  "tube" + plane.id,
-                  {
-                    path: plane.polygonDefinition,
-                    radius: 0.005,
-                    sideOrientation: BABYLON.Mesh.FRONTSIDE,
-                    updatable: true,
-                  },
-                  scene
-                );
-                tube.parent = polygon;
-                planes[plane.id] = polygon;
-                // Erstelle ein halbtransparentes Material
-                const planeMat = new BABYLON.StandardMaterial("planeMat", scene);
-                planeMat.diffuseColor = new BABYLON.Color3(1, 1, 1);
-                planeMat.alpha = 0.5;
-                polygon.material = planeMat;
-                polygon.rotationQuaternion = BABYLON.Quaternion.Identity();
+    renderer.setAnimationLoop(render);
+}
 
-                const scaling = new BABYLON.Vector3();
-                const rotation = new BABYLON.Quaternion();
-                const position = new BABYLON.Vector3();
-                plane.transformationMatrix.decompose(scaling, rotation, position);
-                polygon.scaling = scaling;
-                polygon.rotationQuaternion = rotation;
-                polygon.position = position;
-              } catch (ex) {
-                console.error(ex);
-              }
-            });
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
-            // Aktualisierte Ebene
-            xrPlanes.onPlaneUpdatedObservable.add((webXRPlane) => {
-              console.log("Plane updated.");
-              let plane = webXRPlane;
-              if (planes[plane.id]) {
-                planes[plane.id].dispose();
-              }
-              if (plane.polygonDefinition.some((p) => !p)) {
-                return;
-              }
-              plane.polygonDefinition.push(plane.polygonDefinition[0]);
-              try {
-                const polygon = BABYLON.MeshBuilder.CreatePolygon(
-                  "plane" + plane.id,
-                  { shape: plane.polygonDefinition },
-                  scene,
-                  BABYLON.Earcut
-                );
-                const tube = BABYLON.MeshBuilder.CreateTube(
-                  "tube" + plane.id,
-                  {
-                    path: plane.polygonDefinition,
-                    radius: 0.005,
-                    sideOrientation: BABYLON.Mesh.FRONTSIDE,
-                    updatable: true,
-                  },
-                  scene
-                );
-                tube.parent = polygon;
-                planes[plane.id] = polygon;
-                const planeMat = new BABYLON.StandardMaterial("planeMat", scene);
-                planeMat.diffuseColor = new BABYLON.Color3(1, 1, 1);
-                planeMat.alpha = 0.5;
-                polygon.material = planeMat;
-                polygon.rotationQuaternion = BABYLON.Quaternion.Identity();
+function onSelect() {
+    if (reticle.visible) {
+        // Hier kann später der Code ergänzt werden, um ein Objekt an der Reticle-Position zu platzieren
+        console.log("Object placed at reticle position");
+    }
+}
 
-                const scaling = new BABYLON.Vector3();
-                const rotation = new BABYLON.Quaternion();
-                const position = new BABYLON.Vector3();
-                plane.transformationMatrix.decompose(scaling, rotation, position);
-                polygon.scaling = scaling;
-                polygon.rotationQuaternion = rotation;
-                polygon.position = position;
-                polygon.receiveShadows = true;
-              } catch (ex) {
-                console.error(ex);
-              }
-            });
+function requestHitTestSource(session) {
+    session.requestReferenceSpace('viewer').then(referenceSpace => {
+        session.requestHitTestSource({ space: referenceSpace }).then(source => {
+            hitTestSource = source;
+        }).catch(err => {
+            console.error('Error requesting hit test source: ', err);
+        });
+    }).catch(err => {
+        console.error('Error requesting reference space: ', err);
+    });
 
-            // Entfernte Ebene
-            xrPlanes.onPlaneRemovedObservable.add((webXRPlane) => {
-              console.log("Plane removed.");
-              let plane = webXRPlane;
-              if (planes[plane.id]) {
-                planes[plane.id].dispose();
-                delete planes[plane.id];
-              }
-            });
-          });
-      }
+    session.addEventListener('end', () => {
+        hitTestSourceRequested = false;
+        hitTestSource = null;
+    });
+    hitTestSourceRequested = true;
+}
 
-      // Erzeuge einen ARButton mithilfe des ARButton-Moduls.
-      // ARButton erwartet normalerweise einen Three.js Renderer. Da wir Babylon.js verwenden,
-      // erstellen wir ein Dummy-Renderer-Objekt, das zumindest die benötigte Struktur bereitstellt.
-      const dummyRenderer = {
-        xr: {
-          enabled: true,
-          setSession: function (session) {
-            // Dummy-Implementierung
-          },
-        },
-      };
+function render(timestamp, frame) {
+    if (frame) {
+        const session = renderer.xr.getSession();
+        if (!hitTestSourceRequested) {
+            requestHitTestSource(session);
+        }
+        if (hitTestSource) {
+            const hitTestResults = frame.getHitTestResults(hitTestSource);
+            if (hitTestResults.length) {
+                const referenceSpace = renderer.xr.getReferenceSpace();
+                const pose = hitTestResults[0].getPose(referenceSpace);
+                if (pose) {
+                    reticle.visible = true;
+                    reticle.matrix.fromArray(pose.transform.matrix);
+                } else {
+                    reticle.visible = false;
+                }
+            } else {
+                reticle.visible = false;
+            }
+        }
+    }
+    renderer.render(scene, camera);
+}
 
-      // Erstelle den Button. ARButton prüft, ob WebXR verfügbar ist und liefert ein entsprechendes Element.
-      const arButton = ARButton.createButton(dummyRenderer, {
-        requiredFeatures: ["hit-test", "plane-detection"],
-      });
-      // Füge unserer Schaltfläche zusätzliche CSS-Klasse hinzu
-      arButton.classList.add("ar-button");
-      // Überschreibe den Klick-Handler, um unsere startXR-Funktion aufzurufen.
-      arButton.addEventListener("click", () => {
-        startXR();
-      });
-      // Hänge den ARButton ans Dokument an
-      document.body.appendChild(arButton);
-
-      // Render-Loop für Babylon.js
-      engine.runRenderLoop(() => {
-        scene.render();
-      });
-
-      // Engine anpassen bei Fenstergrößenänderung
-      window.addEventListener("resize", () => {
-        engine.resize();
-      });
-    </script>
-  </body>
-</html>
+window.addEventListener('load', init);
