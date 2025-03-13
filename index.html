@@ -113,7 +113,7 @@
           const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
           const ground = new THREE.Mesh(groundGeometry, groundMaterial);
           ground.rotation.x = -Math.PI / 2;
-          ground.position.y = 0;
+          ground.position.y = -5;
           this.portalScene.add(ground);
 
           // Zusätzliche Lichtquelle: Punktlicht
