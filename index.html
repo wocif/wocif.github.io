@@ -28,7 +28,7 @@
           this.renderer.xr.enabled = true;
           container.appendChild(this.renderer.domElement);
 
-          // AR-Button wie in deinem ursprünglichen Fenster-Code:
+          // AR-Button (genau wie in deinem ursprünglichen Fenster-Code)
           document.body.appendChild(ARButton.createButton(this.renderer, { requiredFeatures: ['hit-test'] }));
 
           // Reticle zur Platzierung via Hit-Test:
@@ -66,7 +66,7 @@
         }
 
         createRectangle() {
-          // Das ursprüngliche Rechteck, das in der Manipulationsphase angepasst wird:
+          // Ursprüngliches Rechteck, das in der Manipulationsphase angepasst wird:
           const geometry = new THREE.PlaneGeometry(0.4, 0.2);
           this.originalMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff, side: THREE.DoubleSide });
           this.rectangle = new THREE.Mesh(geometry, this.originalMaterial);
@@ -75,7 +75,7 @@
         }
 
         onSqueeze() {
-          // Bei Squeeze wird der Zustand (state) zurückgesetzt, sofern das Portal noch nicht aktiv ist.
+          // Bei Squeeze wird der Zustand zurückgesetzt, sofern das Portal noch nicht aktiv ist.
           if (!this.portalActive && this.state !== 0) {
             this.state -= 1;
           }
@@ -103,13 +103,12 @@
           }
         }
 
-        // Hier wird das Portal aktiviert:
+        // In activatePortal() erweitern wir die Portal-Szene:
         activatePortal() {
           this.portalActive = true;
-          // Erstelle eine separate Szene für den 3D-Welt-Inhalt:
           this.portalScene = new THREE.Scene();
 
-          // Erstelle einen Boden (großes, unscheinbares Plane):
+          // Boden in der Portal-Szene:
           const groundGeometry = new THREE.PlaneGeometry(10, 10);
           const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
           const ground = new THREE.Mesh(groundGeometry, groundMaterial);
@@ -117,54 +116,34 @@
           ground.position.y = 0;
           this.portalScene.add(ground);
 
-          // Beispielinhalt: Fünf kleine Würfel, die nicht im direkten Blickfeld (Zentrum) liegen.
-          const cubeGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
-          const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-          
-          // Positionen so wählen, dass sie den zentralen Bereich freilassen:
-          const cubePositions = [
-            new THREE.Vector3(-1.5, 0.15, -4),  // links oben
-            new THREE.Vector3( 1.5, 0.15, -4),  // rechts oben
-            new THREE.Vector3(-1.5, 0.15, -6),  // links unten
-            new THREE.Vector3( 1.5, 0.15, -6),  // rechts unten
-            new THREE.Vector3( 2.5, 0.15, -5)   // weiter rechts
-          ];
-          this.portalCubes = [];
-          cubePositions.forEach(pos => {
-            const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-            cube.position.copy(pos);
-            this.portalScene.add(cube);
-            this.portalCubes.push(cube);
-          });
+          // Zusätzliche Lichtquelle: Punktlicht
+          const pointLight = new THREE.PointLight(0xffffff, 1, 20);
+          pointLight.position.set(0, 2, -1);
+          this.portalScene.add(pointLight);
 
-          // Zusätzlich kann ein Beispielobjekt (z. B. ein rotierender Würfel) in der Mitte stehen – falls gewünscht,
-          // andernfalls kann dieser weggelassen werden, damit die zentrale Sicht frei bleibt.
-          // Hier kommentiert, damit der zentrale Bereich nicht blockiert wird:
-          /*
-          const centerCubeGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-          const centerCubeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-          this.centerCube = new THREE.Mesh(centerCubeGeometry, centerCubeMaterial);
-          this.centerCube.position.set(0, 0.25, -5);
-          this.portalScene.add(this.centerCube);
-          */
-
-          // Licht in der Portal-Szene:
-          const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+          // Ambientes Licht für gleichmäßige Ausleuchtung:
+          const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
           this.portalScene.add(ambientLight);
-          const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-          directionalLight.position.set(1, 1, 1);
-          this.portalScene.add(directionalLight);
 
-          // Kamera für die Portal-Szene:
+          // Kleines Objekt (z.B. eine kleine Sphere) 2-5 Meter hinter dem Portal:
+          const sphereGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+          const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
+          const smallObject = new THREE.Mesh(sphereGeometry, sphereMaterial);
+          // Da der Ursprung der 3D-Welt beim Portal liegt, platzieren wir das Objekt etwa 3 Meter in negativer Z-Richtung.
+          smallObject.position.set(0, 0.5, -3);
+          this.portalScene.add(smallObject);
+
+          // Portal-Kamera: Wir setzen den Ursprung der Portal-Szene gleich beim Portal.
           this.portalCamera = new THREE.PerspectiveCamera(70, 1, 0.01, 20);
-          // Die Kamera schaut auf den Mittelpunkt der Szene (z. B. auf den Boden):
-          this.portalCamera.position.set(0, 1.5, 2);
-          this.portalCamera.lookAt(new THREE.Vector3(0, 0, -5));
+          // Setze die Kamera auf Augenhöhe (z. B. 1,5 m) am Portal.
+          this.portalCamera.position.set(0, 1.5, 0);
+          // Die Kamera schaut in Richtung des kleinen Objekts:
+          this.portalCamera.lookAt(new THREE.Vector3(0, 1.5, -3));
 
-          // Erstelle ein Render-Target, in das die Portal-Szene gerendert wird:
+          // Erstelle ein Render-Target für die Portal-Szene:
           this.portalRenderTarget = new THREE.WebGLRenderTarget(512, 512);
 
-          // Das Rechteck erhält nun ein Material, das die Portal-Szene als Texture anzeigt:
+          // Das Rechteck erhält nun ein Material, das die Portal-Szene als Texture anzeigt.
           this.rectangle.material = new THREE.MeshBasicMaterial({
             map: this.portalRenderTarget.texture,
             side: THREE.DoubleSide
@@ -213,13 +192,10 @@
                 const xAxis = gamepad.axes[2]; // horizontaler Daumenstick
                 const yAxis = gamepad.axes[3]; // vertikaler Daumenstick
                 if (this.state === 1) {
-                  // Rotation
                   this.rectangle.rotation.y += xAxis * 0.025;
                 } else if (this.state === 2) {
-                  // Höheneinstellung
                   this.rectangle.position.y += yAxis * 0.05;
                 } else if (this.state === 3) {
-                  // Skalierung
                   const scale = Math.max(0.1, this.rectangle.scale.x + yAxis * 0.02);
                   this.rectangle.scale.set(scale, scale, scale);
                 }
@@ -229,10 +205,6 @@
 
           // Falls das Portal aktiviert wurde, rendern wir zuerst die Portal-Szene in das Render-Target:
           if (this.portalActive) {
-            // Optional: Animation der kleinen Würfel – z.B. leichte Rotation
-            this.portalCubes.forEach(cube => {
-              cube.rotation.y += 0.005;
-            });
             this.renderer.setRenderTarget(this.portalRenderTarget);
             this.renderer.render(this.portalScene, this.portalCamera);
             this.renderer.setRenderTarget(null);
