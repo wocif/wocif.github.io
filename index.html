@@ -130,7 +130,7 @@
           const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
           const smallObject = new THREE.Mesh(sphereGeometry, sphereMaterial);
           // Da der Ursprung der 3D-Welt beim Portal liegt, platzieren wir das Objekt etwa 3 Meter in negativer Z-Richtung.
-          smallObject.position.set(0, 0.5, -3);
+          smallObject.position.set(0, 0.5, 3);
           this.portalScene.add(smallObject);
 
           // Portal-Kamera: Wir setzen den Ursprung der Portal-Szene gleich beim Portal.
