@@ -49,8 +49,9 @@
       this.hitTestSource = null;
 
       this.controller = this.renderer.xr.getController(0);
-      //this.controller.addEventListener('select', this.onSelect.bind(this));
-      this.startGamepadListening();
+      this.controller.addEventListener('select', this.onSelect.bind(this));
+      this.controller.addEventListener('squeezestart', this.onSqueeze.bind(this));
+      //this.controller.addEventListener('squeezeend', this.onSqueezeEnd.bind(this));
       this.scene.add(this.controller);
     }
 
@@ -62,21 +63,11 @@
       this.scene.add(this.rectangle);
     }
 
-    startGamepadListening() {
-      setInterval(() => {
-          if (!navigator.getGamepads) return;
-
-          const gamepads = navigator.getGamepads();
-          if (!gamepads) return;
-
-          for (const gamepad of gamepads) {
-              if (gamepad && gamepad.buttons[4].pressed) {
-                  this.onSelect(); // Ruft die ursprüngliche Methode auf
-              }
-          }
-      }, 100); // Alle 100ms prüfen
+    onSqueeze() {
+      if ( this.state != 0 ) {
+        this.state -= 1;
+      }
     }
-
 
     onSelect() {
       if (this.state === 0) { // Platzierung
@@ -118,6 +109,9 @@
       }
     }
 
+    onButtonPress(gamepad) {
+      
+    }
 
     render(timestamp, frame) {
       if (frame) {
