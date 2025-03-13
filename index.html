@@ -51,7 +51,6 @@
       this.controller = this.renderer.xr.getController(0);
       this.controller.addEventListener('select', this.onSelect.bind(this));
       this.controller.addEventListener('squeezestart', this.onSqueeze.bind(this));
-      //this.controller.addEventListener('squeezeend', this.onSqueezeEnd.bind(this));
       this.scene.add(this.controller);
     }
 
@@ -72,6 +71,8 @@
     onSelect() {
       if (this.state === 0) { // Platzierung
         this.rectangle.position.setFromMatrixPosition(this.reticle.matrix);
+        this.rectangle.rotation.setFromMatrixPosition(this.reticle.matrix);
+        this.rectangle.scale.setFromMatrixPosition(this.reticle.matrix);
         this.rectangle.visible = true;
         this.state = 1;
       } else if (this.state === 1) { // Rotation 
