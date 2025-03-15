@@ -128,6 +128,7 @@ const createScene = async function () {
     marker.isVisible = false;
     marker.rotationQuaternion = new BABYLON.Quaternion();
     //gl.addIncludedOnlyMesh(marker);
+    marker.renderingGroupId = 2; // ---- statt layer ---- 
     marker.material = neonMaterial;
 
 
@@ -155,7 +156,7 @@ const createScene = async function () {
 
 
     //Create Occulers which will hide the 3D scene
-    const oclVisibility = 0.1;
+    const oclVisibility = 0.001;
     const ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene); // size should be big enough to hideall you want
     const hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 2, width: 1, height: 0.01 }, scene);
 
@@ -238,6 +239,7 @@ const createScene = async function () {
 
 
     scene.setRenderingAutoClearDepthStencil(1, false, false, false); // Do not clean buffer info to ensure occlusion
+    scene.setRenderingAutoClearDepthStencil(2, false, false, false); // ---- For glow-layer ----
     scene.setRenderingAutoClearDepthStencil(0, true, true, true); // Clean for 1rst frame
     scene.autoClear = true;
 
@@ -335,6 +337,9 @@ const createScene = async function () {
             //gl.addIncludedOnlyMesh(pilar1);
             //gl.addIncludedOnlyMesh(pilar2);
             //gl.addIncludedOnlyMesh(pilar3);
+            pilar1.renderingGroupId = 2; // ---- statt glow layer ----
+            pilar2.renderingGroupId = 2;
+            pilar3.renderingGroupId = 2;
             pilar1.material = neonMaterial;
             pilar2.material = neonMaterial;
             pilar3.material = neonMaterial;
