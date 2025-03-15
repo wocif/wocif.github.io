@@ -117,6 +117,18 @@ const createScene = async function () {
     //    blurKernelSize: 1
     //});
 
+    // ---- Rechteck für Fenstergrößeneinstellung ----
+    function createRectangle() {
+        const rectangle = BABYLON.MeshBuilder.CreatePlane("rectangle", { width: 0.4, height: 0.2 }, scene);
+        const material = new BABYLON.StandardMaterial("rectMaterial", scene);
+        material.diffuseColor = new BABYLON.Color3(0, 0, 1);
+        material.backFaceCulling = false;
+        rectangle.material = material;
+        rectangle.isVisible = false;
+        marker.renderingGroupId = 2; // ---- trying 2 ---- 
+    }
+    
+
 
     //Create neonMaterial, which will be used in the portal
     const neonMaterial = new BABYLON.StandardMaterial("neonMaterial", scene);
@@ -239,7 +251,7 @@ const createScene = async function () {
 
 
     scene.setRenderingAutoClearDepthStencil(1, false, false, false); // Do not clean buffer info to ensure occlusion
-    scene.setRenderingAutoClearDepthStencil(2, false, false, false); // ---- For glow-layer ----
+    scene.setRenderingAutoClearDepthStencil(2, false, false, false); // ---- instead of glow-layer ----
     scene.setRenderingAutoClearDepthStencil(0, true, true, true); // Clean for 1rst frame
     scene.autoClear = true;
 
@@ -258,7 +270,7 @@ const createScene = async function () {
 
         if (hitTest && xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppearded) {
 
-
+            createRectangle;
             portalAppearded = true;
 
 
