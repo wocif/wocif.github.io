@@ -118,14 +118,18 @@ const createScene = async function () {
     //});
 
     // ---- Rechteck für Fenstergrößeneinstellung ----
+    let windowRect;
+
     function createRectangle() {
-        const rectangle2 = BABYLON.MeshBuilder.CreatePlane("rectangle", { width: 4, height: 2 }, scene);
+        windowRect = BABYLON.MeshBuilder.CreatePlane("rectangle", { width: 4, height: 2 }, scene);
         const material = new BABYLON.StandardMaterial("rectMaterial", scene);
         material.diffuseColor = new BABYLON.Color3(0, 0, 1);
         material.backFaceCulling = false;
-        rectangle2.material = material;
-        rectangle2.isVisible = false;
-        rectangle2.renderingGroupId = 3; // ---- trying 2 ---- 
+        windowRect.material = material;
+        windowRect.isVisible = true; // Rechteck sichtbar machen
+        windowRect.renderingGroupId = 3; // In Gruppe 3 rendern, um im Vordergrund zu erscheinen
+        // Positioniere das Rechteck ggf. an eine geeignete Stelle:
+        windowRect.position = new BABYLON.Vector3(0, 1, 2);
     }
     
 
@@ -268,15 +272,19 @@ const createScene = async function () {
 
 
     scene.onPointerDown = (evt, pickInfo) => {
-
-
-        if (hitTest && xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppearded) {
-
-            createRectangle(); // ---- trying ---- 
-
+        if (hitTest && xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppeared) {
+            console.log("onPointerDown: Erstelle Rechteck für Fenstergrößeneinstellung");
+            createRectangle();  // Funktion aufrufen!
+    
+            console.log("Warte auf XRSelect-Eingabe...");
             xr.baseExperience.sessionManager.onXRSelectObservable.addOnce(() => {
-
-                portalAppearded = true;
+                console.log("XRSelect event wurde empfangen, fahre mit Portal-Code fort");
+                // Rechteck ausblenden
+                if (windowRect) {
+                    windowRect.isVisible = false;
+                }
+                
+                portalAppeared = true;
 
 
                 //Enable the virtual world and move it to the hitTest position
