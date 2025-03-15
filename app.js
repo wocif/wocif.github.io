@@ -119,13 +119,13 @@ const createScene = async function () {
 
     // ---- Rechteck für Fenstergrößeneinstellung ----
     function createRectangle() {
-        const rectangle = BABYLON.MeshBuilder.CreatePlane("rectangle", { width: 4, height: 2 }, scene);
+        const rectangle2 = BABYLON.MeshBuilder.CreatePlane("rectangle", { width: 4, height: 2 }, scene);
         const material = new BABYLON.StandardMaterial("rectMaterial", scene);
         material.diffuseColor = new BABYLON.Color3(0, 0, 1);
         material.backFaceCulling = false;
-        rectangle.material = material;
-        rectangle.isVisible = false;
-        rectangle.renderingGroupId = 2; // ---- trying 2 ---- 
+        rectangle2.material = material;
+        rectangle2.isVisible = false;
+        rectangle2.renderingGroupId = 2; // ---- trying 2 ---- 
     }
     
 
@@ -271,7 +271,7 @@ const createScene = async function () {
         if (hitTest && xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppearded) {
 
             createRectangle; // ---- trying ---- 
-            //portalAppearded = true;
+            portalAppearded = true;
 
 
             //Enable the virtual world and move it to the hitTest position
