@@ -155,7 +155,7 @@ const createScene = async function () {
 
 
     //Create Occulers which will hide the 3D scene
-    const oclVisibility = 0.001;
+    const oclVisibility = 0.1;
     const ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene); // size should be big enough to hideall you want
     const hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 2, width: 1, height: 0.01 }, scene);
 
