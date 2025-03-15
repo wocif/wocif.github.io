@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>AR Fenster / Portal Demo</title>
+    <style>
+      body { margin: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.125.0/build/three.module.js';
+      import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.125.0/examples/jsm/webxr/ARButton.js';
+
+      class App {
+        constructor() {
+          const container = document.createElement('div');
+          document.body.appendChild(container);
+
+          this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+          this.scene = new THREE.Scene();
+
+          const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+          this.scene.add(ambient);
+
+          this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+          this.renderer.setSize(window.innerWidth, window.innerHeight);
+          this.renderer.xr.enabled = true;
+          container.appendChild(this.renderer.domElement);
+
+          // AR-Button (genau wie in deinem ursprünglichen Fenster-Code)
+          document.body.appendChild(ARButton.createButton(this.renderer, { requiredFeatures: ['hit-test'] }));
+
+          // Reticle zur Platzierung via Hit-Test:
+          this.reticle = new THREE.Mesh(
+            new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+            new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+          );
+          this.reticle.matrixAutoUpdate = false;
+          this.reticle.visible = false;
+          this.scene.add(this.reticle);
+
+          this.setupXR();
+          this.createRectangle();
+
+          // Zustände: 0: Platzieren, 1: Rotieren, 2: Höhe, 3: Skalieren, 4: Portal aktiv
+          this.state = 0;
+          this.portalActive = false;
+
+          // Variablen für die Portal-Szene:
+          this.portalScene = null;
+          this.portalCamera = null;
+          this.portalRenderTarget = null;
+
+          this.renderer.setAnimationLoop(this.render.bind(this));
+        }
+
+        setupXR() {
+          this.hitTestSourceRequested = false;
+          this.hitTestSource = null;
+
+          this.controller = this.renderer.xr.getController(0);
+          this.controller.addEventListener('select', this.onSelect.bind(this));
+          this.controller.addEventListener('squeezestart', this.onSqueeze.bind(this));
+          this.scene.add(this.controller);
+        }
+
+        createRectangle() {
+          // Ursprüngliches Rechteck, das in der Manipulationsphase angepasst wird:
+          const geometry = new THREE.PlaneGeometry(0.4, 0.2);
+          this.originalMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff, side: THREE.DoubleSide });
+          this.rectangle = new THREE.Mesh(geometry, this.originalMaterial);
+          this.rectangle.visible = false;
+          this.scene.add(this.rectangle);
+        }
+
+        onSqueeze() {
+          // Bei Squeeze wird der Zustand zurückgesetzt, sofern das Portal noch nicht aktiv ist.
+          if (!this.portalActive && this.state !== 0) {
+            this.state -= 1;
+          }
+          if (this.state === 0) {
+            this.rectangle.visible = false;
+          }
+        }
+
+        onSelect() {
+          if (this.state === 0) { 
+            // Platzierung: Positioniere das Rechteck anhand des Reticles.
+            this.rectangle.position.setFromMatrixPosition(this.reticle.matrix);
+            this.rectangle.visible = true;
+            this.state = 1;
+          } else if (this.state === 1) { 
+            // Rotation anpassen.
+            this.state = 2;
+          } else if (this.state === 2) { 
+            // Höhe anpassen.
+            this.state = 3;
+          } else if (this.state === 3) { 
+            // Skalierung abschließen und Portal aktivieren.
+            this.state = 4;
+            this.activatePortal();
+          }
+        }
+
+        // In activatePortal() erweitern wir die Portal-Szene:
+        activatePortal() {
+          this.portalActive = true;
+          this.portalScene = new THREE.Scene();
+
+          // Boden in der Portal-Szene:
+          const groundGeometry = new THREE.PlaneGeometry(10, 10);
+          const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
+          const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+          ground.rotation.x = -Math.PI / 2;
+          ground.position.y = -5;
+          //this.portalScene.add(ground);
+
+          // Pfähle
+          const numPosts = 12;
+          const radius = 10;
+          for (let i = 0; i < numPosts; i++) {
+            const angle = (i / numPosts) * Math.PI * 2;
+            const x = radius * Math.cos(angle);
+            const z = radius * Math.sin(angle);
+            const postGeometry = new THREE.CylinderGeometry(0.1, 0.1, 3, 8);
+            const postMaterial = new THREE.MeshStandardMaterial({ color: 0x654321 });
+            const post = new THREE.Mesh(postGeometry, postMaterial);
+            // Setze den Pfahl so, dass seine Basis am Boden liegt (Höhe ca. 3 m, also Y = 1.5)
+            post.position.set(x, 1.5, z);
+            this.portalScene.add(post);
+          }
+
+          // Zusätzliche Lichtquelle: Punktlicht
+          const pointLight = new THREE.PointLight(0xffffff, 1, 20);
+          pointLight.position.set(0, 2, -1);
+          this.portalScene.add(pointLight);
+
+          // Ambientes Licht für gleichmäßige Ausleuchtung:
+          const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+          this.portalScene.add(ambientLight);
+
+          // Kleines Objekt (z.B. eine kleine Sphere) 2-5 Meter hinter dem Portal:
+          const sphereGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+          const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
+          const smallObject = new THREE.Mesh(sphereGeometry, sphereMaterial);
+          // Da der Ursprung der 3D-Welt beim Portal liegt, platzieren wir das Objekt etwa 3 Meter in negativer Z-Richtung.
+          smallObject.position.set(0, 0.5, 3);
+          this.portalScene.add(smallObject);
+
+          // Portal-Kamera: Wir setzen den Ursprung der Portal-Szene gleich beim Portal.
+          this.portalCamera = new THREE.PerspectiveCamera(70, 1, 0.01, 20);
+          // Setze die Kamera auf Augenhöhe (z. B. 1,5 m) am Portal.
+          this.portalCamera.position.set(0, 1.5, 0);
+          // Die Kamera schaut in Richtung des kleinen Objekts:
+          this.portalCamera.lookAt(new THREE.Vector3(0, 1.5, -3));
+
+          // Erstelle ein Render-Target für die Portal-Szene:
+          this.portalRenderTarget = new THREE.WebGLRenderTarget(512, 512);
+
+          // Das Rechteck erhält nun ein Material, das die Portal-Szene als Texture anzeigt.
+          this.rectangle.material = new THREE.MeshBasicMaterial({
+            map: this.portalRenderTarget.texture,
+            side: THREE.DoubleSide
+          });
+
+          console.log('Portal aktiviert!');
+        }
+
+        requestHitTestSource() {
+          const session = this.renderer.xr.getSession();
+          session.requestReferenceSpace('viewer').then(refSpace => {
+            session.requestHitTestSource({ space: refSpace }).then(source => {
+              this.hitTestSource = source;
+            });
+          });
+          session.addEventListener('end', () => {
+            this.hitTestSourceRequested = false;
+            this.hitTestSource = null;
+          });
+          this.hitTestSourceRequested = true;
+        }
+
+        getHitTestResults(frame) {
+          const hitTestResults = frame.getHitTestResults(this.hitTestSource);
+          if (hitTestResults.length) {
+            const referenceSpace = this.renderer.xr.getReferenceSpace();
+            const pose = hitTestResults[0].getPose(referenceSpace);
+            this.reticle.visible = true;
+            this.reticle.matrix.fromArray(pose.transform.matrix);
+          } else {
+            this.reticle.visible = false;
+          }
+        }
+
+        render(timestamp, frame) {
+          if (frame) {
+            if (!this.hitTestSourceRequested) this.requestHitTestSource();
+            if (this.hitTestSource) this.getHitTestResults(frame);
+          }
+
+          const session = this.renderer.xr.getSession();
+          if (session) {
+            for (const inputSource of session.inputSources) {
+              if (inputSource.gamepad) {
+                const gamepad = inputSource.gamepad;
+                const xAxis = gamepad.axes[2]; // horizontaler Daumenstick
+                const yAxis = gamepad.axes[3]; // vertikaler Daumenstick
+                if (this.state === 1) {
+                  this.rectangle.rotation.y += xAxis * 0.025;
+                } else if (this.state === 2) {
+                  this.rectangle.position.y += yAxis * 0.05;
+                } else if (this.state === 3) {
+                  const scale = Math.max(0.1, this.rectangle.scale.x + yAxis * 0.02);
+                  this.rectangle.scale.set(scale, scale, scale);
+                }
+              }
+            }
+          }
+
+          // Falls das Portal aktiviert wurde, rendern wir zuerst die Portal-Szene in das Render-Target:
+          if (this.portalActive) {
+            this.renderer.setRenderTarget(this.portalRenderTarget);
+            this.renderer.render(this.portalScene, this.portalCamera);
+            this.renderer.setRenderTarget(null);
+          }
+
+          // Rendern der AR-Hauptszene:
+          this.renderer.render(this.scene, this.camera);
+        }
+      }
+
+      new App();
+    </script>
+  </body>
+</html>
