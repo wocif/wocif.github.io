@@ -127,7 +127,7 @@ const createScene = async function () {
     const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.05, tessellation: 32 });
     marker.isVisible = false;
     marker.rotationQuaternion = new BABYLON.Quaternion();
-    gl.addIncludedOnlyMesh(marker);
+    //gl.addIncludedOnlyMesh(marker);
     marker.material = neonMaterial;
 
 
@@ -332,9 +332,9 @@ const createScene = async function () {
 
 
             //Add neon material and glowing effect to the portal
-            gl.addIncludedOnlyMesh(pilar1);
-            gl.addIncludedOnlyMesh(pilar2);
-            gl.addIncludedOnlyMesh(pilar3);
+            //gl.addIncludedOnlyMesh(pilar1);
+            //gl.addIncludedOnlyMesh(pilar2);
+            //gl.addIncludedOnlyMesh(pilar3);
             pilar1.material = neonMaterial;
             pilar2.material = neonMaterial;
             pilar3.material = neonMaterial;
