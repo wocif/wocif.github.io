@@ -125,7 +125,7 @@ const createScene = async function () {
         material.backFaceCulling = false;
         rectangle2.material = material;
         rectangle2.isVisible = false;
-        rectangle2.renderingGroupId = 1; // ---- trying 2 ---- 
+        rectangle2.renderingGroupId = 2; // ---- trying 2 ---- 
     }
     
 
