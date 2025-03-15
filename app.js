@@ -272,23 +272,19 @@ const createScene = async function () {
 
 
     scene.onPointerDown = (evt, pickInfo) => {
-    if (hitTest && xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppeared) {
-        console.log("onPointerDown: Erstelle Rechteck für Fenstergrößeneinstellung");
-        createRectangle();  // Funktion aufrufen!
-
-        console.log("Warte auf XRSelect-Eingabe...");
-        xr.baseExperience.sessionManager.onXRSelectObservable.addOnce(() => {
-            console.log("XRSelect event wurde empfangen, fahre mit Portal-Code fort");
-            // Rechteck ausblenden
-            if (windowRect) {
-                windowRect.isVisible = false;
-            }
-            portalAppeared = true;
-
-
-                //Enable the virtual world and move it to the hitTest position
-                rootScene.setEnabled(true);
-                rootOccluder.setEnabled(true);
+        if (hitTest && xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppeared) {
+            createRectangle(); // Create the portal
+    
+            // Only add the XRSelect handler once
+            if (!xr.baseExperience.sessionManager.onXRSelectObservable.hasObservers()) {
+                xr.baseExperience.sessionManager.onXRSelectObservable.addOnce(() => {
+                    if (windowRect) {
+                        windowRect.isVisible = false;
+                    }
+    
+                    portalAppeared = true;
+                    rootScene.setEnabled(true);
+                    rootOccluder.setEnabled(true);
 
 
                 hitTest.transformationMatrix.decompose(undefined, undefined, portalPosition);
