@@ -128,6 +128,7 @@ const createScene = async function () {
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
         new THREE.MeshBasicMaterial({ color: 0x00ff00 })
       );
+    scene.add(marker);
     marker.isVisible = false;
     marker.rotationQuaternion = new BABYLON.Quaternion();
     //gl.addIncludedOnlyMesh(marker);
