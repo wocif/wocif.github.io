@@ -252,7 +252,9 @@ const createScene = async function () {
 
     scene.setRenderingAutoClearDepthStencil(1, false, false, false); // Do not clean buffer info to ensure occlusion
     scene.setRenderingAutoClearDepthStencil(2, false, false, false); // ---- instead of glow-layer ----
+    scene.setRenderingAutoClearDepthStencil(3, true, true, true); // ---- for rechteck ---- 
     scene.setRenderingAutoClearDepthStencil(0, true, true, true); // Clean for 1rst frame
+
     scene.autoClear = true;
 
 
