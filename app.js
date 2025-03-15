@@ -270,8 +270,8 @@ const createScene = async function () {
 
         if (hitTest && xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppearded) {
 
-            createRectangle;
-            portalAppearded = true;
+            createRectangle; // ---- trying ---- 
+            //portalAppearded = true;
 
 
             //Enable the virtual world and move it to the hitTest position
