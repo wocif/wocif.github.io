@@ -124,11 +124,7 @@ const createScene = async function () {
 
 
     //Create a marker that will be used to represent the hitTest position
-    const marker =  new THREE.Mesh(
-        new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-      );
-    scene.add(marker);
+    const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.05, tessellation: 32 });
     marker.isVisible = false;
     marker.rotationQuaternion = new BABYLON.Quaternion();
     //gl.addIncludedOnlyMesh(marker);
