@@ -114,7 +114,7 @@ const createScene = async function () {
     const gl = new BABYLON.GlowLayer("glow", scene, {
         mainTextureSamples: 4,
         mainTextureFixedSize: 256,
-        blurKernelSize: 100
+        blurKernelSize: 1
     });
 
 
