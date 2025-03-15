@@ -124,8 +124,8 @@ const createScene = async function () {
         material.diffuseColor = new BABYLON.Color3(0, 0, 1);
         material.backFaceCulling = false;
         rectangle.material = material;
-        rectangle.isVisible = true;
-        marker.renderingGroupId = 2; // ---- trying 2 ---- 
+        rectangle.isVisible = false;
+        rectangle.renderingGroupId = 2; // ---- trying 2 ---- 
     }
     
 
