@@ -111,11 +111,11 @@ const createScene = async function () {
 
 
     //Add glow layer, which will be used in the portal and the marker
-    const gl = new BABYLON.GlowLayer("glow", scene, {
-        mainTextureSamples: 4,
-        mainTextureFixedSize: 256,
-        blurKernelSize: 1
-    });
+    //const gl = new BABYLON.GlowLayer("glow", scene, {
+    //    mainTextureSamples: 4,
+    //    mainTextureFixedSize: 256,
+    //    blurKernelSize: 1
+    //});
 
 
     //Create neonMaterial, which will be used in the portal
