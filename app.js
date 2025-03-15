@@ -376,7 +376,7 @@ const createScene = async function () {
             });
 
         }
-    }
+    };
 
 
     //Hide GUI in AR mode
