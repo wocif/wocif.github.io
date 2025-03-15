@@ -272,7 +272,7 @@ const createScene = async function () {
 
         if (hitTest && xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppearded) {
 
-            createRectangle(); // ---- trying ---- 
+            //createRectangle(); // ---- trying ---- 
             portalAppearded = true;
 
 
