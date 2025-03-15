@@ -119,12 +119,12 @@ const createScene = async function () {
 
     // ---- Rechteck für Fenstergrößeneinstellung ----
     function createRectangle() {
-        const rectangle = BABYLON.MeshBuilder.CreatePlane("rectangle", { width: 0.4, height: 0.2 }, scene);
+        const rectangle = BABYLON.MeshBuilder.CreatePlane("rectangle", { width: 4, height: 2 }, scene);
         const material = new BABYLON.StandardMaterial("rectMaterial", scene);
         material.diffuseColor = new BABYLON.Color3(0, 0, 1);
         material.backFaceCulling = false;
         rectangle.material = material;
-        rectangle.isVisible = false;
+        rectangle.isVisible = true;
         marker.renderingGroupId = 2; // ---- trying 2 ---- 
     }
     
