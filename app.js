@@ -7,13 +7,13 @@
 // -----------------------------
 // Global Variables and Constants
 // -----------------------------
-let state = 0; // State machine: 0 = Not placed, 1 = Adjust rotation, 2 = Adjust height, 3 = Adjust scale, 4 = Portal activated
+let state = 0; // 0 = Not placed, 1 = Adjust rotation, 2 = Adjust height, 3 = Adjust scale, 4 = Portal activated
 let reticleMesh = null;  // Mesh used for reticle adjustments
 let portalAppeared = false;  // Flag: true after portal activation
 let portalPosition = new BABYLON.Vector3();  // Final portal position
 
 // Choose one of the reticle approaches: 1, 2, or 3.
-const selectedReticleApproach = 3;
+const selectedReticleApproach = 1;
 
 // -----------------------------
 // Babylon Engine Setup
@@ -45,10 +45,10 @@ var createDefaultEngine = function() {
 // Reticle Creation Approaches
 // -----------------------------
 
-// Approach 1: Opaque Plane with Billboard Mode
+// Approach 1: Opaque Plane with Billboard Mode and size 4x2.
 function createReticleApproach1(scene) {
-  // Create a plane for the reticle.
-  let reticle = BABYLON.MeshBuilder.CreatePlane("reticleMesh", { width: 1, height: 1 }, scene);
+  // Create a plane for the reticle sized 4 (width) x 2 (height)
+  let reticle = BABYLON.MeshBuilder.CreatePlane("reticleMesh", { width: 4, height: 2 }, scene);
   // Create an opaque blue material.
   let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
   reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
@@ -56,42 +56,47 @@ function createReticleApproach1(scene) {
   reticle.material = reticleMat;
   // Force the reticle to always face the camera.
   reticle.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-  // Use default rendering group (0) to be safe.
-  reticle.renderingGroupId = 0;
+  // Use rendering group 3 to display it on top.
+  reticle.renderingGroupId = 3;
   reticle.isVisible = true;
+  console.log("Reticle Approach 1 created");
   return reticle;
 }
 
-// Approach 2: Torus Mesh as the Reticle
+// Approach 2: Torus Mesh as the Reticle (scaled up).
 function createReticleApproach2(scene) {
-  // Create a torus (ring) for the reticle.
-  let reticle = BABYLON.MeshBuilder.CreateTorus("reticleTorus", { diameter: 1, thickness: 0.1, tessellation: 32 }, scene);
+  // Create a torus for the reticle; increase diameter to 4 to match desired size.
+  let reticle = BABYLON.MeshBuilder.CreateTorus("reticleTorus", { diameter: 4, thickness: 0.2, tessellation: 32 }, scene);
   // Create a glowing green material.
   let reticleMat = new BABYLON.StandardMaterial("reticleMat", scene);
   reticleMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
   reticleMat.diffuseColor = new BABYLON.Color3(0, 1, 0);
   reticle.material = reticleMat;
-  // Optionally force billboard mode.
+  // Force billboard mode for consistency.
   reticle.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-  reticle.renderingGroupId = 0;
+  // Use rendering group 3.
+  reticle.renderingGroupId = 3;
   reticle.isVisible = true;
+  console.log("Reticle Approach 2 created");
   return reticle;
 }
 
-// Approach 3: Glowing Sphere with a GlowLayer
+// Approach 3: Glowing Sphere with a GlowLayer (scaled up).
 function createReticleApproach3(scene) {
-  // Create a small sphere.
-  let reticle = BABYLON.MeshBuilder.CreateSphere("reticleSphere", { segments: 16, diameter: 0.5 }, scene);
+  // Create a sphere and then scale it to roughly match a 4x2 plane.
+  let reticle = BABYLON.MeshBuilder.CreateSphere("reticleSphere", { segments: 16, diameter: 2 }, scene);
   // Create a bright yellow material.
   let reticleMat = new BABYLON.StandardMaterial("reticleSphereMat", scene);
   reticleMat.diffuseColor = new BABYLON.Color3(1, 1, 0);
   reticleMat.emissiveColor = new BABYLON.Color3(1, 1, 0);
   reticle.material = reticleMat;
-  reticle.renderingGroupId = 0;
+  // Use rendering group 3.
+  reticle.renderingGroupId = 3;
   reticle.isVisible = true;
   // Add a glow layer to enhance visibility.
   let glowLayer = new BABYLON.GlowLayer("glow", scene);
   glowLayer.intensity = 1.0;
+  console.log("Reticle Approach 3 created");
   return reticle;
 }
 
@@ -172,9 +177,9 @@ const createScene = async function () {
     const neonMaterial = new BABYLON.StandardMaterial("neonMaterial", scene);
     neonMaterial.emissiveColor = new BABYLON.Color3(0.35, 0.96, 0.88);
 
-    // Create the hit–test marker (a torus) as in the original code.
+    // Create the hit–test marker (a torus) as in your original code.
     const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.05, tessellation: 32 }, scene);
-    marker.isVisible = false;
+    marker.isVisible = false;  // Initially hidden until hit-test shows it.
     marker.rotationQuaternion = new BABYLON.Quaternion();
     marker.renderingGroupId = 2;
     marker.material = neonMaterial;
@@ -183,7 +188,7 @@ const createScene = async function () {
     let hitTest;
     xrTest.onHitTestResultObservable.add((results) => {
         if (results.length) {
-            // Show marker only if portal is not active and placement has not started.
+            // Show marker only if portal not activated and state is 0 (before placement begins).
             marker.isVisible = !portalAppeared && (state === 0);
             hitTest = results[0];
             hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
@@ -233,7 +238,7 @@ const createScene = async function () {
     hole.dispose();
     
     // -----------------------------
-    // Load the Virtual World (Hill Valley Scene)
+    // Load the Virtual World (Hill Valley Scene).
     // -----------------------------
     engine.displayLoadingUI();
     const virtualWorldResult = await BABYLON.SceneLoader.ImportMeshAsync(
@@ -284,10 +289,15 @@ const createScene = async function () {
     // -----------------------------
     function initReticle() {
       createReticle(scene); // This sets reticleMesh using one of the approaches.
-      // Ensure initial reticle properties
-      reticleMesh.isVisible = true;
-      reticleMesh.rotation = BABYLON.Vector3.Zero();
-      reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
+      if (reticleMesh) {
+        // Ensure initial properties: visible, default rotation/scaling.
+        reticleMesh.isVisible = true;
+        reticleMesh.rotation = BABYLON.Vector3.Zero();
+        reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
+        console.log("Reticle initialized", reticleMesh.position);
+      } else {
+        console.log("Reticle initialization failed");
+      }
     }
 
     // -----------------------------
@@ -297,24 +307,25 @@ const createScene = async function () {
         // Process only if in an active AR session.
         if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR) {
             if (state === 0 && hitTest) {
-                // First tap: Create and position the reticle based on the hit–test marker.
+                // First tap: Create and position the reticle using the hit–test marker.
                 initReticle();
                 reticleMesh.position.copyFrom(marker.position);
-                // Use marker rotation (convert quaternion to Euler angles; use Y rotation).
+                // Use marker rotation (convert quaternion to Euler; use Y rotation).
                 let euler = marker.rotationQuaternion.toEulerAngles();
                 reticleMesh.rotation.y = euler.y;
                 // Show the reticle and hide the marker.
                 reticleMesh.isVisible = true;
                 marker.isVisible = false;
+                console.log("State 0 complete: reticle placed at", reticleMesh.position);
                 state = 1;  // Next: adjust rotation.
             } else if (state === 1) {
-                // Second tap: Finish rotation adjustment; move to height adjustment.
-                state = 2;
+                console.log("State 1 complete: rotation adjustment finished");
+                state = 2;  // Next: adjust height.
             } else if (state === 2) {
-                // Third tap: Finish height adjustment; move to scale adjustment.
-                state = 3;
+                console.log("State 2 complete: height adjustment finished");
+                state = 3;  // Next: adjust scale.
             } else if (state === 3) {
-                // Fourth tap: Finish scale adjustment and activate the portal.
+                console.log("State 3 complete: scale adjustment finished, activating portal");
                 state = 4;
                 activatePortal();
             }
@@ -472,7 +483,7 @@ initFunction().then(() => {
 
 // -----------------------------
 // Resize Event Listener.
-// -----------------------------
+ // -----------------------------
 window.addEventListener("resize", function () {
     engine.resize();
 });
