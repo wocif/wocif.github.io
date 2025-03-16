@@ -291,20 +291,22 @@ const createScene = async function () {
                     const gamepad = inputSource.gamepad;
                     const xAxis = gamepad.axes[2];  // Horizontal axis (e.g., for rotation)
                     const yAxis = gamepad.axes[3];  // Vertical axis (e.g., for height/scale)
+                    
                     if (state === 1) {
-                        // Adjust reticle rotation around Y-axis
+                        // Adjust reticle rotation around Y-axis (x-axis input)
                         reticleMesh.rotation.y += xAxis * 0.025;
                     } else if (state === 2) {
-                        // Adjust reticle height (Y position)
+                        // Adjust reticle height (Y position) (y-axis input)
                         reticleMesh.position.y += yAxis * 0.05;
                     } else if (state === 3) {
-                        // Adjust reticle scaling (uniform scale)
+                        // Adjust reticle scaling (uniform scale) (y-axis input)
                         const scale = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.02);
                         reticleMesh.scaling.set(scale, scale, scale);
                     }
                 }
             }
         }
+    
 
         // -----------------------------
         // Update Occluder Visibility based on XR Camera vs. Portal Position
