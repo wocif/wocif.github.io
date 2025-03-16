@@ -289,12 +289,12 @@ const createScene = async function () {
             for (const inputSource of xrSession.inputSources) {
                 if (inputSource.gamepad) {
                     const gamepad = inputSource.gamepad;
-                    const xAxis = gamepad.axes[2];  // Horizontal axis (e.g., for rotation)
+                    //const xAxis = gamepad.axes[2];  // Horizontal axis (e.g., for rotation)
                     const yAxis = gamepad.axes[3];  // Vertical axis (e.g., for height/scale)
                     
                     if (state === 1) {
                         // Adjust reticle rotation around Y-axis (x-axis input)
-                        reticleMesh.rotation.y += xAxis * 0.025;
+                        reticleMesh.rotation.y += yAxis * 0.025;
                     } else if (state === 2) {
                         // Adjust reticle height (Y position) (y-axis input)
                         reticleMesh.position.y += yAxis * 0.05;
