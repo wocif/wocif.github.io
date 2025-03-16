@@ -173,8 +173,8 @@ const createScene = async function () {
     occluderback.material = occluderMaterial;
 
     // Dispose temporary meshes
-    ground.isVisible();
-    hole.isVisible();
+    ground.dispose();
+    hole.dispose();
 
     // -----------------------------
     // Load the Virtual World (Hill Valley Scene)
