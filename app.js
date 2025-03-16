@@ -369,8 +369,8 @@ const createScene = async function () {
     function initReticle() {
         // Use one of the approaches by uncommenting the one you wish to test:
         // reticleMesh = createReticleApproachA(scene);
-        // reticleMesh = createReticleApproachB(scene);
-        reticleMesh = createReticleApproachC(scene); // For example, using approach C.
+        reticleMesh = createReticleApproachB(scene);
+        //reticleMesh = createReticleApproachC(scene); // For example, using approach C.
         
         if (reticleMesh) {
           reticleMesh.isVisible = true;
