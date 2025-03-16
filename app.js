@@ -44,6 +44,85 @@ var createDefaultEngine = function() {
 // -----------------------------
 // Reticle Creation Approaches
 // -----------------------------
+function createReticleApproachA(scene) {
+    // Create a 4x2 plane for the reticle.
+    let reticle = BABYLON.MeshBuilder.CreatePlane("reticleMesh", { width: 4, height: 2 }, scene);
+    let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
+    reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1); // Blue
+    reticleMat.alpha = 1;
+    reticle.material = reticleMat;
+    
+    // Always face the camera.
+    reticle.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+    
+    // Set to default rendering group (0) so it is definitely rendered.
+    reticle.renderingGroupId = 0;
+    
+    // Force the reticle to be at the scene root.
+    reticle.parent = null;
+    
+    // For debugging, if no hit-test position is available, set a default position in front of the camera.
+    if (!reticle.position || reticle.position.equals(BABYLON.Vector3.Zero())) {
+      reticle.position = new BABYLON.Vector3(0, 1, 2);
+    }
+    
+    reticle.isVisible = true;
+    console.log("Reticle (Approach A) created:", reticle);
+    return reticle;
+  }
+
+  
+function createReticleApproachB(scene) {
+    // Create a box for debugging (roughly matching 4x2 dimensions).
+    let reticle = BABYLON.MeshBuilder.CreateBox("reticleBox", { width: 4, height: 2, depth: 0.1 }, scene);
+    let reticleMat = new BABYLON.StandardMaterial("reticleBoxMat", scene);
+    reticleMat.diffuseColor = new BABYLON.Color3(1, 0, 0); // Red to stand out
+    reticleMat.alpha = 1;
+    reticle.material = reticleMat;
+    
+    // Set rendering group to 0.
+    reticle.renderingGroupId = 0;
+    
+    // Ensure it is parented to the scene.
+    reticle.parent = null;
+    
+    // Set a debug position if needed.
+    reticle.position = new BABYLON.Vector3(0, 1, 2);
+    
+    reticle.isVisible = true;
+    console.log("Reticle (Approach B) debug box created:", reticle);
+    return reticle;
+  }
+
+  
+
+function createReticleApproachC(scene) {
+    // Create a 4x2 plane.
+    let reticle = BABYLON.MeshBuilder.CreatePlane("reticleMesh", { width: 4, height: 2 }, scene);
+    let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
+    reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
+    reticleMat.emissiveColor = new BABYLON.Color3(0, 0, 1); // Emissive blue to enhance brightness
+    reticleMat.alpha = 1;
+    reticle.material = reticleMat;
+    
+    // Do not use billboard mode (to rule out any issues with it).
+    // reticle.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL; // (optional, try without)
+    
+    // Set rendering group to 0.
+    reticle.renderingGroupId = 0;
+    
+    // Ensure it is attached to the scene root.
+    reticle.parent = null;
+    
+    // Add a GlowLayer to the scene (if not already present)
+    let glowLayer = new BABYLON.GlowLayer("glow", scene);
+    glowLayer.intensity = 1.0;
+    
+    reticle.isVisible = true;
+    console.log("Reticle (Approach C) with glow created:", reticle);
+    return reticle;
+  }
+  
 
 // Approach 1: Opaque Plane with Billboard Mode and size 4x2.
 function createReticleApproach1(scene) {
@@ -288,17 +367,21 @@ const createScene = async function () {
     // Reticle (Placement Mesh) Creation using Selected Approach.
     // -----------------------------
     function initReticle() {
-      createReticle(scene); // This sets reticleMesh using one of the approaches.
-      if (reticleMesh) {
-        // Ensure initial properties: visible, default rotation/scaling.
-        reticleMesh.isVisible = true;
-        reticleMesh.rotation = BABYLON.Vector3.Zero();
-        reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
-        console.log("Reticle initialized", reticleMesh.position);
-      } else {
-        console.log("Reticle initialization failed");
+        // Use one of the approaches by uncommenting the one you wish to test:
+        // reticleMesh = createReticleApproachA(scene);
+        // reticleMesh = createReticleApproachB(scene);
+        reticleMesh = createReticleApproachC(scene); // For example, using approach C.
+        
+        if (reticleMesh) {
+          reticleMesh.isVisible = true;
+          reticleMesh.rotation = BABYLON.Vector3.Zero();
+          reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
+          console.log("Reticle initialized", reticleMesh.position);
+        } else {
+          console.log("Reticle initialization failed");
+        }
       }
-    }
+      
 
     // -----------------------------
     // onPointerDown: Handle "Select" / State Transitions.
