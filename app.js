@@ -13,7 +13,7 @@ let portalAppeared = false;  // Flag: true after portal activation
 let portalPosition = new BABYLON.Vector3();  // Final portal position
 
 // Choose one of the reticle approaches: 1, 2, or 3.
-const selectedReticleApproach = 2;
+const selectedReticleApproach = 3;
 
 // -----------------------------
 // Babylon Engine Setup
