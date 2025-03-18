@@ -129,11 +129,11 @@ const createScene = async function () {
     // Root Transform Nodes for Virtual World and Portal
     // -----------------------------
     const rootOccluder = new BABYLON.TransformNode("rootOccluder", scene);
-    rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+    rootOccluder.rotationQuaternion = new BABYLON.Quaternion();
     const rootScene = new BABYLON.TransformNode("rootScene", scene);
-    rootScene.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+    rootScene.rotationQuaternion = new BABYLON.Quaternion();
     const rootPilar = new BABYLON.TransformNode("rootPilar", scene);
-    rootPilar.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+    rootPilar.rotationQuaternion = new BABYLON.Quaternion();
 
     // lower ground of 3d scene
     rootScene.position.y -= 4;
@@ -323,10 +323,16 @@ const createScene = async function () {
         // -----------------------------
         // Update Occluder Visibility based on XR Camera vs. Portal Position
         // -----------------------------
-        if (portalPosition && xrCamera) {
-            // Simple check based on Z position (you may want to adjust this for your scene)
+    //Rendering loop 
+    scene.onBeforeRenderObservable.add(() => {
+
+        marker.isVisible = !portalAppearded;
+
+        if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
+
             if (xrCamera.position.z > portalPosition.z) {
-                // User is inside the virtual world: adjust occluders for proper occlusion
+
+                isInRealWorld = false;
                 occluder.isVisible = false;
                 occluderR.isVisible = true;
                 occluderFloor.isVisible = false;
@@ -334,8 +340,10 @@ const createScene = async function () {
                 occluderRight.isVisible = false;
                 occluderLeft.isVisible = false;
                 occluderback.isVisible = false;
-            } else {
-                // User is in the real world: show occluders to hide the virtual world
+
+            }
+            else {
+                isInRealWorld = true;
                 occluder.isVisible = true;
                 occluderR.isVisible = false;
                 occluderFloor.isVisible = true;
@@ -343,8 +351,10 @@ const createScene = async function () {
                 occluderRight.isVisible = true;
                 occluderLeft.isVisible = true;
                 occluderback.isVisible = true;
+
             }
         }
+
     });
 
     // -----------------------------
