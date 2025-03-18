@@ -47,8 +47,9 @@ const createScene = async function () {
     const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
 
     //free camera
+    camera.inputs.removeByType("FreeCameraGamepadInput");
     //camera.inputs.clear();
-    camera.inputs.attached.gamepad = null;  // Remove gamepad control from the camera
+    
 
     //camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
