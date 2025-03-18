@@ -143,7 +143,7 @@ const createScene = async function () {
     // -----------------------------
     // Create a large ground box and a hole box for occluders
     const ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
-    const hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 10, width: 1, height: 0.01 }, scene);
+    const hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 2, width: 1, height: 0.01 }, scene);
 
     // Perform CSG subtraction for occluders
     const groundCSG = BABYLON.CSG.FromMesh(ground);
@@ -246,7 +246,7 @@ const createScene = async function () {
             reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
             reticleMat.backFaceCulling = false;
             reticleMesh.material = reticleMat;
-            reticleMesh.renderingGroupId = 3;  // Render in its own group
+            reticleMesh.renderingGroupId = 2;  // Render in its own group
             reticleMesh.isVisible = false;
             reticleMesh.rotation = BABYLON.Vector3.Zero();
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
