@@ -46,7 +46,7 @@ const createScene = async function () {
     const scene = new BABYLON.Scene(engine);
     const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
     //camera.setTarget(BABYLON.Vector3.Zero());
-    //camera.attachControl(canvas, true);
+    camera.attachControl(canvas, false);
 
     // -----------------------------
     // Create GUI for non-AR mode and AR availability check
