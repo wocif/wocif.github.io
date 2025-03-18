@@ -394,14 +394,17 @@ pilar4.position.set(0, 0, 0); // Untere Kante
         pilar1.parent = rootPilar;
         pilar2.parent = rootPilar;
         pilar3.parent = rootPilar;
+        pilar4.parent = rootPilar;
 
         // Set rendering group and apply neon material for glowing effect
         pilar1.renderingGroupId = 2;
         pilar2.renderingGroupId = 2;
         pilar3.renderingGroupId = 2;
+        pilar4.renderingGroupId = 2;
         pilar1.material = neonMaterial;
         pilar2.material = neonMaterial;
         pilar3.material = neonMaterial;
+        pilar4.material = neonMaterial;
 
         // Add particle effects to the portal (using provided snippet IDs)
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#488", scene, false).then(system => {
