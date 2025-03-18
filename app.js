@@ -176,8 +176,8 @@ const createScene = async function () {
     occluderback.material = occluderMaterial;
 
     // Dispose temporary meshes
-    ground.dispose();
-    hole.dispose();
+    ground.isVisible = false;
+    hole.isVisible = false;
 
     // -----------------------------
     // Load the Virtual World (Hill Valley Scene)
@@ -371,20 +371,7 @@ const createScene = async function () {
         rootOccluder.translate(BABYLON.Axis.Y, 3);
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         rootOccluder.translate(BABYLON.Axis.Z, -2);
-        occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
-        occluderFloor.translate(BABYLON.Axis.Y, 1);
-        occluderFloor.translate(BABYLON.Axis.Z, 3.5);
-        occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
-        occluderTop.translate(BABYLON.Axis.Y, -2);
-        occluderTop.translate(BABYLON.Axis.Z, 3.5);
-        occluderback.translate(BABYLON.Axis.Y, 7);
-        occluderback.translate(BABYLON.Axis.Z, 2);
-        occluderRight.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
-        occluderRight.translate(BABYLON.Axis.Y, -3.4);
-        occluderRight.translate(BABYLON.Axis.X, 3.5);
-        occluderLeft.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
-        occluderLeft.translate(BABYLON.Axis.Y, 3.4);
-        occluderLeft.translate(BABYLON.Axis.X, 3.5);
+
     
         // Use the final reticle transform for portal placement
         portalPosition.y = reticleMesh.position.y + reticleMesh.scaling.y * 0.5;
