@@ -44,7 +44,7 @@ var createDefaultEngine = function() {
 const createScene = async function () {
     // Create the scene and set up camera
     const scene = new BABYLON.Scene(engine);
-    const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -5), scene);
+    const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
     //camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
 
@@ -134,6 +134,9 @@ const createScene = async function () {
     rootScene.rotationQuaternion = new BABYLON.Quaternion();
     const rootPilar = new BABYLON.TransformNode("rootPilar", scene);
     rootPilar.rotationQuaternion = new BABYLON.Quaternion();
+
+    // lower ground
+    rootScene.position.y -= 1;
 
     // -----------------------------
     // Occluder Setup using CSG (Constructive Solid Geometry)
