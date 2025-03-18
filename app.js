@@ -265,8 +265,8 @@ const createScene = async function () {
                 createReticle();
                 reticleMesh.position.copyFrom(marker.position);
                 // Convert marker rotation (quaternion) to Euler angles; we use Y rotation only here
-                //let euler = marker.rotationQuaternion.toEulerAngles();
-                //reticleMesh.rotation.y = euler.y;
+                let euler = marker.rotationQuaternion.toEulerAngles();
+                reticleMesh.rotation.y = euler.y;
                 reticleMesh.isVisible = true;
                 state = 1;  // Next state: Adjust rotation
             } else if (state === 1) {
@@ -363,9 +363,9 @@ const createScene = async function () {
         rootPilar.scaling.copyFrom(reticleMesh.scaling);
 
         // Further adjust portal placement as needed (these values mimic original offsets)
-        rootPilar.translate(BABYLON.Axis.Y, 1);
-        rootPilar.translate(BABYLON.Axis.X, -0.5);
-        rootPilar.translate(BABYLON.Axis.Z, 0.05);  // Push slightly into the virtual world
+        //rootPilar.translate(BABYLON.Axis.Y, 1);
+        //rootPilar.translate(BABYLON.Axis.X, -0.5);
+        //rootPilar.translate(BABYLON.Axis.Z, 0.05);  // Push slightly into the virtual world
 
         // Create portal geometry (pillars)
         const pilar1 = BABYLON.MeshBuilder.CreateBox("pilar1", { height: 2, width: 0.1, depth: 0.1 }, scene);
