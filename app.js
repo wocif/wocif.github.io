@@ -45,6 +45,11 @@ const createScene = async function () {
     // Create the scene and set up camera
     const scene = new BABYLON.Scene(engine);
     const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
+
+    //free camera
+    camera.inputs.clear();
+    camera.inputs.attached.gamepad = null;  // Remove gamepad control from the camera
+
     //camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
 
@@ -238,7 +243,7 @@ const createScene = async function () {
     // -----------------------------
     function createReticle() {
         if (!reticleMesh) {
-            reticleMesh = BABYLON.MeshBuilder.CreatePlane("reticleMesh", { width: 4, height: 2 }, scene);
+            reticleMesh = BABYLON.MeshBuilder.CreatePlane("reticleMesh", { width: 1, height: 0.5 }, scene);
             let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
             reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
             reticleMat.backFaceCulling = false;
@@ -256,6 +261,9 @@ const createScene = async function () {
     scene.onPointerDown = (evt, pickInfo) => {
         // Only process if in AR session
         if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR) {
+            
+
+
             if (state === 0 && hitTest) {
                 // First tap: Create and position the reticle using the hit-test marker
                 createReticle();
