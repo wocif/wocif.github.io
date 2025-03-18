@@ -365,7 +365,7 @@ const createScene = async function () {
         // Wichtige Variablen für die Positionierung
         const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
         const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
-        const reticleSizeZ = reticleMesh.scaling.z; // Tiefe des Rechtecks
+        
     
         // Höhe der vertikalen Säulen (angepasst auf das Reticle)
         const pillarHeight = reticleSizeY;
@@ -373,21 +373,21 @@ const createScene = async function () {
         const pillarDepth = 0.1;
     
         // Erstelle die vier Säulen
-        const pilar1 = BABYLON.MeshBuilder.CreateBox("pilar1", { height: pillarHeight, width: pillarWidth, depth: pillarDepth }, scene);
-        const pilar2 = pilar1.clone("pilar2");
-        const pilar3 = BABYLON.MeshBuilder.CreateBox("pilar3", { height: reticleSizeX, width: pillarWidth, depth: pillarDepth }, scene);
-        const pilar4 = pilar3.clone("pilar4");
+        const links = BABYLON.MeshBuilder.CreateBox("links", { height: pillarHeight, width: pillarWidth, depth: pillarDepth }, scene);
+        const rechts = links.clone("rechts");
+        const oben = BABYLON.MeshBuilder.CreateBox("oben", { height: reticleSizeX, width: pillarWidth, depth: pillarDepth }, scene);
+        const unten = oben.clone("unten");
     
         // Positionierung der vertikalen Säulen (links & rechts)
-        pilar1.position.set(-reticleSizeX / 2, reticleSizeY / 2, 0); // Linke Kante
-        pilar2.position.set(reticleSizeX / 2, reticleSizeY / 2, 0);  // Rechte Kante
+        links.position.set(-reticleSizeX / 2, reticleSizeY / 2, 0); // Linke Kante
+        rechts.position.set(reticleSizeX / 2, reticleSizeY / 2, 0);  // Rechte Kante
     
         // Positionierung der horizontalen Säulen (oben & unten)
-        pilar3.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        pilar3.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
+        oben.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        oben.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
         
-        pilar4.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        pilar4.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
+        unten.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        unten.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
     
     
     
@@ -397,30 +397,30 @@ const createScene = async function () {
 
 
         // Parent pillars to rootPilar so that they inherit its transform
-        pilar1.parent = rootPilar;
-        pilar2.parent = rootPilar;
-        pilar3.parent = rootPilar;
-        pilar4.parent = rootPilar;
+        links.parent = rootPilar;
+        rechts.parent = rootPilar;
+        oben.parent = rootPilar;
+        unten.parent = rootPilar;
 
         // Set rendering group and apply neon material for glowing effect
-        pilar1.renderingGroupId = 2;
-        pilar2.renderingGroupId = 2;
-        pilar3.renderingGroupId = 2;
-        pilar4.renderingGroupId = 2;
-        pilar1.material = neonMaterial;
-        pilar2.material = neonMaterial;
-        pilar3.material = neonMaterial;
-        pilar4.material = neonMaterial;
+        links.renderingGroupId = 2;
+        rechts.renderingGroupId = 2;
+        oben.renderingGroupId = 2;
+        unten.renderingGroupId = 2;
+        links.material = neonMaterial;
+        rechts.material = neonMaterial;
+        oben.material = neonMaterial;
+        unten.material = neonMaterial;
 
         // Add particle effects to the portal (using provided snippet IDs)
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#488", scene, false).then(system => {
-            system.emitter = pilar3;
+            system.emitter = oben;
         });
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#489", scene, false).then(system => {
-            system.emitter = pilar1;
+            system.emitter = links;
         });
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#489", scene, false).then(system => {
-            system.emitter = pilar2;
+            system.emitter = rechts;
         });
     }
 
