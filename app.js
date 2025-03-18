@@ -379,8 +379,8 @@ const createScene = async function () {
         const unten = oben.clone("unten");
     
         // Positionierung der vertikalen Säulen (links & rechts)
-        links.position.set(-reticleSizeX / 2, reticleSizeY, 0); // Linke Kante
-        rechts.position.set(reticleSizeX / 2, reticleSizeY, 0);  // Rechte Kante
+        links.position.set(-reticleSizeX / 2, -reticleSizeY, 0); // Linke Kante
+        rechts.position.set(reticleSizeX / 2, -reticleSizeY, 0);  // Rechte Kante
     
         // Positionierung der horizontalen Säulen (oben & unten)
         oben.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
