@@ -46,7 +46,7 @@ const createScene = async function () {
     const scene = new BABYLON.Scene(engine);
     const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
     //camera.setTarget(BABYLON.Vector3.Zero());
-    camera.attachControl(canvas, false);
+    camera.attachControl(canvas, true);
 
     // -----------------------------
     // Create GUI for non-AR mode and AR availability check
@@ -250,6 +250,43 @@ const createScene = async function () {
         }
     }
 
+    // DRAGGING
+
+    let isDragging = false;  // Track whether the reticle is being dragged
+
+scene.onPointerDown = (evt, pickInfo) => {
+    if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR) {
+        if (state === 0 && hitTest) {
+            // First tap: Create and position the reticle using the hit-test marker
+            createReticle();
+            reticleMesh.position.copyFrom(marker.position);
+            let euler = marker.rotationQuaternion.toEulerAngles();
+            reticleMesh.rotation.y = euler.y;
+            reticleMesh.isVisible = true;
+            state = 1;  // Enter rotation/position adjustment state
+        } 
+        else if (state === 1 && pickInfo.hit && pickInfo.pickedMesh === reticleMesh) {
+            // If reticle is clicked, enable dragging
+            isDragging = true;
+        }
+    }
+};
+
+// Handle dragging when pointer moves
+scene.onPointerMove = (evt, pickInfo) => {
+    if (isDragging && pickInfo.hit) {
+        // Update reticle position with pointer movement
+        reticleMesh.position.copyFrom(pickInfo.pickedPoint);
+    }
+};
+
+// Stop dragging on pointer release
+scene.onPointerUp = () => {
+    isDragging = false;
+};
+
+
+
     // -----------------------------
     // onPointerDown: Handle "Select" / State Transitions
     // -----------------------------
@@ -277,6 +314,9 @@ const createScene = async function () {
             } else if (state === 3) {
                 // Fourth tap: Finish scale adjustment and activate the portal
                 state = 4;
+            } else if (state === 4) {
+                // Fourth tap: Finish scale adjustment and activate the portal
+                state = 5;
                 activatePortal();
             }
         }
@@ -295,17 +335,17 @@ const createScene = async function () {
                     //const xAxis = gamepad.axes[2];  // Horizontal axis (e.g., for rotation)
                     const yAxis = gamepad.axes[3];  // Vertical axis (e.g., for height/scale)
                     
-                    if (state === 1) {
+                    if (state === 2) {
                         // Adjust reticle scaling (uniform scale) (y-axis input)
                         const scale = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.02);
                         reticleMesh.scaling.set(scale, scale, scale);
                         gamepad.axes[2] = 0;
                         
-                    } else if (state === 2) {
+                    } else if (state === 3) {
                         // Adjust reticle height (Y position) (y-axis input)
                         reticleMesh.position.y += yAxis * 0.05;
                         gamepad.axes[2] = 0;
-                    } else if (state === 3) {
+                    } else if (state === 4) {
                         // Adjust reticle rotation around Y-axis (x-axis input)
                         reticleMesh.rotation.y += yAxis * 0.025;
                         gamepad.axes[2] = 0;
