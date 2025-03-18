@@ -379,15 +379,17 @@ const createScene = async function () {
         const pilar4 = pilar3.clone("pilar4");
     
         // Positionierung der vertikalen Säulen (links & rechts)
-        pilar1.position.set(-reticleSizeX / 2, pillarHeight / 2, 0); // Linke Kante
-        pilar2.position.set(reticleSizeX / 2, pillarHeight / 2, 0);  // Rechte Kante
+        pilar1.position.set(-reticleSizeX / 2, reticleSizeY / 2, 0); // Linke Kante
+        pilar2.position.set(reticleSizeX / 2, reticleSizeY / 2, 0);  // Rechte Kante
     
         // Positionierung der horizontalen Säulen (oben & unten)
         pilar3.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        pilar3.position.set(0, reticleSizeY / 2, -reticleSizeZ / 2); // Obere Kante (z-Achse)
+        pilar3.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
         
         pilar4.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        pilar4.position.set(0, -reticleSizeY / 2, -reticleSizeZ / 2); // Untere Kante (z-Achse)
+        pilar4.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
+    
+    
     
     
     
