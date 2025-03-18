@@ -323,14 +323,10 @@ const createScene = async function () {
         // -----------------------------
         // Update Occluder Visibility based on XR Camera vs. Portal Position
         // -----------------------------
-    
-        marker.isVisible = !portalAppearded;
-
-        if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
-
+        if (portalPosition && xrCamera) {
+            // Simple check based on Z position (you may want to adjust this for your scene)
             if (xrCamera.position.z > portalPosition.z) {
-
-                isInRealWorld = false;
+                // User is inside the virtual world: adjust occluders for proper occlusion
                 occluder.isVisible = false;
                 occluderR.isVisible = true;
                 occluderFloor.isVisible = false;
@@ -338,10 +334,8 @@ const createScene = async function () {
                 occluderRight.isVisible = false;
                 occluderLeft.isVisible = false;
                 occluderback.isVisible = false;
-
-            }
-            else {
-                isInRealWorld = true;
+            } else {
+                // User is in the real world: show occluders to hide the virtual world
                 occluder.isVisible = true;
                 occluderR.isVisible = false;
                 occluderFloor.isVisible = true;
@@ -349,11 +343,9 @@ const createScene = async function () {
                 occluderRight.isVisible = true;
                 occluderLeft.isVisible = true;
                 occluderback.isVisible = true;
-
             }
         }
     });
-    
 
     // -----------------------------
     // Activate Portal: Finalize Placement and Create Portal Geometry
