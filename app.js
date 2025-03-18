@@ -259,7 +259,7 @@ const createScene = async function () {
     // -----------------------------
     scene.onPointerDown = (evt, pickInfo) => {
         // Only process if in AR session
-        if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR) {
+        if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppearded) {
             
 
 
@@ -281,6 +281,8 @@ const createScene = async function () {
             } else if (state === 3) {
                 // Fourth tap: Finish scale adjustment and activate the portal
                 state = 4;
+
+                // ACTIVATE
                 activatePortal();
             }
         }
@@ -351,6 +353,7 @@ const createScene = async function () {
     // Activate Portal: Finalize Placement and Create Portal Geometry
     // -----------------------------
     function activatePortal() {
+
         portalAppeared = true;
         if (reticleMesh) {
             reticleMesh.isVisible = false;  // Hide reticle after placement
@@ -441,7 +444,6 @@ const createScene = async function () {
     // Scene Render Settings
     // -----------------------------
     scene.setRenderingAutoClearDepthStencil(1, false, false, false);
-    scene.setRenderingAutoClearDepthStencil(2, false, false, false);
     scene.setRenderingAutoClearDepthStencil(0, true, true, true);
     scene.autoClear = true;
 
