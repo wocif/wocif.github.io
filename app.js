@@ -363,8 +363,8 @@ const createScene = async function () {
         rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
         // Wichtige Variablen für die Positionierung
-        const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks (horizontale Achse)
-        const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks (vertikale Achse)
+        const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
+        const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
         const reticleSizeZ = reticleMesh.scaling.z; // Tiefe des Rechtecks
     
         // Höhe der vertikalen Säulen (angepasst auf das Reticle)
@@ -379,15 +379,17 @@ const createScene = async function () {
         const pilar4 = pilar3.clone("pilar4");
     
         // Positionierung der vertikalen Säulen (links & rechts)
-        pilar1.position.set(-reticleSizeX / 2, reticleSizeY / 2, 0); // Linke Kante (horizontale Position, vertikal zentriert)
-        pilar2.position.set(reticleSizeX / 2, reticleSizeY / 2, 0);  // Rechte Kante (horizontale Position, vertikal zentriert)
+        pilar1.position.set(-reticleSizeX / 2, pillarHeight / 2, 0); // Linke Kante
+        pilar2.position.set(reticleSizeX / 2, pillarHeight / 2, 0);  // Rechte Kante
     
         // Positionierung der horizontalen Säulen (oben & unten)
-        pilar3.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen entlang der X-Achse
-        pilar3.position.set(0, reticleSizeY / 2, -reticleSizeZ / 2); // Obere Kante (die Z-Achse ist die Tiefe)
+        pilar3.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        pilar3.position.set(0, reticleSizeY / 2, -reticleSizeZ / 2); // Obere Kante (z-Achse)
+        
+        pilar4.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        pilar4.position.set(0, -reticleSizeY / 2, -reticleSizeZ / 2); // Untere Kante (z-Achse)
     
-        pilar4.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen entlang der X-Achse
-        pilar4.position.set(0, -reticleSizeY / 2, -reticleSizeZ / 2); // Untere Kante (die Z-Achse ist die Tiefe)
+    
     
     
 
