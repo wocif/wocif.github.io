@@ -251,7 +251,11 @@ const createScene = async function () {
             reticleMesh.material = reticleMat;
             reticleMesh.renderingGroupId = 3;  // Render in its own group
             reticleMesh.isVisible = false;
-            reticleMesh.rotation = BABYLON.Vector3.Zero();
+            //reticleMesh.rotation = BABYLON.Vector3.Zero();
+                // Set initial rotation, but don't overwrite it later
+            if (!reticleMesh.rotation) {
+                reticleMesh.rotation = new BABYLON.Vector3(0, 0, 0);
+            }
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
         }
     }
