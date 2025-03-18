@@ -44,7 +44,7 @@ var createDefaultEngine = function() {
 const createScene = async function () {
     // Create the scene and set up camera
     const scene = new BABYLON.Scene(engine);
-    const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 2, -5), scene);
+    const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -5), scene);
     //camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
 
