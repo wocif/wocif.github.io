@@ -357,7 +357,7 @@ const createScene = async function () {
         rootOccluder.setEnabled(true);
 
         // Use the final reticle transform for portal placement
-        portalPosition.copyFrom(reticleMesh.position);
+        portalPosition.y = reticleMesh.position.y + reticleMesh.scaling.y * 0.5;
         rootPilar.position.copyFrom(reticleMesh.position);
         rootPilar.rotation.copyFrom(reticleMesh.rotation);
         rootPilar.scaling.copyFrom(reticleMesh.scaling);
