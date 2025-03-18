@@ -368,9 +368,7 @@ const createScene = async function () {
         rootScene.position = portalPosition;
 
         //Align occluders
-        rootOccluder.translate(BABYLON.Axis.Y, 3);
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
-        rootOccluder.translate(BABYLON.Axis.Z, -2);
+
 
     
         // Use the final reticle transform for portal placement
