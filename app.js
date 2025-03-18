@@ -48,7 +48,7 @@ const createScene = async function () {
 
     //free camera
     camera.inputs.removeByType("FreeCameraGamepadInput");
-    //camera.inputs.clear();
+    camera.inputs.clear();
     
 
     //camera.setTarget(BABYLON.Vector3.Zero());
