@@ -259,7 +259,7 @@ const createScene = async function () {
     // -----------------------------
     scene.onPointerDown = (evt, pickInfo) => {
         // Only process if in AR session
-        if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR && !portalAppearded) {
+        if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR) {
             
 
 
@@ -353,7 +353,7 @@ const createScene = async function () {
     // Activate Portal: Finalize Placement and Create Portal Geometry
     // -----------------------------
     function activatePortal() {
-
+        
         portalAppeared = true;
         if (reticleMesh) {
             reticleMesh.isVisible = false;  // Hide reticle after placement
