@@ -136,7 +136,7 @@ const createScene = async function () {
     rootPilar.rotationQuaternion = new BABYLON.Quaternion();
 
     // lower ground
-    rootScene.position.y -= 3;
+    rootScene.position.y -= 5;
 
     // -----------------------------
     // Occluder Setup using CSG (Constructive Solid Geometry)
