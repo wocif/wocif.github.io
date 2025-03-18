@@ -136,14 +136,14 @@ const createScene = async function () {
     rootPilar.rotationQuaternion = new BABYLON.Quaternion();
 
     // lower ground
-    rootScene.position.y -= 5;
+    rootScene.position.y -= 4;
 
     // -----------------------------
     // Occluder Setup using CSG (Constructive Solid Geometry)
     // -----------------------------
     // Create a large ground box and a hole box for occluders
     const ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
-    const hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 2, width: 1, height: 0.01 }, scene);
+    const hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 10, width: 1, height: 0.01 }, scene);
 
     // Perform CSG subtraction for occluders
     const groundCSG = BABYLON.CSG.FromMesh(ground);
