@@ -353,7 +353,6 @@ const createScene = async function () {
     // Activate Portal: Finalize Placement and Create Portal Geometry
     // -----------------------------
     function activatePortal() {
-        
         portalAppeared = true;
         if (reticleMesh) {
             reticleMesh.isVisible = false;  // Hide reticle after placement
@@ -361,15 +360,6 @@ const createScene = async function () {
         // Enable the virtual world and occluders
         rootScene.setEnabled(true);
         rootOccluder.setEnabled(true);
-
-        hitTest.transformationMatrix.decompose(undefined, undefined, portalPosition);
-
-        rootOccluder.position = portalPosition;
-        rootScene.position = portalPosition;
-
-        //Align occluders
-
-
     
         // Use the final reticle transform for portal placement
         portalPosition.y = reticleMesh.position.y + reticleMesh.scaling.y * 0.5;
