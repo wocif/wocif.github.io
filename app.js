@@ -362,21 +362,33 @@ const createScene = async function () {
         rootPilar.rotation.copyFrom(reticleMesh.rotation);
         rootPilar.scaling.copyFrom(reticleMesh.scaling);
 
-        // Further adjust portal placement as needed (these values mimic original offsets)
-        rootPilar.translate(BABYLON.Axis.Y, 1);
-        rootPilar.translate(BABYLON.Axis.X, -0.5);
-        rootPilar.translate(BABYLON.Axis.Z, 0.05);  // Push slightly into the virtual world
+// Wichtige Variablen für die Positionierung
+const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
+const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
+const reticleSizeZ = reticleMesh.scaling.z; // Tiefe des Rechtecks
 
-        // Create portal geometry (pillars)
-        const pilar1 = BABYLON.MeshBuilder.CreateBox("pilar1", { height: 2, width: 0.1, depth: 0.1 }, scene);
-        const pilar2 = BABYLON.MeshBuilder.CreateBox("pilar2", { height: 2, width: 0.1, depth: 0.1 }, scene);
-        const pilar3 = BABYLON.MeshBuilder.CreateBox("pilar3", { height: 1.1, width: 0.1, depth: 0.1 }, scene);
+// Höhe der vertikalen Säulen (angepasst auf das Reticle)
+const pillarHeight = reticleSizeY;
+const pillarWidth = 0.1;
+const pillarDepth = 0.1;
 
-        // Adjust positions and rotations of the pillars to form a portal
-        pilar2.translate(BABYLON.Axis.X, 1, BABYLON.Space.LOCAL);
-        pilar3.addRotation(0, 0, Math.PI / 2);
-        pilar3.translate(BABYLON.Axis.Y, 1, BABYLON.Space.LOCAL);
-        pilar3.translate(BABYLON.Axis.Y, -0.5, BABYLON.Space.LOCAL);
+// Erstelle die vier Säulen
+const pilar1 = BABYLON.MeshBuilder.CreateBox("pilar1", { height: pillarHeight, width: pillarWidth, depth: pillarDepth }, scene);
+const pilar2 = pilar1.clone("pilar2");
+const pilar3 = BABYLON.MeshBuilder.CreateBox("pilar3", { height: reticleSizeX, width: pillarWidth, depth: pillarDepth }, scene);
+const pilar4 = pilar3.clone("pilar4");
+
+// Positionierung der vertikalen Säulen (links & rechts)
+pilar1.position.set(-reticleSizeX / 2, pillarHeight / 2, 0); // Linke Kante
+pilar2.position.set(reticleSizeX / 2, pillarHeight / 2, 0);  // Rechte Kante
+
+// Positionierung der horizontalen Säulen (oben & unten)
+pilar3.rotation.z = Math.PI / 2;
+pilar3.position.set(0, reticleSizeY, 0); // Obere Kante
+
+pilar4.rotation.z = Math.PI / 2;
+pilar4.position.set(0, 0, 0); // Untere Kante
+
 
         // Parent pillars to rootPilar so that they inherit its transform
         pilar1.parent = rootPilar;
