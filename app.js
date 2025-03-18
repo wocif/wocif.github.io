@@ -324,34 +324,36 @@ const createScene = async function () {
         // Update Occluder Visibility based on XR Camera vs. Portal Position
         // -----------------------------
     
-    marker.isVisible = !portalAppearded;
+        marker.isVisible = !portalAppearded;
 
-    if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
+        if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
 
-        if (xrCamera.position.z > portalPosition.z) {
+            if (xrCamera.position.z > portalPosition.z) {
 
-            isInRealWorld = false;
-            occluder.isVisible = false;
-            occluderR.isVisible = true;
-            occluderFloor.isVisible = false;
-            occluderTop.isVisible = false;
-            occluderRight.isVisible = false;
-            occluderLeft.isVisible = false;
-            occluderback.isVisible = false;
+                isInRealWorld = false;
+                occluder.isVisible = false;
+                occluderR.isVisible = true;
+                occluderFloor.isVisible = false;
+                occluderTop.isVisible = false;
+                occluderRight.isVisible = false;
+                occluderLeft.isVisible = false;
+                occluderback.isVisible = false;
 
+            }
+            else {
+                isInRealWorld = true;
+                occluder.isVisible = true;
+                occluderR.isVisible = false;
+                occluderFloor.isVisible = true;
+                occluderTop.isVisible = true;
+                occluderRight.isVisible = true;
+                occluderLeft.isVisible = true;
+                occluderback.isVisible = true;
+
+            }
         }
-        else {
-            isInRealWorld = true;
-            occluder.isVisible = true;
-            occluderR.isVisible = false;
-            occluderFloor.isVisible = true;
-            occluderTop.isVisible = true;
-            occluderRight.isVisible = true;
-            occluderLeft.isVisible = true;
-            occluderback.isVisible = true;
-
-        }
-    }
+    });
+    
 
     // -----------------------------
     // Activate Portal: Finalize Placement and Create Portal Geometry
