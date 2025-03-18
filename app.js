@@ -45,14 +45,8 @@ const createScene = async function () {
     // Create the scene and set up camera
     const scene = new BABYLON.Scene(engine);
     const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
-
-    //free camera
-    camera.inputs.removeByType("FreeCameraGamepadInput");
-    camera.inputs.clear();
-    
-
     //camera.setTarget(BABYLON.Vector3.Zero());
-    camera.attachControl(canvas, true);
+    //camera.attachControl(canvas, true);
 
     // -----------------------------
     // Create GUI for non-AR mode and AR availability check
@@ -251,11 +245,7 @@ const createScene = async function () {
             reticleMesh.material = reticleMat;
             reticleMesh.renderingGroupId = 3;  // Render in its own group
             reticleMesh.isVisible = false;
-            //reticleMesh.rotation = BABYLON.Vector3.Zero();
-                // Set initial rotation, but don't overwrite it later
-            if (!reticleMesh.rotation) {
-                reticleMesh.rotation = new BABYLON.Vector3(0, 0, 0);
-            }
+            reticleMesh.rotation = BABYLON.Vector3.Zero();
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
         }
     }
