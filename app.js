@@ -129,13 +129,13 @@ const createScene = async function () {
     // Root Transform Nodes for Virtual World and Portal
     // -----------------------------
     const rootOccluder = new BABYLON.TransformNode("rootOccluder", scene);
-    rootOccluder.rotationQuaternion = new BABYLON.Quaternion();
+    rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
     const rootScene = new BABYLON.TransformNode("rootScene", scene);
-    rootScene.rotationQuaternion = new BABYLON.Quaternion();
+    rootScene.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
     const rootPilar = new BABYLON.TransformNode("rootPilar", scene);
-    rootPilar.rotationQuaternion = new BABYLON.Quaternion();
+    rootPilar.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
 
-    // lower ground
+    // lower ground of 3d scene
     rootScene.position.y -= 4;
 
     // -----------------------------
