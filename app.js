@@ -440,9 +440,17 @@ const createScene = async function () {
         
         //Align occluders TODO
         rootOccluder.position.copyFrom(portalPosition);
-        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion
-        ? reticleMesh.rotationQuaternion.clone().multiply(BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2))
-        : BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+        if (reticleMesh.rotationQuaternion) {
+            // Erste Drehung um die globale -X-Achse um 90°
+            const firstRotation = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+            
+            // Danach um die Y-Achse des Reticles drehen
+            rootOccluder.rotationQuaternion = firstRotation.multiply(reticleMesh.rotationQuaternion);
+        } else {
+            // Falls das Reticle keine Rotation hat, wende nur die erste Drehung an
+            rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+        }
+
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderFloor.translate(BABYLON.Axis.Y, 1);
