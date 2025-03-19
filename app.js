@@ -152,14 +152,14 @@ const createScene = async function () {
     const booleanRCSG = holeCSG.subtract(groundCSG);
 
     // Create main occluder meshes
-    const occluder = booleanCSG.toMesh("occluder", null, scene);
-    const occluderR = booleanRCSG.toMesh("occluderR", null, scene);
+    let occluder = booleanCSG.toMesh("occluder", null, scene);
+    let occluderR = booleanRCSG.toMesh("occluderR", null, scene);
     // Additional occluder boxes for floor and sides
-    const occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene);
-    const occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
-    const occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 7, depth: 7, height: 0.001 }, scene);
-    const occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 7, depth: 7, height: 0.001 }, scene);
-    const occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 7, depth: 7, height: 0.001 }, scene);
 
     // Create occluder material to force depth write
     const occluderMaterial = new BABYLON.StandardMaterial("om", scene);
@@ -414,6 +414,7 @@ const createScene = async function () {
         //im Fenster:
         occluderback.translate(BABYLON.Axis.Y, 7);
         occluderback.translate(BABYLON.Axis.Z, 2);
+
         occluderRight.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
         occluderRight.translate(BABYLON.Axis.Y, -3.4);
         occluderRight.translate(BABYLON.Axis.X, 3.5);
