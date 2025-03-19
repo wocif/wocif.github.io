@@ -374,9 +374,9 @@ const createScene = async function () {
                     occluderback.isVisible = true;
                 }
             }
-            }
-        });
-    }
+            
+        }
+    });
 
     // -----------------------------
     // Activate Portal: Finalize Placement and Create Portal Geometry
