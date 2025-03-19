@@ -376,25 +376,27 @@ const createScene = async function () {
         //portalPosition.y = reticleMesh.position.y + reticleMes.scaling.y * 0.5;
 
         // Mittelpunkte auf allen Achse berechnen
-        const boundingInfo = reticleMesh.getBoundingInfo();
-        portalPosition.y = ((boundingInfo.boundingBox.minimumWorld.y +boundingInfo.boundingBox.maximumWorld.y) / 2)
-        portalPosition.x = ((boundingInfo.boundingBox.minimumWorld.x +boundingInfo.boundingBox.maximumWorld.x) / 2)
-        portalPosition.z = ((boundingInfo.boundingBox.minimumWorld.z +boundingInfo.boundingBox.maximumWorld.z) / 2)
+        const reticleBoundingInfo = reticleMesh.getBoundingInfo();
+        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
+        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
+        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
         rootOccluder.position.copyFrom(portalPosition);
         rootOccluder.rotation.copyFrom(reticleMesh.rotation);
 
         // y = Höhe
-        rootScene.position.x.copyFrom(portalPosition.x);
-        rootScene.position.z.copyFrom(portalPosition.z);
+        rootScene.position = portalPosition.x;
+        rootScene.position = portalPosition.z;
 
         rootPilar.position.copyFrom(portalPosition);
         rootPilar.rotation.copyFrom(reticleMesh.rotation);
-        rootPilar.scaling.copyFrom(reticleMesh.scaling);
+        //rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
         // Wichtige Variablen für die Positionierung
-        const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
-        const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
+        const reticleSizeX =  (reticleBoundingInfo.boundingBox.maximumWorld.x - reticleBoundingInfo.boundingBox.minimumWorld.x)
+        const reticleSizeY =  (reticleBoundingInfo.boundingBox.maximumWorld.y - reticleBoundingInfo.boundingBox.minimumWorld.y)
+        //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
+        //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
         
     
         // Höhe der vertikalen Säulen (angepasst auf das Reticle)
