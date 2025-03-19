@@ -154,7 +154,7 @@ const createScene = async function () {
     // Create main occluder meshes
     let occluder = booleanCSG.toMesh("occluder", null, scene);
     let occluderR = booleanRCSG.toMesh("occluderR", null, scene);
-    // Additional occluder boxes for floor and sides
+    // Additional occluder boxes for floor and sides // TODO 
     let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene);
     let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
     let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 7, depth: 7, height: 0.001 }, scene);
@@ -356,7 +356,7 @@ const createScene = async function () {
         
         portalAppeared = true;
         if (reticleMesh) {
-            reticleMesh.isVisible = false;  // Hide reticle after placement
+            reticleMesh.isVisible = true;  // Hide reticle after placement // CHANGED
         }
         // Enable the virtual world and occluders
         rootScene.setEnabled(true);
@@ -400,7 +400,7 @@ const createScene = async function () {
         unten.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
         unten.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
         
-        //Align occluders
+        //Align occluders TODO
         rootOccluder.translate(BABYLON.Axis.Y, 3);
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         rootOccluder.translate(BABYLON.Axis.Z, -2);
