@@ -142,8 +142,8 @@ const createScene = async function () {
     // Occluder Setup using CSG (Constructive Solid Geometry)
     // -----------------------------
     // Create a large ground box and a hole box for occluders
-    const ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
-    const hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 2, width: 1, height: 0.01 }, scene);
+    let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
+    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 2, width: 1, height: 0.01 }, scene);
 
     // Perform CSG subtraction for occluders
     const groundCSG = BABYLON.CSG.FromMesh(ground);
@@ -368,13 +368,22 @@ const createScene = async function () {
         rootScene.setEnabled(true);
         rootOccluder.setEnabled(true);
 
-        rootOccluder.position = portalPosition;
-        //rootScene.position = portalPosition;
+        
 
         
     
         // Use the final reticle transform for portal placement
-        portalPosition.y = reticleMesh.position.y + reticleMesh.scaling.y * 0.5;
+        //portalPosition.y = reticleMesh.position.y + reticleMes.scaling.y * 0.5;
+
+        // Mittelpunkte auf allen Achse berechnen
+        const boundingInfo = reticleMesh.getBoundingInfo();
+        portalPosition.y = (boundingInfo.boundingBox.minimumWorld.y +boundingInfo.boundingBox.maximumWorld.y) / 2
+        portalPosition.x = (boundingInfo.boundingBox.minimumWorld.x +boundingInfo.boundingBox.maximumWorld.x) / 2
+        portalPosition.z = (boundingInfo.boundingBox.minimumWorld.z +boundingInfo.boundingBox.maximumWorld.z) / 2
+
+        rootOccluder.position = portalPosition;
+        rootScene.position = portalPosition;
+
         rootPilar.position.copyFrom(reticleMesh.position);
         rootPilar.rotation.copyFrom(reticleMesh.rotation);
         rootPilar.scaling.copyFrom(reticleMesh.scaling);
