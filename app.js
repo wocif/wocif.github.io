@@ -303,7 +303,7 @@ const createScene = async function () {
                     
                     if (state === 1) {
                         // Reticle-Höhe (Y-Position)
-                        reticleMesh.position.y += yAxis * 0.05;
+                        reticleMesh.position.y += yAxis * 0.01;
                         gamepad.axes[2] = 0;
                     
                     } else if (state === 2) {
@@ -320,7 +320,7 @@ const createScene = async function () {
                     
                     } else if (state === 4) {
                         // Rotation um Y-Achse 
-                        reticleMesh.rotation.y += yAxis * 0.025;
+                        reticleMesh.rotation.y += yAxis * 0.005;
                         gamepad.axes[2] = 0;
                     }
                     
