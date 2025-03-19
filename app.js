@@ -273,14 +273,13 @@ const createScene = async function () {
                 reticleMesh.isVisible = true;
                 state = 1;  // Next state: Adjust rotation
             } else if (state === 1) {
-                // Second tap: Finish rotation adjustment; move to height adjustment
                 state = 2;
             } else if (state === 2) {
-                // Third tap: Finish height adjustment; move to scale adjustment
                 state = 3;
             } else if (state === 3) {
-                // Fourth tap: Finish scale adjustment and activate the portal
                 state = 4;
+            } else if (state === 4) {
+                state = 5;
 
                 // ACTIVATE
                 activatePortal();
@@ -303,14 +302,14 @@ const createScene = async function () {
                     
                     if (state === 1) {
                         // Adjust reticle scaling (uniform scale) (y-axis input)
-                        const scale = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
-                        reticleMesh.scaling.set(scale, 0, 0);
+                        const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
+                        reticleMesh.scaling.set(scalex, 0, 0);
                         gamepad.axes[2] = 0;
                         
                     } else if (state === 2) {
                         // Adjust reticle scaling (uniform scale) (y-axis input)
-                        const scale = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
-                        reticleMesh.scaling.set(0, scale, 0);
+                        const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
+                        reticleMesh.scaling.set(0, scaley, 0);
                         gamepad.axes[2] = 0;
                         
                     } else if (state === 3) {
