@@ -382,93 +382,34 @@ const createScene = async function () {
         // Use the final reticle transform for portal placement
         //portalPosition.y = reticleMesh.position.y + reticleMes.scaling.y * 0.5;
 
-        // Mittelpunkte auf allen Achse berechnen
-        const reticleBoundingInfo = reticleMesh.getBoundingInfo();
-        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
-        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
-        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
+// Positionierung des Rahmens
+rootPilar.position.copyFrom(portalPosition);
 
-        
-        
+// Verwende Quaternion-Rotation anstatt Euler-Rotation!
+if (reticleMesh.rotationQuaternion) {
+    rootPilar.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
+} else {
+    rootPilar.rotationQuaternion = BABYLON.Quaternion.Identity();
+}
 
-        // y = Höhe
-        rootScene.position.x = portalPosition.x;
-        rootScene.position.z = portalPosition.z;
+// Wende die gleiche Rotation auf die Rahmenteile an
+rahmenL.rotationQuaternion = rootPilar.rotationQuaternion.clone();
+rahmenR.rotationQuaternion = rootPilar.rotationQuaternion.clone();
+rahmenO.rotationQuaternion = rootPilar.rotationQuaternion.clone();
+rahmenU.rotationQuaternion = rootPilar.rotationQuaternion.clone();
 
-        rootPilar.position.copyFrom(portalPosition);
-        rootPilar.rotation.copyFrom(reticleMesh.rotation);
-        //rootPilar.scaling.copyFrom(reticleMesh.scaling);
+// Rotations-Logik für den Occluder
+rootOccluder.position.copyFrom(portalPosition);
+if (reticleMesh.rotationQuaternion) {
+    // Erst um globale -X-Achse drehen
+    const firstRotation = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
     
-        // Wichtige Variablen für die Positionierung
-        const reticlePosXMax = reticleBoundingInfo.boundingBox.maximumWorld.x;
-        const reticlePosXMin = reticleBoundingInfo.boundingBox.minimumWorld.x;
-        const reticlePosYMax = reticleBoundingInfo.boundingBox.maximumWorld.y;
-        const reticlePosYMin = reticleBoundingInfo.boundingBox.minimumWorld.y;
-        
-        const reticleSizeX =  (reticlePosXMax - reticlePosXMin)
-        const reticleSizeY =  (reticlePosYMin - reticlePosYMax)
-        //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
-        //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
-        
-    
-        // Höhe der vertikalen Säulen (angepasst auf das Reticle)
-        const pillarHeight = reticleSizeY;
-        const pillarWidth = 0.1;
-        const pillarDepth = 0.1;
-    
-        // Erstelle die vier Säulen
-        const rahmenL = BABYLON.MeshBuilder.CreateBox("rahmenL", { height: pillarHeight, width: pillarWidth, depth: pillarDepth }, scene);
-        const rahmenR = rahmenL.clone("rahmenR");
-        const rahmenO = BABYLON.MeshBuilder.CreateBox("rahmenO", { height: reticleSizeX, width: pillarWidth, depth: pillarDepth }, scene);
-        const rahmenU = rahmenO.clone("rahmenU");
-    
-        // Positionierung der vertikalen Säulen (links & rechts)
-        rahmenL.position.set(-reticleSizeX / 2, 0, 0); // Linke Kante
-        rahmenR.position.set(reticleSizeX / 2, 0, 0);  // Rechte Kante
-    
-        // Positionierung der horizontalen Säulen (oben & unten)
-        rahmenO.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        rahmenO.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
-        
-        rahmenU.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        rahmenU.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
+    // Danach mit der Reticle-Rotation ausrichten
+    rootOccluder.rotationQuaternion = firstRotation.multiply(reticleMesh.rotationQuaternion);
+} else {
+    rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+}
 
-        rahmenL.rotation.x = reticleMesh.rotation.x;
-        rahmenR.rotation.x = reticleMesh.rotation.x;
-        rahmenO.rotation.x = reticleMesh.rotation.x;
-        rahmenU.rotation.x = reticleMesh.rotation.x;
-        
-        //Align occluders TODO
-        rootOccluder.position.copyFrom(portalPosition);
-        if (reticleMesh.rotationQuaternion) {
-            // Erste Drehung um die globale -X-Achse um 90°
-            const firstRotation = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
-            
-            // Danach um die Y-Achse des Reticles drehen
-            rootOccluder.rotationQuaternion = firstRotation.multiply(reticleMesh.rotationQuaternion);
-        } else {
-            // Falls das Reticle keine Rotation hat, wende nur die erste Drehung an
-            rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
-        }
-
-        //rootOccluder.translate(BABYLON.Axis.Z, -2);
-        occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
-        occluderFloor.translate(BABYLON.Axis.Y, 1);
-        occluderFloor.translate(BABYLON.Axis.Z, 3.5);
-        occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
-        occluderTop.translate(BABYLON.Axis.Y, -2);
-        occluderTop.translate(BABYLON.Axis.Z, 3.5);
-        
-        //im Fenster:
-        occluderback.translate(BABYLON.Axis.Y, 7);
-        occluderback.translate(BABYLON.Axis.Z, 2);
-
-        occluderRight.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
-        occluderRight.translate(BABYLON.Axis.Y, -3.4);
-        occluderRight.translate(BABYLON.Axis.X, 3.5);
-        occluderLeft.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
-        occluderLeft.translate(BABYLON.Axis.Y, 3.4);
-        occluderLeft.translate(BABYLON.Axis.X, 3.5);
     
     
     
