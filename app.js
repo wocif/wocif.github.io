@@ -433,10 +433,10 @@ const createScene = async function () {
         rahmenU.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
         rahmenU.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
 
-        rahmenL.rotation.z.copyFrom(reticleMesh.rotation.z);
-        rahmenR.rotation.z.copyFrom(reticleMesh.rotation.z);
-        rahmenO.rotation.z.copyFrom(reticleMesh.rotation.z);
-        rahmenU.rotation.z.copyFrom(reticleMesh.rotation.z);
+        rahmenL.rotation.z = reticleMesh.rotation.z;
+        rahmenR.rotation.z = reticleMesh.rotation.z;
+        rahmenO.rotation.z = reticleMesh.rotation.z;
+        rahmenU.rotation.z = reticleMesh.rotation.z;
         
         //Align occluders TODO
         rootOccluder.position.copyFrom(portalPosition);
