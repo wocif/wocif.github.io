@@ -382,7 +382,16 @@ const createScene = async function () {
         // Use the final reticle transform for portal placement
         //portalPosition.y = reticleMesh.position.y + reticleMes.scaling.y * 0.5;
 
-// Positionierung des Rahmens
+// Mittelpunkte auf allen Achse berechnen
+const reticleBoundingInfo = reticleMesh.getBoundingInfo();
+portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y + reticleBoundingInfo.boundingBox.maximumWorld.y) / 2;
+portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x + reticleBoundingInfo.boundingBox.maximumWorld.x) / 2;
+portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z + reticleBoundingInfo.boundingBox.maximumWorld.z) / 2;
+
+// y = Höhe
+rootScene.position.x = portalPosition.x;
+rootScene.position.z = portalPosition.z;
+
 rootPilar.position.copyFrom(portalPosition);
 
 // Verwende Quaternion-Rotation anstatt Euler-Rotation!
@@ -398,6 +407,17 @@ rahmenR.rotationQuaternion = rootPilar.rotationQuaternion.clone();
 rahmenO.rotationQuaternion = rootPilar.rotationQuaternion.clone();
 rahmenU.rotationQuaternion = rootPilar.rotationQuaternion.clone();
 
+// Positionierung der vertikalen Säulen (links & rechts)
+rahmenL.position.set(-reticleSizeX / 2, 0, 0); // Linke Kante
+rahmenR.position.set(reticleSizeX / 2, 0, 0);  // Rechte Kante
+
+// Positionierung der horizontalen Säulen (oben & unten)
+rahmenO.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+rahmenO.position.set(0, reticleSizeY / 2, 0); // Obere Kante
+
+rahmenU.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+rahmenU.position.set(0, -reticleSizeY / 2, 0); // Untere Kante
+
 // Rotations-Logik für den Occluder
 rootOccluder.position.copyFrom(portalPosition);
 if (reticleMesh.rotationQuaternion) {
@@ -409,6 +429,27 @@ if (reticleMesh.rotationQuaternion) {
 } else {
     rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
 }
+
+// Weitere Anpassungen für Occluder
+occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+occluderFloor.translate(BABYLON.Axis.Y, 1);
+occluderFloor.translate(BABYLON.Axis.Z, 3.5);
+
+occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+occluderTop.translate(BABYLON.Axis.Y, -2);
+occluderTop.translate(BABYLON.Axis.Z, 3.5);
+
+// Im Fenster:
+occluderback.translate(BABYLON.Axis.Y, 7);
+occluderback.translate(BABYLON.Axis.Z, 2);
+
+occluderRight.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
+occluderRight.translate(BABYLON.Axis.Y, -3.4);
+occluderRight.translate(BABYLON.Axis.X, 3.5);
+
+occluderLeft.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
+occluderLeft.translate(BABYLON.Axis.Y, 3.4);
+occluderLeft.translate(BABYLON.Axis.X, 3.5);
 
     
     
