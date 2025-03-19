@@ -143,7 +143,7 @@ const createScene = async function () {
     // -----------------------------
     // Create a large ground box and a hole box for occluders
     let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
-    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 2, width: 1, height: 0.01 }, scene);
+    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
 
     // Perform CSG subtraction for occluders
     const groundCSG = BABYLON.CSG.FromMesh(ground);
@@ -153,12 +153,17 @@ const createScene = async function () {
 
     // Create main occluder meshes
     let occluder = booleanCSG.toMesh("occluder", null, scene);
+
+    let occluderMat = new BABYLON.StandardMaterial("occluderMat", scene);
+    occluderMat.diffuseColor = new BABYLON.Color3(0, 1, 0);  // Beispiel für eine grüne Farbe
+    occluder.material = occluderMat;
+
     let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
     // Additional occluder boxes for floor and sides // TODO 
     let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene);
-    let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 6, height: 0.001 }, scene);
-    let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 5, depth: 5, height: 0.001 }, scene);
-    let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 5, depth: 5, height: 0.001 }, scene);
+    let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 7, depth: 7, height: 0.001 }, scene);
     let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 7, depth: 7, height: 0.001 }, scene); // vor Portal, hinter User
 
     // Create occluder material to force depth write
