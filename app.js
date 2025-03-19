@@ -312,7 +312,7 @@ const createScene = async function () {
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         gamepad.axes[2] = 0;
-                        
+
                     } else if (state === 3) {
                         // Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
@@ -388,8 +388,8 @@ const createScene = async function () {
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
-        rootOccluder.position.copyFrom(portalPosition);
-        rootOccluder.rotation.copyFrom(reticleMesh.rotation);
+        
+        
 
         // y = Höhe
         rootScene.position.x = portalPosition.x;
@@ -432,9 +432,15 @@ const createScene = async function () {
         
         rahmenU.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
         rahmenU.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
+
+        rahmenL.position.copyFrom(reticleMesh.rotation);
+        rahmenR.position.copyFrom(reticleMesh.rotation);
+        rahmenO.position.copyFrom(reticleMesh.rotation);
+        rahmenU.position.copyFrom(reticleMesh.rotation);
         
         //Align occluders TODO
         rootOccluder.position.copyFrom(portalPosition);
+        rootOccluder.rotation.copyFrom(reticleMesh.rotation);
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
