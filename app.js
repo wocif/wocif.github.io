@@ -377,7 +377,7 @@ const createScene = async function () {
 
         // Mittelpunkte auf allen Achse berechnen
         const boundingInfo = reticleMesh.getBoundingInfo();
-        portalPosition.y = (boundingInfo.boundingBox.minimumWorld.y +boundingInfo.boundingBox.maximumWorld.y) / 2 -1
+        portalPosition.y = (boundingInfo.boundingBox.minimumWorld.y +boundingInfo.boundingBox.maximumWorld.y) / 2 -2
         portalPosition.x = (boundingInfo.boundingBox.minimumWorld.x +boundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.z = (boundingInfo.boundingBox.minimumWorld.z +boundingInfo.boundingBox.maximumWorld.z) / 2
 
