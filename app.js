@@ -184,7 +184,7 @@ const createScene = async function () {
                 state = 5;
             } else if (state === 5) {
                 state = 6;
-                // ACTIVATE
+                make3d();
                 activatePortal();
             }
         }
@@ -382,7 +382,7 @@ const createScene = async function () {
     // -----------------------------
     function activatePortal() {
         
-        make3d();
+        
 
         portalAppeared = true;
         if (reticleMesh) {
