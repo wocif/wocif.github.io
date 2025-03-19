@@ -125,6 +125,18 @@ const createScene = async function () {
         }
     });
 
+        // -----------------------------
+    // Load the Virtual World (Hill Valley Scene)
+    // -----------------------------
+    engine.displayLoadingUI(); // Show loading screen
+    const virtualWorldResult = await BABYLON.SceneLoader.ImportMeshAsync(
+        "",
+        "https://www.babylonjs.com/Scenes/hillvalley/",
+        "HillValley.babylon",
+        scene
+    );
+    engine.hideLoadingUI(); // Hide loading screen once loaded
+
     // -----------------------------
     // Root Transform Nodes for Virtual World and Portal
     // -----------------------------
@@ -184,17 +196,7 @@ const createScene = async function () {
     ground.isVisible = false;
     hole.isVisible = false;
 
-    // -----------------------------
-    // Load the Virtual World (Hill Valley Scene)
-    // -----------------------------
-    engine.displayLoadingUI(); // Show loading screen
-    const virtualWorldResult = await BABYLON.SceneLoader.ImportMeshAsync(
-        "",
-        "https://www.babylonjs.com/Scenes/hillvalley/",
-        "HillValley.babylon",
-        scene
-    );
-    engine.hideLoadingUI(); // Hide loading screen once loaded
+
 
     // Parent each mesh to the virtual world root and assign rendering group
     for (let child of virtualWorldResult.meshes) {
