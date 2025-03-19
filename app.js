@@ -219,7 +219,7 @@ const createScene = async function () {
     const oclVisibility = 0.001;
     occluder.isVisible = true;
     occluderR.isVisible = false;
-    occluderFloor.isVisible = true; // changed
+    occluderFloor.isVisible = false;
     occluderTop.isVisible = true;
     occluderRight.isVisible = true;
     occluderLeft.isVisible = true;
@@ -382,10 +382,11 @@ const createScene = async function () {
         portalPosition.z = (boundingInfo.boundingBox.minimumWorld.z +boundingInfo.boundingBox.maximumWorld.z) / 2
 
         rootOccluder.position.copyFrom(portalPosition);
-        
+        rootOccluder.rotation.copyFrom(reticleMesh.rotation);
+
         rootScene.position.copyFrom(portalPosition);
 
-        rootPilar.position.copyFrom(reticleMesh.position);
+        rootPilar.position.copyFrom(portalPosition);
         rootPilar.rotation.copyFrom(reticleMesh.rotation);
         rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
