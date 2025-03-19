@@ -451,6 +451,7 @@ occluderLeft.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z
 occluderLeft.translate(BABYLON.Axis.Y, 3.4);
 occluderLeft.translate(BABYLON.Axis.X, 3.5);
 
+
     
     
     
