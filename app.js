@@ -385,8 +385,8 @@ const createScene = async function () {
         rootOccluder.rotation.copyFrom(reticleMesh.rotation);
 
         // y = Höhe
-        rootScene.position = portalPosition.x;
-        rootScene.position = portalPosition.z;
+        rootScene.position.x = portalPosition.x;
+        rootScene.position.y = portalPosition.z;
 
         rootPilar.position.copyFrom(portalPosition);
         rootPilar.rotation.copyFrom(reticleMesh.rotation);
