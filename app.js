@@ -235,12 +235,8 @@ const createScene = async function () {
             }
         }
 
-
-    });
-
-    function make3d() {
-        scene.onBeforeRenderObservable.add(() => {
-                    // -----------------------------
+        function make3d() {
+            // -----------------------------
             // Root Transform Nodes for Virtual World and Portal
             // -----------------------------
             const rootOccluder = new BABYLON.TransformNode("rootOccluder", scene);
@@ -374,7 +370,10 @@ const createScene = async function () {
                     occluderback.isVisible = true;
                 }
             }
-        });
+            }
+    });
+
+
     }
 
     // -----------------------------
