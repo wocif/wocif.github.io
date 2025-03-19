@@ -301,27 +301,28 @@ const createScene = async function () {
                     const yAxis = gamepad.axes[3];  // Vertical axis (e.g., for height/scale)
                     
                     if (state === 1) {
-                        // Adjust reticle scaling (uniform scale) (y-axis input)
+                        // Zuerst Skalierung in X-Richtung anpassen
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
-                        reticleMesh.scaling.set(scalex, 0, 0);
+                        reticleMesh.scaling.x = scalex; // Nur X-Achse ändern
                         gamepad.axes[2] = 0;
-                        
+                    
                     } else if (state === 2) {
-                        // Adjust reticle scaling (uniform scale) (y-axis input)
+                        // Dann Skalierung in Y-Richtung anpassen, ohne X zu überschreiben
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
-                        reticleMesh.scaling.set(0, scaley, 0);
+                        reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         gamepad.axes[2] = 0;
-                        
+                    
                     } else if (state === 3) {
-                        // Adjust reticle height (Y position) (y-axis input)
+                        // Reticle-Höhe anpassen (Y-Position)
                         reticleMesh.position.y += yAxis * 0.05;
                         gamepad.axes[2] = 0;
+                    
                     } else if (state === 4) {
-                        // Adjust reticle rotation around Y-axis (x-axis input)
+                        // Rotation um Y-Achse anpassen
                         reticleMesh.rotation.y += yAxis * 0.025;
                         gamepad.axes[2] = 0;
-                        
                     }
+                    
                 }
             }
         }
