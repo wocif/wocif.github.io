@@ -137,6 +137,104 @@ const createScene = async function () {
     );
     engine.hideLoadingUI(); // Hide loading screen once loaded
 
+        // -----------------------------
+    // Reticle (Placement Mesh) Creation
+    // -----------------------------
+    function createReticle() {
+        if (!reticleMesh) {
+            reticleMesh = BABYLON.MeshBuilder.CreatePlane("reticleMesh", { width: 1, height: 0.5 }, scene);
+            let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
+            reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
+            reticleMat.backFaceCulling = false;
+            reticleMesh.material = reticleMat;
+            reticleMesh.renderingGroupId = 2;  // Render in its own group
+            reticleMesh.isVisible = false;
+            reticleMesh.rotation = BABYLON.Vector3.Zero();
+            reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
+        }
+    }
+    
+
+    // -----------------------------
+    // onPointerDown: Handle "Select" / State Transitions
+    // -----------------------------
+    scene.onPointerDown = (evt, pickInfo) => {
+        // Only process if in AR session
+        if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR) {
+            
+
+
+            if (state === 0 && hitTest) {
+                // First tap: Create and position the reticle using the hit-test marker
+                createReticle();
+                reticleMesh.position.copyFrom(marker.position);
+                reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
+                // Convert marker rotation (quaternion) to Euler angles; we use Y rotation only here
+                let euler = marker.rotationQuaternion.toEulerAngles();
+                reticleMesh.rotation.y = euler.y + Math.PI;
+                reticleMesh.isVisible = true;
+                state = 1;  // Next state: Adjust rotation
+            } else if (state === 1) {
+                state = 2;
+            } else if (state === 2) {
+                state = 3;
+            } else if (state === 3) {
+                state = 4;
+            } else if (state === 4) {
+                state = 5;
+            } else if (state === 5) {
+                state = 6;
+                // ACTIVATE
+                activatePortal();
+            }
+        }
+    };
+
+    // -----------------------------
+    // Gamepad Input Handling for Reticle Adjustments
+    // -----------------------------
+    scene.onBeforeRenderObservable.add(() => {
+        // Process gamepad input only if reticle exists and portal is not activated
+        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 6) {
+            const xrSession = xr.baseExperience.sessionManager.session;
+            for (const inputSource of xrSession.inputSources) {
+                if (inputSource.gamepad) {
+                    const gamepad = inputSource.gamepad;
+                    //const xAxis = gamepad.axes[2];  // Horizontal axis (e.g., for rotation)
+                    const yAxis = gamepad.axes[3];  // Vertical axis (e.g., for height/scale)
+                    
+                    if (state === 1) {
+                        // Reticle-Höhe (Y-Position)
+                        reticleMesh.position.y += yAxis * 0.01;
+                        gamepad.axes[2] = 0;
+                    
+                    } else if (state === 2) {
+                        // Skalierung in Y-Richtung
+                        const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
+                        reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
+                        gamepad.axes[2] = 0;
+
+                    } else if (state === 3) {
+                        // Noch mal Höhe
+                        reticleMesh.position.y += yAxis * 0.01;
+                        gamepad.axes[2] = 0;
+
+                    } else if (state === 4) {
+                        // Skalierung in X-Richtung 
+                        const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
+                        reticleMesh.scaling.x = scalex; // Nur X-Achse ändern
+                        gamepad.axes[2] = 0;
+                    
+                    } else if (state === 5) {
+                        // Rotation um Y-Achse 
+                        reticleMesh.rotation.y += yAxis * 0.005;
+                        gamepad.axes[2] = 0;
+                    }
+                    
+                }
+            }
+        }
+
     // -----------------------------
     // Root Transform Nodes for Virtual World and Portal
     // -----------------------------
@@ -243,103 +341,7 @@ const createScene = async function () {
     rootScene.setEnabled(false);
     rootOccluder.setEnabled(false);
 
-    // -----------------------------
-    // Reticle (Placement Mesh) Creation
-    // -----------------------------
-    function createReticle() {
-        if (!reticleMesh) {
-            reticleMesh = BABYLON.MeshBuilder.CreatePlane("reticleMesh", { width: 1, height: 0.5 }, scene);
-            let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
-            reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
-            reticleMat.backFaceCulling = false;
-            reticleMesh.material = reticleMat;
-            reticleMesh.renderingGroupId = 2;  // Render in its own group
-            reticleMesh.isVisible = false;
-            reticleMesh.rotation = BABYLON.Vector3.Zero();
-            reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
-        }
-    }
-    
 
-    // -----------------------------
-    // onPointerDown: Handle "Select" / State Transitions
-    // -----------------------------
-    scene.onPointerDown = (evt, pickInfo) => {
-        // Only process if in AR session
-        if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR) {
-            
-
-
-            if (state === 0 && hitTest) {
-                // First tap: Create and position the reticle using the hit-test marker
-                createReticle();
-                reticleMesh.position.copyFrom(marker.position);
-                reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
-                // Convert marker rotation (quaternion) to Euler angles; we use Y rotation only here
-                let euler = marker.rotationQuaternion.toEulerAngles();
-                reticleMesh.rotation.y = euler.y + Math.PI;
-                reticleMesh.isVisible = true;
-                state = 1;  // Next state: Adjust rotation
-            } else if (state === 1) {
-                state = 2;
-            } else if (state === 2) {
-                state = 3;
-            } else if (state === 3) {
-                state = 4;
-            } else if (state === 4) {
-                state = 5;
-            } else if (state === 5) {
-                state = 6;
-                // ACTIVATE
-                activatePortal();
-            }
-        }
-    };
-
-    // -----------------------------
-    // Gamepad Input Handling for Reticle Adjustments
-    // -----------------------------
-    scene.onBeforeRenderObservable.add(() => {
-        // Process gamepad input only if reticle exists and portal is not activated
-        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 6) {
-            const xrSession = xr.baseExperience.sessionManager.session;
-            for (const inputSource of xrSession.inputSources) {
-                if (inputSource.gamepad) {
-                    const gamepad = inputSource.gamepad;
-                    //const xAxis = gamepad.axes[2];  // Horizontal axis (e.g., for rotation)
-                    const yAxis = gamepad.axes[3];  // Vertical axis (e.g., for height/scale)
-                    
-                    if (state === 1) {
-                        // Reticle-Höhe (Y-Position)
-                        reticleMesh.position.y += yAxis * 0.01;
-                        gamepad.axes[2] = 0;
-                    
-                    } else if (state === 2) {
-                        // Skalierung in Y-Richtung
-                        const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
-                        reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
-                        gamepad.axes[2] = 0;
-
-                    } else if (state === 3) {
-                        // Noch mal Höhe
-                        reticleMesh.position.y += yAxis * 0.01;
-                        gamepad.axes[2] = 0;
-
-                    } else if (state === 4) {
-                        // Skalierung in X-Richtung 
-                        const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
-                        reticleMesh.scaling.x = scalex; // Nur X-Achse ändern
-                        gamepad.axes[2] = 0;
-                    
-                    } else if (state === 5) {
-                        // Rotation um Y-Achse 
-                        reticleMesh.rotation.y += yAxis * 0.005;
-                        gamepad.axes[2] = 0;
-                    }
-                    
-                }
-            }
-        }
     
 
         // -----------------------------
