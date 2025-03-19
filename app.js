@@ -184,8 +184,8 @@ const createScene = async function () {
                 state = 5;
             } else if (state === 5) {
                 state = 6;
-                make3d();
-                activatePortal();
+            } else if (state === 6) {
+                state = 7;
             }
         }
     };
@@ -195,7 +195,7 @@ const createScene = async function () {
     // -----------------------------
     scene.onBeforeRenderObservable.add(() => {
         // Process gamepad input only if reticle exists and portal is not activated
-        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 6) {
+        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 8) {
             const xrSession = xr.baseExperience.sessionManager.session;
             for (const inputSource of xrSession.inputSources) {
                 if (inputSource.gamepad) {
@@ -229,6 +229,10 @@ const createScene = async function () {
                         // Rotation um Y-Achse 
                         reticleMesh.rotation.y += yAxis * 0.005;
                         gamepad.axes[2] = 0;
+                    } else if (state === 6) {
+                        make3d();
+                    } else if (state === 7) {
+                        activatePortal();
                     }
                     
                 }
@@ -371,9 +375,7 @@ const createScene = async function () {
                 }
             }
             }
-    });
-
-
+        });
     }
 
     // -----------------------------
