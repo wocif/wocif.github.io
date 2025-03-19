@@ -393,8 +393,13 @@ const createScene = async function () {
         //rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
         // Wichtige Variablen für die Positionierung
-        const reticleSizeX =  (reticleBoundingInfo.boundingBox.maximumWorld.x - reticleBoundingInfo.boundingBox.minimumWorld.x)
-        const reticleSizeY =  (reticleBoundingInfo.boundingBox.maximumWorld.y - reticleBoundingInfo.boundingBox.minimumWorld.y)
+        const reticlePosXMax = reticleBoundingInfo.boundingBox.maximumWorld.x;
+        const reticlePosXMin = reticleBoundingInfo.boundingBox.minimumWorld.x;
+        const reticlePosYMax = reticleBoundingInfo.boundingBox.maximumWorld.y;
+        const reticlePosYMin = reticleBoundingInfo.boundingBox.minimumWorld.y;
+        
+        const reticleSizeX =  (reticlePosXMax - reticlePosXMin)
+        const reticleSizeY =  (reticlePosYMin - reticlePosYMax)
         //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
         //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
         
@@ -405,21 +410,21 @@ const createScene = async function () {
         const pillarDepth = 0.1;
     
         // Erstelle die vier Säulen
-        const links = BABYLON.MeshBuilder.CreateBox("links", { height: pillarHeight, width: pillarWidth, depth: pillarDepth }, scene);
-        const rechts = links.clone("rechts");
-        const oben = BABYLON.MeshBuilder.CreateBox("oben", { height: reticleSizeX, width: pillarWidth, depth: pillarDepth }, scene);
-        const unten = oben.clone("unten");
+        const rahmenL = BABYLON.MeshBuilder.CreateBox("rahmenL", { height: pillarHeight, width: pillarWidth, depth: pillarDepth }, scene);
+        const rahmenR = rahmenL.clone("rahmenR");
+        const rahmenO = BABYLON.MeshBuilder.CreateBox("rahmenO", { height: reticleSizeX, width: pillarWidth, depth: pillarDepth }, scene);
+        const rahmenU = rahmenO.clone("rahmenU");
     
         // Positionierung der vertikalen Säulen (links & rechts)
-        links.position.set(-reticleSizeX / 2, 0, 0); // Linke Kante
-        rechts.position.set(reticleSizeX / 2, 0, 0);  // Rechte Kante
+        rahmenL.position.set(-reticleSizeX / 2, 0, 0); // Linke Kante
+        rahmenR.position.set(reticleSizeX / 2, 0, 0);  // Rechte Kante
     
         // Positionierung der horizontalen Säulen (oben & unten)
-        oben.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        oben.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
+        rahmenO.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        rahmenO.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
         
-        unten.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        unten.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
+        rahmenU.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        rahmenU.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
         
         //Align occluders TODO
         rootOccluder.translate(BABYLON.Axis.Y, 3);
@@ -449,30 +454,30 @@ const createScene = async function () {
 
 
         // Parent pillars to rootPilar so that they inherit its transform
-        links.parent = rootPilar;
-        rechts.parent = rootPilar;
-        oben.parent = rootPilar;
-        unten.parent = rootPilar;
+        rahmenL.parent = rootPilar;
+        rahmenR.parent = rootPilar;
+        rahmenO.parent = rootPilar;
+        rahmenU.parent = rootPilar;
 
         // Set rendering group and apply neon material for glowing effect
-        links.renderingGroupId = 2;
-        rechts.renderingGroupId = 2;
-        oben.renderingGroupId = 2;
-        unten.renderingGroupId = 2;
-        links.material = neonMaterial;
-        rechts.material = neonMaterial;
-        oben.material = neonMaterial;
-        unten.material = neonMaterial;
+        rahmenL.renderingGroupId = 2;
+        rahmenR.renderingGroupId = 2;
+        rahmenO.renderingGroupId = 2;
+        rahmenU.renderingGroupId = 2;
+        rahmenL.material = neonMaterial;
+        rahmenR.material = neonMaterial;
+        rahmenO.material = neonMaterial;
+        rahmenU.material = neonMaterial;
 
         // Add particle effects to the portal (using provided snippet IDs)
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#488", scene, false).then(system => {
-            system.emitter = oben;
+            system.emitter = rahmenO;
         });
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#489", scene, false).then(system => {
-            system.emitter = links;
+            system.emitter = rahmenL;
         });
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#489", scene, false).then(system => {
-            system.emitter = rechts;
+            system.emitter = rahmenR;
         });
     }
 
