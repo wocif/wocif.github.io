@@ -267,7 +267,7 @@ const createScene = async function () {
                 // First tap: Create and position the reticle using the hit-test marker
                 createReticle();
                 reticleMesh.position.copyFrom(marker.position);
-                reticleMesh.position.set(reticleMesh.position.x, 2, reticleMesh.position.z)
+                reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
                 // Convert marker rotation (quaternion) to Euler angles; we use Y rotation only here
                 let euler = marker.rotationQuaternion.toEulerAngles();
                 reticleMesh.rotation.y = euler.y + Math.PI;
