@@ -281,7 +281,8 @@ const createScene = async function () {
                 state = 4;
             } else if (state === 4) {
                 state = 5;
-
+            } else if (state === 5) {
+                state = 6;
                 // ACTIVATE
                 activatePortal();
             }
@@ -293,7 +294,7 @@ const createScene = async function () {
     // -----------------------------
     scene.onBeforeRenderObservable.add(() => {
         // Process gamepad input only if reticle exists and portal is not activated
-        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 5) {
+        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 6) {
             const xrSession = xr.baseExperience.sessionManager.session;
             for (const inputSource of xrSession.inputSources) {
                 if (inputSource.gamepad) {
@@ -311,14 +312,19 @@ const createScene = async function () {
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         gamepad.axes[2] = 0;
-                    
+                        
                     } else if (state === 3) {
+                        // Noch mal Höhe
+                        reticleMesh.position.y += yAxis * 0.01;
+                        gamepad.axes[2] = 0;
+
+                    } else if (state === 4) {
                         // Skalierung in X-Richtung 
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; // Nur X-Achse ändern
                         gamepad.axes[2] = 0;
                     
-                    } else if (state === 4) {
+                    } else if (state === 5) {
                         // Rotation um Y-Achse 
                         reticleMesh.rotation.y += yAxis * 0.005;
                         gamepad.axes[2] = 0;
