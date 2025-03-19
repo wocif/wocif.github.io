@@ -293,7 +293,7 @@ const createScene = async function () {
     // -----------------------------
     scene.onBeforeRenderObservable.add(() => {
         // Process gamepad input only if reticle exists and portal is not activated
-        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 4) {
+        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 5) {
             const xrSession = xr.baseExperience.sessionManager.session;
             for (const inputSource of xrSession.inputSources) {
                 if (inputSource.gamepad) {
@@ -303,15 +303,21 @@ const createScene = async function () {
                     
                     if (state === 1) {
                         // Adjust reticle scaling (uniform scale) (y-axis input)
-                        const scale = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.02);
-                        reticleMesh.scaling.set(scale, scale, scale);
+                        const scale = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
+                        reticleMesh.scaling.set(scale, 0, 0);
                         gamepad.axes[2] = 0;
                         
                     } else if (state === 2) {
+                        // Adjust reticle scaling (uniform scale) (y-axis input)
+                        const scale = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
+                        reticleMesh.scaling.set(0, scale, 0);
+                        gamepad.axes[2] = 0;
+                        
+                    } else if (state === 3) {
                         // Adjust reticle height (Y position) (y-axis input)
                         reticleMesh.position.y += yAxis * 0.05;
                         gamepad.axes[2] = 0;
-                    } else if (state === 3) {
+                    } else if (state === 4) {
                         // Adjust reticle rotation around Y-axis (x-axis input)
                         reticleMesh.rotation.y += yAxis * 0.025;
                         gamepad.axes[2] = 0;
