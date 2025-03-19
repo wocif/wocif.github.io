@@ -382,7 +382,7 @@ const createScene = async function () {
         portalPosition.z = (boundingInfo.boundingBox.minimumWorld.z +boundingInfo.boundingBox.maximumWorld.z) / 2
 
         rootOccluder.position.copyFrom(portalPosition);
-        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
+        rootOccluder.rotationQuaternion = reticleMesh.getWorldMatrix().getRotationQuaternion();
 
 
         rootScene.position.copyFrom(portalPosition);
