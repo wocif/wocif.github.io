@@ -159,7 +159,7 @@ const createScene = async function () {
     let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
     let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 7, depth: 7, height: 0.001 }, scene);
     let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 7, depth: 7, height: 0.001 }, scene);
-    let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 3, depth: 3, height: 0.001 }, scene);
 
     // Create occluder material to force depth write
     const occluderMaterial = new BABYLON.StandardMaterial("om", scene);
