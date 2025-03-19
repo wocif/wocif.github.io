@@ -269,7 +269,7 @@ const createScene = async function () {
                 reticleMesh.position.copyFrom(marker.position);
                 // Convert marker rotation (quaternion) to Euler angles; we use Y rotation only here
                 let euler = marker.rotationQuaternion.toEulerAngles();
-                reticleMesh.rotation.y = euler.y;
+                reticleMesh.rotation.y = euler.y + Math.PI;
                 reticleMesh.isVisible = true;
                 state = 1;  // Next state: Adjust rotation
             } else if (state === 1) {
