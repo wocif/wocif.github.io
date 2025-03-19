@@ -155,11 +155,11 @@ const createScene = async function () {
     let occluder = booleanCSG.toMesh("occluder", null, scene);
     let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
     // Additional occluder boxes for floor and sides // TODO 
-    let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 6, depth: 6, height: 0.001 }, scene);
-    let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 6, depth: 6, height: 0.001 }, scene);
-    let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 6, depth: 6, height: 0.001 }, scene);
-    let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 6, depth: 6, height: 0.001 }, scene);
-    let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 6, depth: 6, height: 0.001 }, scene); // vor Portal, hinter User
+    let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 6, height: 0.001 }, scene);
+    let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 5, depth: 5, height: 0.001 }, scene);
+    let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 5, depth: 5, height: 0.001 }, scene);
+    let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 7, depth: 7, height: 0.001 }, scene); // vor Portal, hinter User
 
     // Create occluder material to force depth write
     const occluderMaterial = new BABYLON.StandardMaterial("om", scene);
