@@ -153,7 +153,7 @@ const createScene = async function () {
 
     // Create main occluder meshes
     let occluder = booleanCSG.toMesh("occluder", null, scene);
-    let occluderR = booleanRCSG.toMesh("occluderR", null, scene);
+    let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
     // Additional occluder boxes for floor and sides // TODO 
     let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene);
     let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
@@ -168,7 +168,7 @@ const createScene = async function () {
 
     // Apply material to occluders
     occluder.material = occluderMaterial;
-    occluderR.material = occluderMaterial;
+    occluderReverse.material = occluderMaterial;
     occluderFloor.material = occluderMaterial;
     occluderTop.material = occluderMaterial;
     occluderRight.material = occluderMaterial;
@@ -199,7 +199,7 @@ const createScene = async function () {
 
     // Set occluders to rendering group 0
     occluder.renderingGroupId = 0;
-    occluderR.renderingGroupId = 0;
+    occluderReverse.renderingGroupId = 0;
     occluderFloor.renderingGroupId = 0;
     occluderTop.renderingGroupId = 0;
     occluderRight.renderingGroupId = 0;
@@ -208,7 +208,7 @@ const createScene = async function () {
 
     // Parent occluders to rootOccluder
     occluder.parent = rootOccluder;
-    occluderR.parent = rootOccluder;
+    occluderReverse.parent = rootOccluder;
     occluderFloor.parent = rootOccluder;
     occluderTop.parent = rootOccluder;
     occluderRight.parent = rootOccluder;
@@ -218,14 +218,14 @@ const createScene = async function () {
     // Set visibility and low opacity for occluders
     const oclVisibility = 0.001;
     occluder.isVisible = true;
-    occluderR.isVisible = false;
+    occluderReverse.isVisible = false;
     occluderFloor.isVisible = false;
     occluderTop.isVisible = true;
     occluderRight.isVisible = true;
     occluderLeft.isVisible = true;
     occluderback.isVisible = true;
     occluder.visibility = oclVisibility;
-    occluderR.visibility = oclVisibility;
+    occluderReverse.visibility = oclVisibility;
     occluderFloor.visibility = oclVisibility;
     occluderTop.visibility = oclVisibility;
     occluderRight.visibility = oclVisibility;
@@ -301,24 +301,24 @@ const createScene = async function () {
                     const yAxis = gamepad.axes[3];  // Vertical axis (e.g., for height/scale)
                     
                     if (state === 1) {
-                        // Zuerst Skalierung in X-Richtung anpassen
-                        const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
-                        reticleMesh.scaling.x = scalex; // Nur X-Achse ändern
+                        // Reticle-Höhe (Y-Position)
+                        reticleMesh.position.y += yAxis * 0.05;
                         gamepad.axes[2] = 0;
                     
                     } else if (state === 2) {
-                        // Dann Skalierung in Y-Richtung anpassen, ohne X zu überschreiben
+                        // Skalierung in Y-Richtung
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01);
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         gamepad.axes[2] = 0;
                     
                     } else if (state === 3) {
-                        // Reticle-Höhe anpassen (Y-Position)
-                        reticleMesh.position.y += yAxis * 0.05;
+                        // Skalierung in X-Richtung 
+                        const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
+                        reticleMesh.scaling.x = scalex; // Nur X-Achse ändern
                         gamepad.axes[2] = 0;
                     
                     } else if (state === 4) {
-                        // Rotation um Y-Achse anpassen
+                        // Rotation um Y-Achse 
                         reticleMesh.rotation.y += yAxis * 0.025;
                         gamepad.axes[2] = 0;
                     }
@@ -336,7 +336,7 @@ const createScene = async function () {
             if (xrCamera.position.z > portalPosition.z) {
                 // User is inside the virtual world: adjust occluders for proper occlusion
                 occluder.isVisible = false;
-                occluderR.isVisible = true;
+                occluderReverse.isVisible = true;
                 occluderFloor.isVisible = false;
                 occluderTop.isVisible = false;
                 occluderRight.isVisible = false;
@@ -345,7 +345,7 @@ const createScene = async function () {
             } else {
                 // User is in the real world: show occluders to hide the virtual world
                 occluder.isVisible = true;
-                occluderR.isVisible = false;
+                occluderReverse.isVisible = false;
                 occluderFloor.isVisible = true; 
                 occluderTop.isVisible = true;
                 occluderRight.isVisible = true;
@@ -427,9 +427,9 @@ const createScene = async function () {
         rahmenU.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
         
         //Align occluders TODO
-        rootOccluder.translate(BABYLON.Axis.Y, 3);
+        rootOccluder.position.copyFrom(portalPosition);
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
-        rootOccluder.translate(BABYLON.Axis.Z, -2);
+        //rootOccluder.translate(BABYLON.Axis.Z, -2);
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderFloor.translate(BABYLON.Axis.Y, 1);
         occluderFloor.translate(BABYLON.Axis.Z, 3.5);
