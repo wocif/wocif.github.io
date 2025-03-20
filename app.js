@@ -174,6 +174,7 @@ const createScene = async function () {
 
     // Apply material to occluders
     occluder.material = occluderMaterial;
+    occluderFrontBottom.material = occluderMaterial; // bottom
     occluderReverse.material = occluderMaterial;
     occluderFloor.material = occluderMaterial;
     occluderTop.material = occluderMaterial;
