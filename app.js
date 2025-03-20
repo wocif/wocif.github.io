@@ -262,7 +262,7 @@ const createScene = async function () {
             reticleMesh.isVisible = false;
             reticleMesh.rotation = BABYLON.Vector3.Zero();
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
-
+            
             rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
                 reticleMesh.rotation.y,
                 reticleMesh.rotation.x,
@@ -351,7 +351,7 @@ const createScene = async function () {
                 }
             }
         }
-e
+
     
 
         // -----------------------------
@@ -465,8 +465,13 @@ e
         //Align occluders 
         rootOccluder.position.copyFrom(portalPosition);
         
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
+        
         rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+        rootOccluder.rotationQuaternion.multiplyInPlace(
+            BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
+        ); // anstelle von:
+        //Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
+        //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
         
         
