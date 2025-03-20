@@ -260,7 +260,7 @@ const createScene = async function () {
             reticleMesh.material = reticleMat;
             reticleMesh.renderingGroupId = 2;  // Render in its own group
             reticleMesh.isVisible = false;
-            reticleMesh.rotation = BABYLON.Vector3.Zero();
+            reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity();
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
             
             rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
@@ -287,8 +287,9 @@ const createScene = async function () {
                 reticleMesh.position.copyFrom(marker.position);
                 reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
                 // Convert marker rotation (quaternion) to Euler angles; we use Y rotation only here
-                let euler = marker.rotationQuaternion.toEulerAngles();
-                reticleMesh.rotation.y = euler.y + Math.PI;
+                reticleMesh.rotationQuaternion = marker.rotationQuaternion.multiply(
+                    BABYLON.Quaternion.RotationYawPitchRoll(Math.PI, 0, 0)
+                );
                 reticleMesh.isVisible = true;
                 state = 1;  // Next state: Adjust rotation
             } else if (state === 1) {
@@ -465,7 +466,7 @@ const createScene = async function () {
         //Align occluders 
         rootOccluder.position.copyFrom(portalPosition);
         
-        
+
         rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         rootOccluder.rotationQuaternion.multiplyInPlace(
             BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
