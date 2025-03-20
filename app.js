@@ -227,7 +227,7 @@ const createScene = async function () {
     // Set visibility and low opacity for occluders
     const oclVisibility = 0.001;
     occluder.isVisible = true;
-    occluderFrontBottom = true; //bottom
+    occluderFrontBottom.isVisible = true; //bottom
     occluderReverse.isVisible = false;
     occluderFloor.isVisible = false;
     occluderTop.isVisible = true;
