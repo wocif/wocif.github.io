@@ -143,7 +143,7 @@ const createScene = async function () {
     // -----------------------------
     // Create a large ground box and a hole box for occluders
     let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
-    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 4, width: 4, height: 0.01 }, scene);
+    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 2, width: 2, height: 0.01 }, scene);
 
     // Perform CSG subtraction for occluders
     const groundCSG = BABYLON.CSG.FromMesh(ground);
