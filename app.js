@@ -347,8 +347,10 @@ const createScene = async function () {
         }
 
         scene.onBeforeRenderObservable.add(() => {
-            if (reticleMesh.rotationQuaternion) {
-                rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+            if (reticleMesh && reticleMesh.rotationQuaternion) {
+                if (reticleMesh.rotationQuaternion) {
+                    rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+                }
             }
         });
     
