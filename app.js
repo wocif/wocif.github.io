@@ -153,6 +153,7 @@ const createScene = async function () {
 
     // Create main occluder meshes
     let occluder = booleanCSG.toMesh("occluder", null, scene);
+    let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 2, height: 0.001 }, scene);
 
     let occluderMat = new BABYLON.StandardMaterial("occluderMat", scene);
     occluderMat.diffuseColor = new BABYLON.Color3(0, 1, 0);  // Beispiel für eine grüne Farbe
@@ -204,6 +205,7 @@ const createScene = async function () {
 
     // Set occluders to rendering group 0
     occluder.renderingGroupId = 0;
+    occluderFrontBottom.renderingGroupId = 0; //bottom
     occluderReverse.renderingGroupId = 0;
     occluderFloor.renderingGroupId = 0;
     occluderTop.renderingGroupId = 0;
@@ -213,6 +215,7 @@ const createScene = async function () {
 
     // Parent occluders to rootOccluder
     occluder.parent = rootOccluder;
+    occluderFrontBottom.parent = rootOccluder; //bottom
     occluderReverse.parent = rootOccluder;
     occluderFloor.parent = rootOccluder;
     occluderTop.parent = rootOccluder;
@@ -223,6 +226,7 @@ const createScene = async function () {
     // Set visibility and low opacity for occluders
     const oclVisibility = 0.001;
     occluder.isVisible = true;
+    occluderFrontBottom = true; //bottom
     occluderReverse.isVisible = false;
     occluderFloor.isVisible = false;
     occluderTop.isVisible = true;
@@ -348,6 +352,7 @@ const createScene = async function () {
             if (xrCamera.position.z > portalPosition.z) {
                 // User is inside the virtual world: adjust occluders for proper occlusion
                 occluder.isVisible = false;
+                occluderFrontBottom.isVisible = false; //bottom
                 occluderReverse.isVisible = true;
                 occluderFloor.isVisible = false;
                 occluderTop.isVisible = false;
@@ -357,6 +362,7 @@ const createScene = async function () {
             } else {
                 // User is in the real world: show occluders to hide the virtual world
                 occluder.isVisible = true;
+                occluderFrontBottom.isVisible = true; //bottom
                 occluderReverse.isVisible = false;
                 occluderFloor.isVisible = true; 
                 occluderTop.isVisible = true;
@@ -446,7 +452,7 @@ const createScene = async function () {
         //Align occluders TODO
         rootOccluder.position.copyFrom(portalPosition);
         rootOccluder.rotation.copyFrom(reticleMesh.rotation);
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
+        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); //TODO ??
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
 
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
