@@ -407,7 +407,7 @@ const createScene = async function () {
         const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
         const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
         portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
-        occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
+        //occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
 
     
         // Wichtige Variablen für die Positionierung
@@ -481,7 +481,7 @@ const createScene = async function () {
 
 
         // ALIGN FRONT TO RETICLE
-        //occluderFrontBottom.translate(BABYLON.Axis.Z, ret_bottomend);
+        occluderFrontBottom.translate(BABYLON.Axis.Z, ret_bottomend);
     
     
     
