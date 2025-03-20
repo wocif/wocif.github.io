@@ -263,11 +263,7 @@ const createScene = async function () {
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity();
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
             
-            rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
-                reticleMesh.rotation.y,
-                reticleMesh.rotation.x,
-                reticleMesh.rotation.z
-            );
+
         }
     }
 
@@ -302,6 +298,11 @@ const createScene = async function () {
                 state = 5;
             } else if (state === 5) {
                 state = 6;
+                rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
+                    reticleMesh.rotation.y,
+                    reticleMesh.rotation.x,
+                    reticleMesh.rotation.z
+                );
                 // ACTIVATE
                 activatePortal();
             }
