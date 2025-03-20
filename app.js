@@ -153,14 +153,14 @@ const createScene = async function () {
 
     // Create main occluder meshes
     let occluder = booleanCSG.toMesh("occluder", null, scene);
-    let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFrontBottom", { width: 3, depth: 3, height: 0.001 }, scene);
+    
 
     let occluderMat = new BABYLON.StandardMaterial("occluderMat", scene);
     occluderMat.diffuseColor = new BABYLON.Color3(0, 1, 0);  // Beispiel für eine grüne Farbe
     occluder.material = occluderMat;
 
+    let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFrontBottom", { width: 3, depth: 3, height: 0.001 }, scene); //bottom
     let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
-    // Additional occluder boxes for floor and sides // TODO 
     let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene);
     let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
     let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 7, depth: 7, height: 0.001 }, scene);
@@ -362,7 +362,7 @@ const createScene = async function () {
                 occluderback.isVisible = false;
             } else {
                 // User is in the real world: show occluders to hide the virtual world
-                occluder.isVisible = false; // changed
+                occluder.isVisible = true; // changed
                 occluderFrontBottom.isVisible = true; //bottom
                 occluderReverse.isVisible = false;
                 occluderFloor.isVisible = true; 
