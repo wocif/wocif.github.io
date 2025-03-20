@@ -458,7 +458,7 @@ const createScene = async function () {
         //Align occluders 
         rootOccluder.position.copyFrom(portalPosition);
         
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); 
+        //rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); 
         rootOccluder.rotation.copyFrom(reticleMesh.rotation);
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
         
