@@ -129,11 +129,7 @@ const createScene = async function () {
     // Root Transform Nodes for Virtual World and Portal
     // -----------------------------
     const rootOccluder = new BABYLON.TransformNode("rootOccluder", scene);
-    rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
-        reticleMesh.rotation.y,
-        reticleMesh.rotation.x,
-        reticleMesh.rotation.z
-    );
+
     const rootScene = new BABYLON.TransformNode("rootScene", scene);
     rootScene.rotationQuaternion = new BABYLON.Quaternion();
     const rootPilar = new BABYLON.TransformNode("rootPilar", scene);
@@ -266,9 +262,15 @@ const createScene = async function () {
             reticleMesh.isVisible = false;
             reticleMesh.rotation = BABYLON.Vector3.Zero();
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
+            
+            rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
+                reticleMesh.rotation.y,
+                reticleMesh.rotation.x,
+                reticleMesh.rotation.z
+            );
         }
     }
-    
+
 
     // -----------------------------
     // onPointerDown: Handle "Select" / State Transitions
