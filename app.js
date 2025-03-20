@@ -380,8 +380,6 @@ const createScene = async function () {
     // Activate Portal: Finalize Placement and Create Portal Geometry
     // -----------------------------
     function activatePortal() {
-
-        
         
         portalAppeared = true;
         if (reticleMesh) {
@@ -391,7 +389,7 @@ const createScene = async function () {
         rootScene.setEnabled(true);
         rootOccluder.setEnabled(true);
 
-        
+
 
         
     
@@ -408,7 +406,15 @@ const createScene = async function () {
         //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
         //portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
         //occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
+        
 
+        // y = Höhe
+        rootScene.position.x = portalPosition.x;
+        rootScene.position.z = portalPosition.z;
+
+        rootPilar.position.copyFrom(portalPosition);
+        rootPilar.rotation.copyFrom(reticleMesh.rotation);
+        //rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
         // Wichtige Variablen für die Positionierung
         const reticlePosXMax = reticleBoundingInfo.boundingBox.maximumWorld.x;
@@ -421,14 +427,7 @@ const createScene = async function () {
         //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
         //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
         
-        // y = Höhe
-        rootScene.position.x = portalPosition.x;
-        rootScene.position.z = portalPosition.z;
-
-        rootPilar.position.copyFrom(portalPosition);
-        rootPilar.rotation.copyFrom(reticleMesh.rotation);
-        //rootPilar.scaling.copyFrom(reticleMesh.scaling);
-        
+    
         // Höhe der vertikalen Säulen (angepasst auf das Reticle)
         const pillarHeight = reticleSizeY;
         const pillarWidth = 0.1;
@@ -481,7 +480,7 @@ const createScene = async function () {
 
 
         // ALIGN FRONT TO RETICLE
-        occluderFrontBottom.translate(BABYLON.Axis.Z, ret_bottomend);
+        occluderFrontBottom.translate(BABYLON.Axis.Z, -3);
     
     
     
