@@ -235,6 +235,7 @@ const createScene = async function () {
     occluderLeft.isVisible = true;
     occluderback.isVisible = true;
     occluder.visibility = oclVisibility;
+    occluderFrontBottom.visibility = oclVisibility; //bottom
     occluderReverse.visibility = oclVisibility;
     occluderFloor.visibility = oclVisibility;
     occluderTop.visibility = oclVisibility;
