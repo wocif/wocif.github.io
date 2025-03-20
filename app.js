@@ -298,11 +298,7 @@ const createScene = async function () {
                 state = 5;
             } else if (state === 5) {
                 state = 6;
-                rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
-                    reticleMesh.rotation.y,
-                    reticleMesh.rotation.x,
-                    reticleMesh.rotation.z
-                );
+                rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
                 // ACTIVATE
                 activatePortal();
             }
@@ -346,7 +342,8 @@ const createScene = async function () {
                     
                     } else if (state === 5) {
                         // Rotation um Y-Achse 
-                        reticleMesh.rotation.y += yAxis * 0.005;
+                        let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
+                        reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         gamepad.axes[2] = 0;
                     }
                     
