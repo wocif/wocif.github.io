@@ -380,6 +380,21 @@ const createScene = async function () {
     // Activate Portal: Finalize Placement and Create Portal Geometry
     // -----------------------------
     function activatePortal() {
+
+        //Quaternion für reticle berechnen
+        // euler -> Quaternion
+        reticleMesh.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
+            euler.y + Math.PI,
+            0,
+            0
+        );
+        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
+            reticleMesh.rotation.y,
+            reticleMesh.rotation.x,
+            reticleMesh.rotation.z
+        );
+        //  ggf.:
+        //rootOccluder.scaling.copyFrom(reticleMesh.scaling);
         
         portalAppeared = true;
         if (reticleMesh) {
@@ -459,8 +474,9 @@ const createScene = async function () {
         rootOccluder.position.copyFrom(portalPosition);
         
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
-        rootOccluder.rotation.copyFrom(reticleMesh.rotation);
-        rootOccluder.translate(BABYLON.Axis.Z, -2);
+        rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+
+        
         
         
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
