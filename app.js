@@ -380,6 +380,8 @@ const createScene = async function () {
     // Activate Portal: Finalize Placement and Create Portal Geometry
     // -----------------------------
     function activatePortal() {
+
+        
         
         portalAppeared = true;
         if (reticleMesh) {
@@ -402,16 +404,11 @@ const createScene = async function () {
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
-        
-        
+        const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
+        const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
+        portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
+        occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
 
-        // y = Höhe
-        rootScene.position.x = portalPosition.x;
-        rootScene.position.z = portalPosition.z;
-
-        rootPilar.position.copyFrom(portalPosition);
-        rootPilar.rotation.copyFrom(reticleMesh.rotation);
-        //rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
         // Wichtige Variablen für die Positionierung
         const reticlePosXMax = reticleBoundingInfo.boundingBox.maximumWorld.x;
@@ -424,7 +421,14 @@ const createScene = async function () {
         //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
         //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
         
-    
+        // y = Höhe
+        rootScene.position.x = portalPosition.x;
+        rootScene.position.z = portalPosition.z;
+
+        rootPilar.position.copyFrom(portalPosition);
+        rootPilar.rotation.copyFrom(reticleMesh.rotation);
+        //rootPilar.scaling.copyFrom(reticleMesh.scaling);
+        
         // Höhe der vertikalen Säulen (angepasst auf das Reticle)
         const pillarHeight = reticleSizeY;
         const pillarWidth = 0.1;
@@ -474,8 +478,10 @@ const createScene = async function () {
         occluderLeft.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
         occluderLeft.translate(BABYLON.Axis.Y, 3.4);
         occluderLeft.translate(BABYLON.Axis.X, 3.5);
-    
-        occluderFrontBottom.translate(BABYLON.Axis.Z, -3);
+
+
+        // ALIGN FRONT TO RETICLE
+        //occluderFrontBottom.translate(BABYLON.Axis.Z, ret_bottomend);
     
     
     
