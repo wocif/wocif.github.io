@@ -262,7 +262,7 @@ const createScene = async function () {
             reticleMesh.isVisible = false;
             reticleMesh.rotation = BABYLON.Vector3.Zero();
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
-            
+
             rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
                 reticleMesh.rotation.y,
                 reticleMesh.rotation.x,
@@ -351,14 +351,7 @@ const createScene = async function () {
                 }
             }
         }
-
-        scene.onBeforeRenderObservable.add(() => {
-            if (reticleMesh && reticleMesh.rotationQuaternion) {
-                if (reticleMesh.rotationQuaternion) {
-                    rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
-                }
-            }
-        });
+e
     
 
         // -----------------------------
