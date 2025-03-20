@@ -143,7 +143,7 @@ const createScene = async function () {
     // -----------------------------
     // Create a large ground box and a hole box for occluders
     let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
-    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
+    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 6, width: 6, height: 0.01 }, scene);
 
     // Perform CSG subtraction for occluders
     const groundCSG = BABYLON.CSG.FromMesh(ground);
@@ -448,15 +448,15 @@ const createScene = async function () {
         rootOccluder.rotation.copyFrom(reticleMesh.rotation);
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
+
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderFloor.translate(BABYLON.Axis.Y, 1);
         occluderFloor.translate(BABYLON.Axis.Z, 3.5);
         occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderTop.translate(BABYLON.Axis.Y, -2);
-        occluderTop.translate(BABYLON.Axis.Z, 3.5);
+        occluderTop.translate(BABYLON.Axis.Z, 3.5);        
         
-        //im Fenster:
-        occluderback.translate(BABYLON.Axis.Y, 7);
+        occluderback.translate(BABYLON.Axis.Y, 7); //hinten
         occluderback.translate(BABYLON.Axis.Z, 2);
 
         occluderRight.rotationQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, Math.PI / 2);
