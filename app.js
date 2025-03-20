@@ -467,7 +467,7 @@ const createScene = async function () {
 
         
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.Identity(); // Setze die Rotation zurück
-        //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+        rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         rootOccluder.rotationQuaternion.multiplyInPlace(
             BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
         ); // anstelle von:
