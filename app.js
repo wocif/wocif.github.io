@@ -457,7 +457,7 @@ const createScene = async function () {
         rootOccluder.rotation.copyFrom(reticleMesh.rotation);
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); //TODO ??
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
-
+        
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderFloor.translate(BABYLON.Axis.Y, 1);
         occluderFloor.translate(BABYLON.Axis.Z, 3.5);
@@ -475,6 +475,7 @@ const createScene = async function () {
         occluderLeft.translate(BABYLON.Axis.Y, 3.4);
         occluderLeft.translate(BABYLON.Axis.X, 3.5);
     
+        occluderFrontBottom.translate(BABYLON.Axis.X, -3);
     
     
     
