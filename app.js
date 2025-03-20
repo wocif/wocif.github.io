@@ -227,7 +227,7 @@ const createScene = async function () {
     // Set visibility and low opacity for occluders
     const oclVisibility = 0.001;
     //const DEBUG_visibility = 0.35;
-    occluder.isVisible = false; // changed
+    occluder.isVisible = true; 
     occluderFrontBottom.isVisible = true; //bottom
     occluderReverse.isVisible = false;
     occluderFloor.isVisible = false;
@@ -298,7 +298,7 @@ const createScene = async function () {
                 state = 5;
             } else if (state === 5) {
                 state = 6;
-                rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
+                
                 // ACTIVATE
                 activatePortal();
             }
@@ -467,6 +467,7 @@ const createScene = async function () {
 
         
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.Identity(); // Setze die Rotation zurück
+        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //neu
         rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         rootOccluder.rotationQuaternion.multiplyInPlace(
             BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
