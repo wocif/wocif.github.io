@@ -153,7 +153,7 @@ const createScene = async function () {
 
     // Create main occluder meshes
     let occluder = booleanCSG.toMesh("occluder", null, scene);
-    let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 2, height: 0.001 }, scene);
+    let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 2, depth: 2, height: 0.001 }, scene);
 
     let occluderMat = new BABYLON.StandardMaterial("occluderMat", scene);
     occluderMat.diffuseColor = new BABYLON.Color3(0, 1, 0);  // Beispiel für eine grüne Farbe
