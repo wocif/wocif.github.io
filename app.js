@@ -419,7 +419,8 @@ const createScene = async function () {
         rootScene.position.z = portalPosition.z;
 
         rootPilar.position.copyFrom(portalPosition);
-        rootPilar.rotation.copyFrom(reticleMesh.rotation);
+        rootPilar.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
+
         //rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
         // Wichtige Variablen für die Positionierung
