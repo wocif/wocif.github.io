@@ -402,7 +402,7 @@ const createScene = async function () {
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
-        //const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
+        const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
         //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
         //portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
         //occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
@@ -455,10 +455,10 @@ const createScene = async function () {
         rahmenO.rotation.x = reticleMesh.rotation.x;
         rahmenU.rotation.x = reticleMesh.rotation.x;
         
-        //Align occluders TODO
+        //Align occluders 
         rootOccluder.position.copyFrom(portalPosition);
         
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); //TODO ??
+        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); 
         rootOccluder.rotation.copyFrom(reticleMesh.rotation);
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
         
