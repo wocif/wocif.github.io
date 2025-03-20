@@ -404,9 +404,9 @@ const createScene = async function () {
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
-        const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
-        const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
-        portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
+        //const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
+        //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
+        //portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
         //occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
 
     
