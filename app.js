@@ -475,7 +475,7 @@ const createScene = async function () {
         occluderLeft.translate(BABYLON.Axis.Y, 3.4);
         occluderLeft.translate(BABYLON.Axis.X, 3.5);
     
-        occluderFrontBottom.translate(BABYLON.Axis.Y, -3);
+        occluderFrontBottom.translate(BABYLON.Axis.Z, -3);
     
     
     
