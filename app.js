@@ -465,7 +465,9 @@ const createScene = async function () {
         rootOccluder.position.copyFrom(portalPosition);
         
 
-        rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+        
+        rootOccluder.rotationQuaternion = BABYLON.Quaternion.Identity(); // Setze die Rotation zurück
+        //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         rootOccluder.rotationQuaternion.multiplyInPlace(
             BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
         ); // anstelle von:
