@@ -383,22 +383,20 @@ const createScene = async function () {
 
 
         // Erstelle ein Fullscreen-UI, falls noch nicht vorhanden
-const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-
-// Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
-const warningText = new BABYLON.GUI.TextBlock("warningText", "Portal Durchquert!");
-warningText.color = "red";
-warningText.fontSize = 48;
-warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-warningText.isVisible = false;  // zunächst unsichtbar
-ui.addControl(warningText);
-
-// In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
-scene.onBeforeRenderObservable.add(() => {
-    // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
-
-});
+        scene.onBeforeRenderObservable.add(() => {
+            let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
+            let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
+        
+            if (portalPosition && xrCamera) {
+                if (localCameraPos.z > 0) {
+                    warningText.text = `Cam: ${localCameraPos.toString()}\nPortal: ${portalPosition.toString()}`;
+                    warningText.isVisible = true;
+                } else {
+                    warningText.isVisible = false;
+                }
+            }
+        });
+        
         
         // -----------------------------
         // Update Occluder Visibility based on XR Camera vs. Portal Position
@@ -421,14 +419,14 @@ scene.onBeforeRenderObservable.add(() => {
             } else {
                 warningText.isVisible = true;
                 // real world: 
-                occluder.isVisible = false; //changed
-                occluderFrontBottom.isVisible = false; //bottom //changed
-                occluderReverse.isVisible = true;
-                occluderFloor.isVisible = false;  //changed
-                occluderTop.isVisible = false;  //changed
-                occluderRight.isVisible = false;  //changed
-                occluderLeft.isVisible = false;  //changed
-                occluderback.isVisible = false;  //changed
+                occluder.isVisible = true; 
+                occluderFrontBottom.isVisible = true; //bottom 
+                occluderReverse.isVisible = false;
+                occluderFloor.isVisible = true;  //changed
+                occluderTop.isVisible = true;  //changed
+                occluderRight.isVisible = true;  //changed
+                occluderLeft.isVisible = true;  //changed
+                occluderback.isVisible = true;  //changed
             }
         }
 
