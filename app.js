@@ -228,7 +228,7 @@ const createScene = async function () {
     const oclVisibility = 0.001;
     //const DEBUG_visibility = 0.35;
     occluder.isVisible = true; 
-    occluderFrontBottom.isVisible = true; //bottom
+    occluderFrontBottom.isVisible = false;//changed //bottom
     occluderReverse.isVisible = false;
     occluderFloor.isVisible = true; //changed
     occluderTop.isVisible = true;
@@ -371,7 +371,7 @@ const createScene = async function () {
             } else {
                 // User is in the real world: show occluders to hide the virtual world
                 occluder.isVisible = true; 
-                occluderFrontBottom.isVisible = true; //bottom
+                occluderFrontBottom.isVisible = false; //changed //bottom
                 occluderReverse.isVisible = false;
                 occluderFloor.isVisible = true; 
                 occluderTop.isVisible = true;
