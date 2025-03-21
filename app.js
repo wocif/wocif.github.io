@@ -359,7 +359,7 @@ const createScene = async function () {
         if (portalPosition && xrCamera) {
             // Simple check based on Z position (you may want to adjust this for your scene)
             if (xrCamera.position.z > portalPosition.z) {
-                // User is inside the virtual world: adjust occluders for proper occlusion
+                // virtual world
                 occluder.isVisible = false;
                 occluderFrontBottom.isVisible = false; //bottom
                 occluderReverse.isVisible = true;
@@ -369,8 +369,8 @@ const createScene = async function () {
                 occluderLeft.isVisible = false;
                 occluderback.isVisible = false;
             } else {
-                // User is in the real world: show occluders to hide the virtual world
-                occluder.isVisible = true; 
+                // real world
+                occluder.isVisible = false; 
                 occluderFrontBottom.isVisible = false; //changed //bottom
                 occluderReverse.isVisible = false;
                 occluderFloor.isVisible = true; 
