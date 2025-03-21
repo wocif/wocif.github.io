@@ -408,7 +408,7 @@ scene.onBeforeRenderObservable.add(() => {
         if (portalPosition && xrCamera) {
             
             if (localCameraPos.z > 0) {
-                warningText.isVisible = true;
+                warningText.isVisible = false;
                 // virtual world
                 occluder.isVisible = false;
                 occluderFrontBottom.isVisible = false; //bottom
@@ -419,7 +419,7 @@ scene.onBeforeRenderObservable.add(() => {
                 occluderLeft.isVisible = false;
                 occluderback.isVisible = false;
             } else {
-                warningText.isVisible = false;
+                warningText.isVisible = true;
                 // real world: 
                 occluder.isVisible = false; //changed
                 occluderFrontBottom.isVisible = false; //bottom //changed
