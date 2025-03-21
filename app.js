@@ -401,37 +401,11 @@ const createScene = async function () {
                 occluder.isVisible = true; 
                 occluderFrontBottom.isVisible = true; //bottom
                 occluderReverse.isVisible = false;
-                occluderFloor.isVisible = 
-        // -----------------------------
-        // Update Occluder Visibility based on XR Camera vs. Portal Position
-        // -----------------------------
-        if (portalPosition && xrCamera) {
-            if (xrCamera.position.z > portalPosition.z) {
-                // virtual world
-                occluder.isVisible = false;
-                occluderFrontBottom.isVisible = false; //bottom
-                occluderReverse.isVisible = true;
-                occluderFloor.isVisible = false;
-                occluderTop.isVisible = false;
-                occluderRight.isVisible = false;
-                occluderLeft.isVisible = false;
-                occluderback.isVisible = false;
-            } else {
-                // real world: 
-                occluder.isVisible = true; 
-                occluderFrontBottom.isVisible = true; //bottom
-                occluderReverse.isVisible = false;
-                occluderFloor.isVisible = false; //changed
-                occluderTop.isVisible = false;//changed
-                occluderRight.isVisible = false;//changed
-                occluderLeft.isVisible = false;//changed
-                occluderback.isVisible = false;//changed
-            }
-        }
-                occluderTop.isVisible = true;
-                occluderRight.isVisible = true;
-                occluderLeft.isVisible = true;
-                occluderback.isVisible = true;
+                occluderFloor.isVisible = false;  //changed
+                occluderTop.isVisible = false;  //changed
+                occluderRight.isVisible = false;  //changed
+                occluderLeft.isVisible = false;  //changed
+                occluderback.isVisible = false;  //changed
             }
         }
 
