@@ -466,13 +466,24 @@ const createScene = async function () {
         rootOccluder.position.copyFrom(portalPosition);
         
 
+        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
+        //rootOccluder.rotationQuaternion = BABYLON.Quaternion.Identity(); // Setze die Rotation zurück
+        //rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //neu
+        //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.Identity(); // Setze die Rotation zurück
-        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //neu
-        rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
-        rootOccluder.rotationQuaternion.multiplyInPlace(
-            BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
-        ); // anstelle von:
+        // Umrechnung der aktuellen Rotation in Euler-Winkel
+        let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
+        // Addiere 90 Grad (π/2) zur X-Achse
+        currentEuler.x += Math.PI / 2;
+        // Setze die Rotation zurück, indem du die neuen Euler-Winkel in ein Quaternion umwandelst
+        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
+        
+        //anstelle von:
+        //rootOccluder.rotationQuaternion.multiplyInPlace(
+        //    BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
+        //); 
+        
+        // anstelle von:
         //Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
         //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
