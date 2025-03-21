@@ -385,8 +385,10 @@ const createScene = async function () {
         // -----------------------------
         // Update Occluder Visibility based on XR Camera vs. Portal Position
         // -----------------------------
+        let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
+        let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
         if (portalPosition && xrCamera) {
-            if (xrCamera.position.z > portalPosition.z) {
+            if (localCameraPos.z > 0) {
                 // virtual world
                 occluder.isVisible = false;
                 occluderFrontBottom.isVisible = false; //bottom
