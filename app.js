@@ -381,6 +381,26 @@ const createScene = async function () {
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
+
+        // Erstelle ein Fullscreen-UI, falls noch nicht vorhanden
+const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+// Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
+const warningText = new BABYLON.GUI.TextBlock("warningText", "Portal Durchquert!");
+warningText.color = "red";
+warningText.fontSize = 48;
+warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+warningText.isVisible = false;  // zunächst unsichtbar
+ui.addControl(warningText);
+
+// In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
+scene.onBeforeRenderObservable.add(() => {
+    // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
+    let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
+    let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
+
+});
         
         // -----------------------------
         // Update Occluder Visibility based on XR Camera vs. Portal Position
@@ -388,6 +408,7 @@ const createScene = async function () {
         let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
         let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
         if (portalPosition && xrCamera) {
+            warningText.isVisible = true;
             if (localCameraPos.z > 0) {
                 // virtual world
                 occluder.isVisible = false;
