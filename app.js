@@ -376,27 +376,26 @@ const createScene = async function () {
         //portalPosition.y = reticleMesh.position.y + reticleMes.scaling.y * 0.5;
 
         // Mittelpunkte auf allen Achse berechnen
-        const reticleBoundingInfo = reticleMesh.getBoundingInfo();
-        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
-        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
-        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
+
 
 
         // Erstelle ein Fullscreen-UI, falls noch nicht vorhanden
-        scene.onBeforeRenderObservable.add(() => {
-            let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
-            let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
-        
-            if (portalPosition && xrCamera) {
-                if (localCameraPos.z > 0) {
-                    warningText.text = `Cam: ${localCameraPos.toString()}\nPortal: ${portalPosition.toString()}`;
-                    warningText.isVisible = true;
-                } else {
-                    warningText.isVisible = false;
-                }
-            }
-        });
-        
+const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+// Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
+const warningText = new BABYLON.GUI.TextBlock("warningText", "Portal Durchquert!");
+warningText.color = "red";
+warningText.fontSize = 48;
+warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+warningText.isVisible = false;  // zunächst unsichtbar
+ui.addControl(warningText);
+
+// In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
+scene.onBeforeRenderObservable.add(() => {
+    // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
+
+});
         
         // -----------------------------
         // Update Occluder Visibility based on XR Camera vs. Portal Position
@@ -429,6 +428,11 @@ const createScene = async function () {
                 occluderback.isVisible = true;  //changed
             }
         }
+
+        const reticleBoundingInfo = reticleMesh.getBoundingInfo();
+        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
+        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
+        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
         const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
         //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
