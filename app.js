@@ -400,7 +400,7 @@ const createScene = async function () {
                 // real world: 
                 occluder.isVisible = false; //changed
                 occluderFrontBottom.isVisible = false; //bottom //changed
-                occluderReverse.isVisible = false;
+                occluderReverse.isVisible = true;
                 occluderFloor.isVisible = false;  //changed
                 occluderTop.isVisible = false;  //changed
                 occluderRight.isVisible = false;  //changed
