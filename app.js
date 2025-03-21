@@ -353,33 +353,6 @@ const createScene = async function () {
 
     
 
-        // -----------------------------
-        // Update Occluder Visibility based on XR Camera vs. Portal Position
-        // -----------------------------
-        if (portalPosition && xrCamera) {
-            // Simple check based on Z position (you may want to adjust this for your scene)
-            if (xrCamera.position.z > portalPosition.z) {
-                // virtual world
-                occluder.isVisible = false;
-                occluderFrontBottom.isVisible = false; //bottom
-                occluderReverse.isVisible = true;
-                occluderFloor.isVisible = false;
-                occluderTop.isVisible = false;
-                occluderRight.isVisible = false;
-                occluderLeft.isVisible = false;
-                occluderback.isVisible = false;
-            } else {
-                // real world
-                occluder.isVisible = false; //changed
-                occluderFrontBottom.isVisible = false; //changed //bottom
-                occluderReverse.isVisible = false;
-                occluderFloor.isVisible = false; //changed 
-                occluderTop.isVisible = false; //changed
-                occluderRight.isVisible = false; //changed
-                occluderLeft.isVisible = false; //changed
-                occluderback.isVisible = false; //changed
-            }
-        }
     });
 
     // -----------------------------
@@ -407,6 +380,34 @@ const createScene = async function () {
         portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
+
+        
+        // -----------------------------
+        // Update Occluder Visibility based on XR Camera vs. Portal Position
+        // -----------------------------
+        if (portalPosition && xrCamera) {
+            if (xrCamera.position.z > portalPosition.z) {
+                // virtual world
+                occluder.isVisible = false;
+                occluderFrontBottom.isVisible = false; //bottom
+                occluderReverse.isVisible = true;
+                occluderFloor.isVisible = false;
+                occluderTop.isVisible = false;
+                occluderRight.isVisible = false;
+                occluderLeft.isVisible = false;
+                occluderback.isVisible = false;
+            } else {
+                // real world: 
+                occluder.isVisible = true; 
+                occluderFrontBottom.isVisible = true; //bottom
+                occluderReverse.isVisible = false;
+                occluderFloor.isVisible = true; 
+                occluderTop.isVisible = true;
+                occluderRight.isVisible = true;
+                occluderLeft.isVisible = true;
+                occluderback.isVisible = true;
+            }
+        }
 
         const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
         //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
