@@ -390,7 +390,7 @@ const createScene = async function () {
                 // virtual world
                 occluder.isVisible = false;
                 occluderFrontBottom.isVisible = false; //bottom
-                occluderReverse.isVisible = false; //changed
+                occluderReverse.isVisible = true; //changed
                 occluderFloor.isVisible = false;
                 occluderTop.isVisible = false;
                 occluderRight.isVisible = false;
