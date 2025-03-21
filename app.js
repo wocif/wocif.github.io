@@ -370,7 +370,7 @@ const createScene = async function () {
                 occluderback.isVisible = false;
             } else {
                 // User is in the real world: show occluders to hide the virtual world
-                occluder.isVisible = false; // changed
+                occluder.isVisible = true; 
                 occluderFrontBottom.isVisible = true; //bottom
                 occluderReverse.isVisible = false;
                 occluderFloor.isVisible = true; 
@@ -470,7 +470,7 @@ const createScene = async function () {
         //rootOccluder.rotationQuaternion = BABYLON.Quaternion.Identity(); // Setze die Rotation zurück
         //rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //neu
         //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
-        
+
         // Umrechnung der aktuellen Rotation in Euler-Winkel
         let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
         // Addiere 90 Grad (π/2) zur X-Achse
