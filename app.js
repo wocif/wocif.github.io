@@ -397,8 +397,6 @@ ui.addControl(warningText);
 // In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
 scene.onBeforeRenderObservable.add(() => {
     // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
-    let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
-    let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
 
 });
         
@@ -408,8 +406,9 @@ scene.onBeforeRenderObservable.add(() => {
         let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
         let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
         if (portalPosition && xrCamera) {
-            warningText.isVisible = true;
+            
             if (localCameraPos.z > 0) {
+                warningText.isVisible = true;
                 // virtual world
                 occluder.isVisible = false;
                 occluderFrontBottom.isVisible = false; //bottom
@@ -420,6 +419,7 @@ scene.onBeforeRenderObservable.add(() => {
                 occluderLeft.isVisible = false;
                 occluderback.isVisible = false;
             } else {
+                warningText.isVisible = false;
                 // real world: 
                 occluder.isVisible = false; //changed
                 occluderFrontBottom.isVisible = false; //bottom //changed
