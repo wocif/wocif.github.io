@@ -390,7 +390,7 @@ const createScene = async function () {
                 // virtual world
                 occluder.isVisible = false;
                 occluderFrontBottom.isVisible = false; //bottom
-                occluderReverse.isVisible = true;
+                occluderReverse.isVisible = false; //changed
                 occluderFloor.isVisible = false;
                 occluderTop.isVisible = false;
                 occluderRight.isVisible = false;
@@ -398,8 +398,8 @@ const createScene = async function () {
                 occluderback.isVisible = false;
             } else {
                 // real world: 
-                occluder.isVisible = true; 
-                occluderFrontBottom.isVisible = true; //bottom
+                occluder.isVisible = false; //changed
+                occluderFrontBottom.isVisible = false; //bottom //changed
                 occluderReverse.isVisible = false;
                 occluderFloor.isVisible = false;  //changed
                 occluderTop.isVisible = false;  //changed
