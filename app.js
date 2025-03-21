@@ -370,14 +370,14 @@ const createScene = async function () {
                 occluderback.isVisible = false;
             } else {
                 // real world
-                occluder.isVisible = false; 
+                occluder.isVisible = false; //changed
                 occluderFrontBottom.isVisible = false; //changed //bottom
                 occluderReverse.isVisible = false;
-                occluderFloor.isVisible = true; 
-                occluderTop.isVisible = true;
-                occluderRight.isVisible = true;
-                occluderLeft.isVisible = true;
-                occluderback.isVisible = true;
+                occluderFloor.isVisible = false; //changed 
+                occluderTop.isVisible = false; //changed
+                occluderRight.isVisible = false; //changed
+                occluderLeft.isVisible = false; //changed
+                occluderback.isVisible = false; //changed
             }
         }
     });
