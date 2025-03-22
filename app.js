@@ -512,8 +512,8 @@ ui.addControl(warningText);
         // Addiere 90 Grad (π/2) zur X-Achse
         currentEuler.x += Math.PI / 2;
         // Setze die Rotation zurück, indem du die neuen Euler-Winkel in ein Quaternion umwandelst
-        occluderFrontBottom.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
-        
+        //occluderFrontBottom.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
+        occluderFrontBottom.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
         //anstelle von:
         //rootOccluder.rotationQuaternion.multiplyInPlace(
         //    BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
