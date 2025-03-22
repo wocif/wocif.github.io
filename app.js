@@ -402,9 +402,9 @@ scene.onBeforeRenderObservable.add(() => {
         // -----------------------------
         let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
         let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
-        if (portalPosition && xrCamera) {
+        if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
             
-            if (localCameraPos.z > 0) {
+            if (xrCamera.position.z > portalPosition.z) {
                 warningText.isVisible = false;
                 // virtual world
                 occluder.isVisible = false;
