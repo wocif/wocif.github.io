@@ -394,8 +394,6 @@ ui.addControl(warningText);
 // In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
 scene.onBeforeRenderObservable.add(() => {
     // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
-
-});
         
         // -----------------------------
         // Update Occluder Visibility based on XR Camera vs. Portal Position
@@ -428,6 +426,8 @@ scene.onBeforeRenderObservable.add(() => {
                 occluderback.isVisible = true;  //changed
             }
         }
+});
+
 
         const reticleBoundingInfo = reticleMesh.getBoundingInfo();
         portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
