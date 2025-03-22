@@ -375,7 +375,7 @@ const createScene = async function () {
         }
         // Enable the virtual world and occluders
         rootScene.setEnabled(true);
-        rootOccluder.setEnabled(false);
+        rootOccluder.setEnabled(true);
 
 
 
