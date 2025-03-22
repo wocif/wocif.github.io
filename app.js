@@ -416,7 +416,7 @@ ui.addControl(warningText);
                         warningText.isVisible = true;
                         // virtual world
                         occluder.isVisible = false;
-                        occluderFrontBottom.isVisible = false; //bottom
+                        occluderFrontBottom.isVisible = true; //bottom
                         occluderReverse.isVisible = true; //changed
                         occluderFloor.isVisible = false;
                         occluderTop.isVisible = false;
