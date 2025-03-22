@@ -522,6 +522,9 @@ ui.addControl(warningText);
         // anstelle von:
         //Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
         rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+        let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
+        currentEuler.x += Math.PI / 2;
+        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
         //rootOccluder.translate(BABYLON.Axis.Z, -2);
         
         occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
