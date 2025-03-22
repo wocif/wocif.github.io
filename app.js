@@ -244,16 +244,18 @@ const createScene = async function () {
     occluderLeft.visibility = oclVisibility;
     occluderback.visibility = oclVisibility;
 
-    // Disable virtual world and occluders until portal activation
-    rootScene.setEnabled(false);
-    rootOccluder.setEnabled(false);
-
     // -----------------------------
     // Scene Render Settings
     // -----------------------------
     scene.setRenderingAutoClearDepthStencil(1, false, false, false);
     scene.setRenderingAutoClearDepthStencil(0, true, true, true);
     scene.autoClear = true;
+
+    // Disable virtual world and occluders until portal activation
+    rootScene.setEnabled(false);
+    rootOccluder.setEnabled(false);
+
+
 
     // -----------------------------
     // Reticle (Placement Mesh) Creation
@@ -373,7 +375,7 @@ const createScene = async function () {
         }
         // Enable the virtual world and occluders
         rootScene.setEnabled(true);
-        rootOccluder.setEnabled(true);
+        rootOccluder.setEnabled(false);
 
 
 
@@ -430,7 +432,7 @@ scene.onBeforeRenderObservable.add(() => {
                 occluderTop.isVisible = true;  //changed
                 occluderRight.isVisible = true;  //changed
                 occluderLeft.isVisible = true;  //changed
-                occluderback.isVisible = true;  //changed
+                occluderback.isVisible = false;  //changed
             }
         }
 });
