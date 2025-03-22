@@ -502,17 +502,17 @@ ui.addControl(warningText);
         rootOccluder.position.copyFrom(portalPosition);
         
 
-        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //kopiere Rotation von reticle
-        //rootOccluder.rotationQuaternion = BABYLON.Quaternion.Identity(); // Setze die Rotation zurück
-        //rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //neu
-        //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+        //rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //kopiere Rotation von reticle
 
+        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone().multiply(
+            BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2)
+        );
         // Umrechnung der aktuellen Rotation in Euler-Winkel
-        let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
+        //let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
         // Addiere 90 Grad (π/2) zur X-Achse
-        currentEuler.y += Math.PI / 2;
+        //currentEuler.y += Math.PI / 2;
         // Setze die Rotation zurück, indem du die neuen Euler-Winkel in ein Quaternion umwandelst
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
+        //rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
         
         //anstelle von:
         //rootOccluder.rotationQuaternion.multiplyInPlace(
