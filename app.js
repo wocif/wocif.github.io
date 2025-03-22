@@ -426,11 +426,11 @@ scene.onBeforeRenderObservable.add(() => {
                 occluder.isVisible = true; 
                 occluderFrontBottom.isVisible = true; //bottom 
                 occluderReverse.isVisible = false;
-                occluderFloor.isVisible = false;  //changed
-                occluderTop.isVisible = false;  //changed
-                occluderRight.isVisible = false;  //changed
-                occluderLeft.isVisible = false;  //changed
-                occluderback.isVisible = false;  //changed
+                occluderFloor.isVisible = true;  //changed
+                occluderTop.isVisible = true;  //changed
+                occluderRight.isVisible = true;  //changed
+                occluderLeft.isVisible = true;  //changed
+                occluderback.isVisible = true;  //changed
             }
         }
 });
