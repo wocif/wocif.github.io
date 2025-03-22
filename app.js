@@ -388,7 +388,7 @@ const createScene = async function () {
 
 
 
-        // Erstelle ein Fullscreen-UI, falls noch nicht vorhanden
+//UI
 const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
 // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
@@ -400,40 +400,43 @@ warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTE
 warningText.isVisible = false;  // zunächst unsichtbar
 ui.addControl(warningText);
 
-// In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
-scene.onBeforeRenderObservable.add(() => {
-    // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
-        
-        // -----------------------------
-        // Update Occluder Visibility based on XR Camera vs. Portal Position
-        // -----------------------------
-        if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
-            
-            if (xrCamera.position.z > portalPosition.z && (xr.baseExperience.state === BABYLON.WebXRState.IN_XR)) {
-                warningText.isVisible = true;
-                // virtual world
-                occluder.isVisible = false;
-                occluderFrontBottom.isVisible = false; //bottom
-                occluderReverse.isVisible = true; //changed
-                occluderFloor.isVisible = false;
-                occluderTop.isVisible = false;
-                occluderRight.isVisible = false;
-                occluderLeft.isVisible = false;
-                occluderback.isVisible = false;
-            } else {
-                warningText.isVisible = false;
-                // real world: 
-                occluder.isVisible = true; 
-                occluderFrontBottom.isVisible = true; //bottom 
-                occluderReverse.isVisible = false;
-                occluderFloor.isVisible = true;  //changed
-                occluderTop.isVisible = true;  //changed
-                occluderRight.isVisible = true;  //changed
-                occluderLeft.isVisible = true;  //changed
-                occluderback.isVisible = true;  //changed
-            }
-        }
-});
+        // In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
+        scene.onBeforeRenderObservable.add(() => {
+            // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
+                
+                // -----------------------------
+                // Update Occluder Visibility based on XR Camera vs. Portal Position
+                // -----------------------------
+                
+
+
+                if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
+                    
+                    if (xrCamera.position.z > portalPosition.z && (xr.baseExperience.state === BABYLON.WebXRState.IN_XR)) {
+                        warningText.isVisible = true;
+                        // virtual world
+                        occluder.isVisible = false;
+                        occluderFrontBottom.isVisible = false; //bottom
+                        occluderReverse.isVisible = true; //changed
+                        occluderFloor.isVisible = false;
+                        occluderTop.isVisible = false;
+                        occluderRight.isVisible = false;
+                        occluderLeft.isVisible = false;
+                        occluderback.isVisible = false;
+                    } else {
+                        warningText.isVisible = false;
+                        // real world: 
+                        occluder.isVisible = true; 
+                        occluderFrontBottom.isVisible = true; //bottom 
+                        occluderReverse.isVisible = false;
+                        occluderFloor.isVisible = true;  //changed
+                        occluderTop.isVisible = true;  //changed
+                        occluderRight.isVisible = true;  //changed
+                        occluderLeft.isVisible = true;  //changed
+                        occluderback.isVisible = true;  //changed
+                    }
+                }
+        });
 
 
         const reticleBoundingInfo = reticleMesh.getBoundingInfo();
@@ -452,7 +455,7 @@ scene.onBeforeRenderObservable.add(() => {
         rootScene.position.z = portalPosition.z;
 
         rootPilar.position.copyFrom(portalPosition);
-        rootPilar.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
+        rootPilar.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //kopiere Rotation von reticle
 
         //rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
@@ -499,7 +502,7 @@ scene.onBeforeRenderObservable.add(() => {
         rootOccluder.position.copyFrom(portalPosition);
         
 
-        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone();
+        rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //kopiere Rotation von reticle
         //rootOccluder.rotationQuaternion = BABYLON.Quaternion.Identity(); // Setze die Rotation zurück
         //rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //neu
         //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
@@ -507,7 +510,7 @@ scene.onBeforeRenderObservable.add(() => {
         // Umrechnung der aktuellen Rotation in Euler-Winkel
         let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
         // Addiere 90 Grad (π/2) zur X-Achse
-        currentEuler.x += Math.PI / 2;
+        //currentEuler.x += Math.PI / 2;
         // Setze die Rotation zurück, indem du die neuen Euler-Winkel in ein Quaternion umwandelst
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
         
