@@ -249,6 +249,13 @@ const createScene = async function () {
     rootOccluder.setEnabled(false);
 
     // -----------------------------
+    // Scene Render Settings
+    // -----------------------------
+    scene.setRenderingAutoClearDepthStencil(1, false, false, false);
+    scene.setRenderingAutoClearDepthStencil(0, true, true, true);
+    scene.autoClear = true;
+
+    // -----------------------------
     // Reticle (Placement Mesh) Creation
     // -----------------------------
     function createReticle() {
@@ -578,12 +585,7 @@ scene.onBeforeRenderObservable.add(() => {
         rectangle.isVisible = true;
     });
 
-    // -----------------------------
-    // Scene Render Settings
-    // -----------------------------
-    scene.setRenderingAutoClearDepthStencil(1, false, false, false);
-    scene.setRenderingAutoClearDepthStencil(0, true, true, true);
-    scene.autoClear = true;
+
 
     return scene;
 };
