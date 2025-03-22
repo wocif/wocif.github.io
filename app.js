@@ -340,8 +340,8 @@ ui.addControl(warningText);
                     } else {
                         warningText.isVisible = false;
                         // real world: 
-                        occluder.isVisible = false; 
-                        occluderFrontBottom.isVisible = true; //bottom 
+                        occluder.isVisible = true; 
+                        occluderFrontBottom.isVisible = false; //bottom 
                         occluderReverse.isVisible = false;
                         occluderFloor.isVisible = true;  //changed
                         occluderTop.isVisible = true;  //changed
