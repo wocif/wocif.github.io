@@ -152,6 +152,12 @@ const createScene = async function () {
     );
     engine.hideLoadingUI(); // Hide loading screen once loaded
 
+    // Parent each mesh to the virtual world root and assign rendering group
+    for (let child of virtualWorldResult.meshes) {
+        child.renderingGroupId = 1;
+        child.parent = rootScene;
+    }
+
 
     // -----------------------------
     // Scene Render Settings
