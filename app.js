@@ -374,7 +374,7 @@ const createScene = async function () {
             reticleMesh.isVisible = true;  // Hide reticle after placement // CHANGED
         }
         // Enable the virtual world and occluders
-        rootScene.setEnabled(false);
+        rootScene.setEnabled(true);
         rootOccluder.setEnabled(true);
 
 
