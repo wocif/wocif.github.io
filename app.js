@@ -228,7 +228,7 @@ const createScene = async function () {
     const oclVisibility = 0.001;
     //const DEBUG_visibility = 0.35;
     occluder.isVisible = true; 
-    occluderFrontBottom.isVisible = false;//changed //bottom
+    occluderFrontBottom.isVisible = true; //bottom
     occluderReverse.isVisible = false;
     occluderFloor.isVisible = true; //changed
     occluderTop.isVisible = true;
@@ -510,7 +510,7 @@ ui.addControl(warningText);
         // Umrechnung der aktuellen Rotation in Euler-Winkel
         let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
         // Addiere 90 Grad (π/2) zur X-Achse
-        //currentEuler.x += Math.PI / 2;
+        //currentEuler.x += Math.PI / 2; // CHANGED !!!!!!!!
         // Setze die Rotation zurück, indem du die neuen Euler-Winkel in ein Quaternion umwandelst
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
         
