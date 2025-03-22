@@ -138,53 +138,7 @@ const createScene = async function () {
     // lower ground of 3d scene
     rootScene.position.y -= 1;
 
-    // -----------------------------
-    // Occluder Setup using CSG (Constructive Solid Geometry)
-    // -----------------------------
-    // Create a large ground box and a hole box for occluders
-    let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
-    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
 
-    // Perform CSG subtraction for occluders
-    const groundCSG = BABYLON.CSG.FromMesh(ground);
-    const holeCSG = BABYLON.CSG.FromMesh(hole);
-    const booleanCSG = groundCSG.subtract(holeCSG);
-    const booleanRCSG = holeCSG.subtract(groundCSG);
-
-    // Create main occluder meshes
-    let occluder = booleanCSG.toMesh("occluder", null, scene);
-    
-
-    let occluderMat = new BABYLON.StandardMaterial("occluderMat", scene);
-    occluderMat.diffuseColor = new BABYLON.Color3(0, 1, 0);  // Beispiel für eine grüne Farbe
-    occluder.material = occluderMat;
-
-    let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFrontBottom", { width: 2, depth: 6, height: 0.001 }, scene); //bottom
-    let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
-    let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene);
-    let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
-    let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 7, depth: 7, height: 0.001 }, scene);
-    let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 7, depth: 7, height: 0.001 }, scene);
-    let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 7, depth: 7, height: 0.001 }, scene); // vor Portal, hinter User
-
-    // Create occluder material to force depth write
-    const occluderMaterial = new BABYLON.StandardMaterial("om", scene);
-    occluderMaterial.disableLighting = true;
-    occluderMaterial.forceDepthWrite = true;
-
-    // Apply material to occluders
-    occluder.material = occluderMaterial;
-    occluderFrontBottom.material = occluderMaterial; // bottom
-    occluderReverse.material = occluderMaterial;
-    occluderFloor.material = occluderMaterial;
-    occluderTop.material = occluderMaterial;
-    occluderRight.material = occluderMaterial;
-    occluderLeft.material = occluderMaterial;
-    occluderback.material = occluderMaterial;
-
-    // Dispose temporary meshes
-    ground.isVisible = false;
-    hole.isVisible = false;
 
     // -----------------------------
     // Load the Virtual World (Hill Valley Scene)
@@ -198,51 +152,6 @@ const createScene = async function () {
     );
     engine.hideLoadingUI(); // Hide loading screen once loaded
 
-    // Parent each mesh to the virtual world root and assign rendering group
-    for (let child of virtualWorldResult.meshes) {
-        child.renderingGroupId = 1;
-        child.parent = rootScene;
-    }
-
-    // Set occluders to rendering group 0
-    occluder.renderingGroupId = 0;
-    occluderFrontBottom.renderingGroupId = 0; //bottom
-    occluderReverse.renderingGroupId = 0;
-    occluderFloor.renderingGroupId = 0;
-    occluderTop.renderingGroupId = 0;
-    occluderRight.renderingGroupId = 0;
-    occluderLeft.renderingGroupId = 0;
-    occluderback.renderingGroupId = 0;
-
-    // Parent occluders to rootOccluder
-    occluder.parent = rootOccluder;
-    occluderFrontBottom.parent = rootOccluder; //bottom
-    occluderReverse.parent = rootOccluder;
-    occluderFloor.parent = rootOccluder;
-    occluderTop.parent = rootOccluder;
-    occluderRight.parent = rootOccluder;
-    occluderLeft.parent = rootOccluder;
-    occluderback.parent = rootOccluder;
-
-    // Set visibility and low opacity for occluders
-    const oclVisibility = 0.001;
-    //const DEBUG_visibility = 0.35;
-    occluder.isVisible = true; 
-    occluderFrontBottom.isVisible = false;//changed //bottom
-    occluderReverse.isVisible = false;
-    occluderFloor.isVisible = true; //changed
-    occluderTop.isVisible = true;
-    occluderRight.isVisible = true;
-    occluderLeft.isVisible = true;
-    occluderback.isVisible = true;
-    occluder.visibility = oclVisibility;
-    occluderFrontBottom.visibility = oclVisibility; //bottom
-    occluderReverse.visibility = oclVisibility;
-    occluderFloor.visibility = oclVisibility;
-    occluderTop.visibility = oclVisibility;
-    occluderRight.visibility = oclVisibility;
-    occluderLeft.visibility = oclVisibility;
-    occluderback.visibility = oclVisibility;
 
     // -----------------------------
     // Scene Render Settings
@@ -437,7 +346,100 @@ ui.addControl(warningText);
                     }
                 }
         });
+            // -----------------------------
+    // Occluder Setup using CSG (Constructive Solid Geometry)
+    // -----------------------------
+    // Create a large ground box and a hole box for occluders
+    let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
+    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
 
+    // Perform CSG subtraction for occluders
+    const groundCSG = BABYLON.CSG.FromMesh(ground);
+    const holeCSG = BABYLON.CSG.FromMesh(hole);
+    const booleanCSG = groundCSG.subtract(holeCSG);
+    const booleanRCSG = holeCSG.subtract(groundCSG);
+
+    // Create main occluder meshes
+    let occluder = booleanCSG.toMesh("occluder", null, scene);
+    
+
+    let occluderMat = new BABYLON.StandardMaterial("occluderMat", scene);
+    occluderMat.diffuseColor = new BABYLON.Color3(0, 1, 0);  // Beispiel für eine grüne Farbe
+    occluder.material = occluderMat;
+
+    let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFrontBottom", { width: 2, depth: 6, height: 0.001 }, scene); //bottom
+    let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
+    let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene); // on floot infront portal
+    let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", { width: 7, depth: 7, height: 0.001 }, scene);
+    let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", { width: 7, depth: 7, height: 0.001 }, scene); // vor Portal, hinter User
+
+    // Create occluder material to force depth write
+    const occluderMaterial = new BABYLON.StandardMaterial("om", scene);
+    occluderMaterial.disableLighting = true;
+    occluderMaterial.forceDepthWrite = true;
+
+    // Apply material to occluders
+    occluder.material = occluderMaterial;
+    occluderFrontBottom.material = occluderMaterial; // bottom
+    occluderReverse.material = occluderMaterial;
+    occluderFloor.material = occluderMaterial;
+    occluderTop.material = occluderMaterial;
+    occluderRight.material = occluderMaterial;
+    occluderLeft.material = occluderMaterial;
+    occluderback.material = occluderMaterial;
+
+    // Dispose temporary meshes
+    ground.isVisible = false;
+    hole.isVisible = false;
+
+    
+    // Parent each mesh to the virtual world root and assign rendering group
+    for (let child of virtualWorldResult.meshes) {
+        child.renderingGroupId = 1;
+        child.parent = rootScene;
+    }
+
+    // Set occluders to rendering group 0
+    occluder.renderingGroupId = 0;
+    occluderFrontBottom.renderingGroupId = 0; //bottom
+    occluderReverse.renderingGroupId = 0;
+    occluderFloor.renderingGroupId = 0;
+    occluderTop.renderingGroupId = 0;
+    occluderRight.renderingGroupId = 0;
+    occluderLeft.renderingGroupId = 0;
+    occluderback.renderingGroupId = 0;
+
+    // Parent occluders to rootOccluder
+    occluder.parent = rootOccluder;
+    occluderFrontBottom.parent = rootOccluder; //bottom
+    occluderReverse.parent = rootOccluder;
+    occluderFloor.parent = rootOccluder;
+    occluderTop.parent = rootOccluder;
+    occluderRight.parent = rootOccluder;
+    occluderLeft.parent = rootOccluder;
+    occluderback.parent = rootOccluder;
+
+    // Set visibility and low opacity for occluders
+    const oclVisibility = 0.001;
+    //const DEBUG_visibility = 0.35;
+    occluder.isVisible = true; 
+    occluderFrontBottom.isVisible = false;//changed //bottom
+    occluderReverse.isVisible = false;
+    occluderFloor.isVisible = true; //changed
+    occluderTop.isVisible = true;
+    occluderRight.isVisible = true;
+    occluderLeft.isVisible = true;
+    occluderback.isVisible = true;
+    occluder.visibility = oclVisibility;
+    occluderFrontBottom.visibility = oclVisibility; //bottom
+    occluderReverse.visibility = oclVisibility;
+    occluderFloor.visibility = oclVisibility;
+    occluderTop.visibility = oclVisibility;
+    occluderRight.visibility = oclVisibility;
+    occluderLeft.visibility = oclVisibility;
+    occluderback.visibility = oclVisibility;
 
         const reticleBoundingInfo = reticleMesh.getBoundingInfo();
         portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
