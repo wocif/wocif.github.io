@@ -508,11 +508,11 @@ ui.addControl(warningText);
         //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
 
         // Umrechnung der aktuellen Rotation in Euler-Winkel
-        let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
+        //let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
         // Addiere 90 Grad (π/2) zur X-Achse
         //currentEuler.x += Math.PI / 2; // CHANGED !!!!!!!!
         // Setze die Rotation zurück, indem du die neuen Euler-Winkel in ein Quaternion umwandelst
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
+        //rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
         
         //anstelle von:
         //rootOccluder.rotationQuaternion.multiplyInPlace(
@@ -521,9 +521,8 @@ ui.addControl(warningText);
         
         // anstelle von:
         //Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
-        
         rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
-        rootOccluder.translate(BABYLON.Axis.Z, -2);
+        //rootOccluder.translate(BABYLON.Axis.Z, -2);
         
         occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderTop.translate(BABYLON.Axis.Y, -2);
