@@ -515,12 +515,12 @@ ui.addControl(warningText);
         //rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
         
         //anstelle von:
-        /* rootOccluder.rotationQuaternion.multiplyInPlace(
+        rootOccluder.rotationQuaternion.multiplyInPlace(
             BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, Math.PI / 2)
-        );  */
+        ); 
         
         // anstelle von:
-        rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
+        //rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
        /*  rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
         currentEuler.x -= Math.PI / 2;
