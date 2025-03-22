@@ -521,8 +521,9 @@ ui.addControl(warningText);
         
         // anstelle von:
         //Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
-        //rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
-        //rootOccluder.translate(BABYLON.Axis.Z, -2);
+        
+        rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
+        rootOccluder.translate(BABYLON.Axis.Z, -2);
         
         occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderTop.translate(BABYLON.Axis.Y, -2);
