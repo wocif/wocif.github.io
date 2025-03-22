@@ -416,7 +416,7 @@ ui.addControl(warningText);
                         warningText.isVisible = true;
                         // virtual world
                         occluder.isVisible = false;
-                        occluderFrontBottom.isVisible = true; //bottom
+                        occluderFrontBottom.isVisible = false; //bottom
                         occluderReverse.isVisible = true; //changed
                         occluderFloor.isVisible = false;
                         occluderTop.isVisible = false;
@@ -426,7 +426,7 @@ ui.addControl(warningText);
                     } else {
                         warningText.isVisible = false;
                         // real world: 
-                        occluder.isVisible = true; 
+                        occluder.isVisible = false; 
                         occluderFrontBottom.isVisible = true; //bottom 
                         occluderReverse.isVisible = false;
                         occluderFloor.isVisible = true;  //changed
