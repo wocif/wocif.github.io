@@ -403,18 +403,18 @@ scene.onBeforeRenderObservable.add(() => {
         if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
             
             if (xrCamera.position.z > portalPosition.z) {
-                warningText.isVisible = false;
+                warningText.isVisible = true;
                 // virtual world
                 occluder.isVisible = false;
                 occluderFrontBottom.isVisible = false; //bottom
-                occluderReverse.isVisible = false; //changed
+                occluderReverse.isVisible = true; //changed
                 occluderFloor.isVisible = false;
                 occluderTop.isVisible = false;
                 occluderRight.isVisible = false;
                 occluderLeft.isVisible = false;
                 occluderback.isVisible = false;
             } else {
-                warningText.isVisible = true;
+                warningText.isVisible = false;
                 // real world: 
                 occluder.isVisible = true; 
                 occluderFrontBottom.isVisible = true; //bottom 
