@@ -510,7 +510,7 @@ ui.addControl(warningText);
         // Umrechnung der aktuellen Rotation in Euler-Winkel
         let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
         // Addiere 90 Grad (π/2) zur X-Achse
-        currentEuler.x += Math.PI / 2;
+        //currentEuler.x += Math.PI / 2;
         // Setze die Rotation zurück, indem du die neuen Euler-Winkel in ein Quaternion umwandelst
         rootOccluder.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(currentEuler.y, currentEuler.x, currentEuler.z);
         
