@@ -157,8 +157,7 @@ const createScene = async function () {
         child.renderingGroupId = 1;
         child.parent = rootScene;
     }
-
-
+    
     // -----------------------------
     // Scene Render Settings
     // -----------------------------
