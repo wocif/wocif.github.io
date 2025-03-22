@@ -351,6 +351,13 @@ ui.addControl(warningText);
                     }
                 }
         });
+
+        const reticleBoundingInfo = reticleMesh.getBoundingInfo();
+        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
+        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
+        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
+
+        
             // -----------------------------
     // Occluder Setup using CSG (Constructive Solid Geometry)
     // -----------------------------
@@ -446,10 +453,7 @@ ui.addControl(warningText);
     occluderLeft.visibility = oclVisibility;
     occluderback.visibility = oclVisibility;
 
-        const reticleBoundingInfo = reticleMesh.getBoundingInfo();
-        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
-        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
-        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
+
 
         const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
         //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
