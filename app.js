@@ -352,7 +352,71 @@ ui.addControl(warningText);
                 }
         });
             // -----------------------------
-    // Occluder Setup using CSG (Constructive Solid Geometry)
+   
+
+        const reticleBoundingInfo = reticleMesh.getBoundingInfo();
+        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
+        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
+        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
+
+        const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
+        //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
+        //portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
+        //occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
+        
+
+        // y = Höhe
+        rootScene.position.x = portalPosition.x;
+        rootScene.position.z = portalPosition.z;
+
+        rootPilar.position.copyFrom(portalPosition);
+        rootPilar.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //kopiere Rotation von reticle
+
+        //rootPilar.scaling.copyFrom(reticleMesh.scaling);
+    
+        // Wichtige Variablen für die Positionierung
+        const reticlePosXMax = reticleBoundingInfo.boundingBox.maximumWorld.x;
+        const reticlePosXMin = reticleBoundingInfo.boundingBox.minimumWorld.x;
+        const reticlePosYMax = reticleBoundingInfo.boundingBox.maximumWorld.y;
+        const reticlePosYMin = reticleBoundingInfo.boundingBox.minimumWorld.y;
+        
+        const reticleSizeX =  (reticlePosXMax - reticlePosXMin)
+        const reticleSizeY =  (reticlePosYMin - reticlePosYMax)
+        //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
+        //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
+        
+    
+        // Höhe der vertikalen Säulen (angepasst auf das Reticle)
+        const pillarHeight = reticleSizeY;
+        const pillarWidth = 0.1;
+        const pillarDepth = 0.1;
+    
+        // Erstelle die vier Säulen
+        const rahmenL = BABYLON.MeshBuilder.CreateBox("rahmenL", { height: pillarHeight, width: pillarWidth, depth: pillarDepth }, scene);
+        const rahmenR = rahmenL.clone("rahmenR");
+        const rahmenO = BABYLON.MeshBuilder.CreateBox("rahmenO", { height: reticleSizeX, width: pillarWidth, depth: pillarDepth }, scene);
+        const rahmenU = rahmenO.clone("rahmenU");
+    
+        // Positionierung der vertikalen Säulen (links & rechts)
+        rahmenL.position.set(-reticleSizeX / 2, 0, 0); // Linke Kante
+        rahmenR.position.set(reticleSizeX / 2, 0, 0);  // Rechte Kante
+    
+        // Positionierung der horizontalen Säulen (oben & unten)
+        rahmenO.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        rahmenO.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
+        
+        rahmenU.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        rahmenU.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
+
+        rahmenL.rotation.x = reticleMesh.rotation.x;
+        rahmenR.rotation.x = reticleMesh.rotation.x;
+        rahmenO.rotation.x = reticleMesh.rotation.x;
+        rahmenU.rotation.x = reticleMesh.rotation.x;
+        
+
+        // OCCLUDER POSITIONING
+
+         // Occluder Setup using CSG (Constructive Solid Geometry)
     // -----------------------------
     // Create a large ground box and a hole box for occluders
     let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
@@ -445,66 +509,7 @@ ui.addControl(warningText);
     occluderRight.visibility = oclVisibility;
     occluderLeft.visibility = oclVisibility;
     occluderback.visibility = oclVisibility;
-
-        const reticleBoundingInfo = reticleMesh.getBoundingInfo();
-        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
-        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
-        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
-
-        const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
-        //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
-        //portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
-        //occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
-        
-
-        // y = Höhe
-        rootScene.position.x = portalPosition.x;
-        rootScene.position.z = portalPosition.z;
-
-        rootPilar.position.copyFrom(portalPosition);
-        rootPilar.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //kopiere Rotation von reticle
-
-        //rootPilar.scaling.copyFrom(reticleMesh.scaling);
     
-        // Wichtige Variablen für die Positionierung
-        const reticlePosXMax = reticleBoundingInfo.boundingBox.maximumWorld.x;
-        const reticlePosXMin = reticleBoundingInfo.boundingBox.minimumWorld.x;
-        const reticlePosYMax = reticleBoundingInfo.boundingBox.maximumWorld.y;
-        const reticlePosYMin = reticleBoundingInfo.boundingBox.minimumWorld.y;
-        
-        const reticleSizeX =  (reticlePosXMax - reticlePosXMin)
-        const reticleSizeY =  (reticlePosYMin - reticlePosYMax)
-        //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
-        //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
-        
-    
-        // Höhe der vertikalen Säulen (angepasst auf das Reticle)
-        const pillarHeight = reticleSizeY;
-        const pillarWidth = 0.1;
-        const pillarDepth = 0.1;
-    
-        // Erstelle die vier Säulen
-        const rahmenL = BABYLON.MeshBuilder.CreateBox("rahmenL", { height: pillarHeight, width: pillarWidth, depth: pillarDepth }, scene);
-        const rahmenR = rahmenL.clone("rahmenR");
-        const rahmenO = BABYLON.MeshBuilder.CreateBox("rahmenO", { height: reticleSizeX, width: pillarWidth, depth: pillarDepth }, scene);
-        const rahmenU = rahmenO.clone("rahmenU");
-    
-        // Positionierung der vertikalen Säulen (links & rechts)
-        rahmenL.position.set(-reticleSizeX / 2, 0, 0); // Linke Kante
-        rahmenR.position.set(reticleSizeX / 2, 0, 0);  // Rechte Kante
-    
-        // Positionierung der horizontalen Säulen (oben & unten)
-        rahmenO.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        rahmenO.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
-        
-        rahmenU.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
-        rahmenU.position.set(0, -reticleSizeY / 2, 0); // Untere Kante (keine Manipulation der Z-Achse)
-
-        rahmenL.rotation.x = reticleMesh.rotation.x;
-        rahmenR.rotation.x = reticleMesh.rotation.x;
-        rahmenO.rotation.x = reticleMesh.rotation.x;
-        rahmenU.rotation.x = reticleMesh.rotation.x;
-        
         //Align occluders 
         rootOccluder.position.copyFrom(portalPosition);
         
