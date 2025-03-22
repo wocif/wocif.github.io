@@ -357,13 +357,21 @@ ui.addControl(warningText);
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
-        
+
             // -----------------------------
     // Occluder Setup using CSG (Constructive Solid Geometry)
     // -----------------------------
     // Create a large ground box and a hole box for occluders
     let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
-    let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
+    let hole = BABYLON.MeshBuilder.CreateBox("hole", { 
+        width: reticleMesh.scaling.x, 
+        height: 0.01, 
+        depth: reticleMesh.scaling.z 
+    }, scene);
+
+    // Position übernehmen
+    hole.position.copyFrom(reticleMesh.position);
+
 
     // Perform CSG subtraction for occluders
     const groundCSG = BABYLON.CSG.FromMesh(ground);
