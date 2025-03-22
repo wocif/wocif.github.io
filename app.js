@@ -285,7 +285,7 @@ const createScene = async function () {
         
         portalAppeared = true;
         if (reticleMesh) {
-            reticleMesh.isVisible = true;  // Hide reticle after placement // CHANGED
+            reticleMesh.isVisible = false;  // Hide reticle after placement // CHANGED
         }
         // Enable the virtual world and occluders
         rootScene.setEnabled(true);
