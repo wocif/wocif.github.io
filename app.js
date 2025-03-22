@@ -520,7 +520,7 @@ ui.addControl(warningText);
         //); 
         
         // anstelle von:
-        //Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
+        Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2); // "hinstellen"
         rootOccluder.rotationQuaternion.copyFrom(reticleMesh.rotationQuaternion);
         let currentEuler = rootOccluder.rotationQuaternion.toEulerAngles();
         currentEuler.x -= Math.PI / 2;
