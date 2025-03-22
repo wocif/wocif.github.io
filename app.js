@@ -409,7 +409,7 @@ scene.onBeforeRenderObservable.add(() => {
         // -----------------------------
         if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
             
-            if (xrCamera.position.z > portalPosition.z) {
+            if (xrCamera.position.z > portalPosition.z && (xr.baseExperience.state === BABYLON.WebXRState.IN_XR)) {
                 warningText.isVisible = true;
                 // virtual world
                 occluder.isVisible = false;
