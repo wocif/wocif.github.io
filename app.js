@@ -357,9 +357,7 @@ ui.addControl(warningText);
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
-        portalSize.x = 
-        portalSize.y = reticleBoundingInfo.boundingBox.maximumWorld.y - reticleBoundingInfo.boundingBox.minimumWorld.y;
-        portalSize.z = reticleBoundingInfo.boundingBox.maximumWorld.z - reticleBoundingInfo.boundingBox.minimumWorld.z;
+       
 
 
             // -----------------------------
