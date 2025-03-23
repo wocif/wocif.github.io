@@ -357,7 +357,7 @@ ui.addControl(warningText);
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
         portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
-        portalSize.x = reticleBoundingInfo.boundingBox.maximumWorld.x - reticleBoundingInfo.boundingBox.minimumWorld.x;
+        portalSize.x = 
         portalSize.y = reticleBoundingInfo.boundingBox.maximumWorld.y - reticleBoundingInfo.boundingBox.minimumWorld.y;
         portalSize.z = reticleBoundingInfo.boundingBox.maximumWorld.z - reticleBoundingInfo.boundingBox.minimumWorld.z;
 
@@ -369,9 +369,9 @@ ui.addControl(warningText);
     let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
     //let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
     let hole = BABYLON.MeshBuilder.CreateBox("hole", { 
-        width: portalSize.x, 
-        height: portalSize.z, 
-        depth: portalSize.y 
+        width: reticleSizeX, 
+        height: 0.001, 
+        depth: reticleSizeY 
     }, scene);
 
     // Position übernehmen
