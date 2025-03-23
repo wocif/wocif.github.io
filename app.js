@@ -364,10 +364,12 @@ ui.addControl(warningText);
     // Create a large ground box and a hole box for occluders
     let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
     //let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
+    const size = boundingInfo.boundingBox.extendSizeWorld.scale(2);
+
     let hole = BABYLON.MeshBuilder.CreateBox("hole", { 
-        width: reticleMesh.scaling.x, 
-        height: reticleMesh.scaling.z-1, 
-        depth: reticleMesh.scaling.y 
+        width: size.x, 
+        height: size.y, 
+        depth: size.z 
     }, scene);
 
     // Position übernehmen
