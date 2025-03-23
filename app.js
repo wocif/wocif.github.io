@@ -488,7 +488,7 @@ ui.addControl(warningText);
         const reticlePosYMin = reticleBoundingInfo.boundingBox.minimumWorld.y;
         
         const reticleSizeX =  (reticlePosXMax - reticlePosXMin)
-        const reticleSizeY =  (reticlePosYMin - reticlePosYMax)
+        const reticleSizeY =  (reticlePosYMax - reticlePosYMin)
         //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
         //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
         
