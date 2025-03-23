@@ -370,7 +370,7 @@ ui.addControl(warningText);
     //let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
     let hole = BABYLON.MeshBuilder.CreateBox("hole", { 
         width: reticleSizeX, 
-        height: 0.001, 
+        height: 1, 
         depth: reticleSizeY 
     }, scene);
 
