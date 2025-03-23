@@ -366,8 +366,8 @@ ui.addControl(warningText);
     //let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
     let hole = BABYLON.MeshBuilder.CreateBox("hole", { 
         width: reticleMesh.scaling.x, 
-        height: reticleMesh.scaling.y, 
-        depth: reticleMesh.scaling.z 
+        height: reticleMesh.scaling.z, 
+        depth: reticleMesh.scaling.y 
     }, scene);
 
     // Position übernehmen
