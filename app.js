@@ -353,9 +353,13 @@ ui.addControl(warningText);
         });
 
         const reticleBoundingInfo = reticleMesh.getBoundingInfo();
-        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
+        
         portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x +reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
+        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y +reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
         portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z +reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
+        portalSize.x = reticleBoundingInfo.boundingBox.maximumWorld.x - reticleBoundingInfo.boundingBox.minimumWorld.x;
+        portalSize.y = reticleBoundingInfo.boundingBox.maximumWorld.y - reticleBoundingInfo.boundingBox.minimumWorld.y;
+        portalSize.z = reticleBoundingInfo.boundingBox.maximumWorld.z - reticleBoundingInfo.boundingBox.minimumWorld.z;
 
 
             // -----------------------------
@@ -364,12 +368,10 @@ ui.addControl(warningText);
     // Create a large ground box and a hole box for occluders
     let ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 500, depth: 500, height: 0.001 }, scene);
     //let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
-    const size = boundingInfo.boundingBox.extendSizeWorld.scale(2);
-
     let hole = BABYLON.MeshBuilder.CreateBox("hole", { 
-        width: size.x, 
-        height: size.y, 
-        depth: size.z 
+        width: portalSize.x, 
+        height: portalSize.z, 
+        depth: portalSize.y 
     }, scene);
 
     // Position übernehmen
