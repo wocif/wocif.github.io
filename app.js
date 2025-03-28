@@ -48,6 +48,13 @@ const createScene = async function () {
     //camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
 
+    // Lichter
+    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1000, 5), scene);
+    light.intensity = 1; // Helligkeit anpassen
+
+    var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1000, 5), scene);
+    light2.intensity = 0.5; // Helligkeit anpassen
+
     // -----------------------------
     // Create GUI for non-AR mode and AR availability check
     // -----------------------------
@@ -302,17 +309,7 @@ const createScene = async function () {
 
 
 
-//UI
-const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-// Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
-const warningText = new BABYLON.GUI.TextBlock("warningText", "Portal Durchquert!");
-warningText.color = "red";
-warningText.fontSize = 48;
-warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-warningText.isVisible = false;  // zunächst unsichtbar
-ui.addControl(warningText);
 
         // In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
         scene.onBeforeRenderObservable.add(() => {
@@ -327,7 +324,6 @@ ui.addControl(warningText);
                 if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
                     
                     if (xrCamera.position.z > portalPosition.z && (xr.baseExperience.state === BABYLON.WebXRState.IN_XR)) {
-                        warningText.isVisible = true;
                         // virtual world
                         occluder.isVisible = false;
                         //occluderFrontBottom.isVisible = false; //bottom
@@ -338,7 +334,6 @@ ui.addControl(warningText);
                         occluderLeft.isVisible = false;
                         occluderback.isVisible = false;
                     } else {
-                        warningText.isVisible = false;
                         // real world: 
                         occluder.isVisible = true; 
                         //occluderFrontBottom.isVisible = false; //bottom 
