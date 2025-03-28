@@ -326,8 +326,7 @@ const createScene = async function () {
                     if (xrCamera.position.z > portalPosition.z && (xr.baseExperience.state === BABYLON.WebXRState.IN_XR)) {
                         // virtual world
                         occluder.isVisible = false;
-                        //occluderFrontBottom.isVisible = false; //bottom
-                        occluderReverse.isVisible = false; //changed
+                        occluderReverse.isVisible = true; 
                         occluderFloor.isVisible = false;
                         occluderTop.isVisible = false;
                         occluderRight.isVisible = false;
@@ -336,7 +335,6 @@ const createScene = async function () {
                     } else {
                         // real world: 
                         occluder.isVisible = true; 
-                        //occluderFrontBottom.isVisible = false; //bottom 
                         occluderReverse.isVisible = false;
                         occluderFloor.isVisible = true;  //changed
                         occluderTop.isVisible = true;  //changed
@@ -365,7 +363,7 @@ const createScene = async function () {
         //let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
         let hole = BABYLON.MeshBuilder.CreateBox("hole", { 
             width: reticleBoundingInfo.boundingBox.extendSizeWorld.x * 2, 
-            height: 1, 
+            height: 3, 
             depth: reticleBoundingInfo.boundingBox.extendSizeWorld.y * 2 
         }, scene);
 
@@ -387,7 +385,6 @@ const createScene = async function () {
         occluderMat.diffuseColor = new BABYLON.Color3(0, 1, 0);  // Beispiel für eine grüne Farbe
         occluder.material = occluderMat;
 
-        //let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFrontBottom", { width: 2, depth: 6, height: 0.001 }, scene); //bottom
         let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
         let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene); // on floot infront portal
         let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
