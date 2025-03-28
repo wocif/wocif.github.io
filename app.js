@@ -146,8 +146,8 @@ const createScene = async function () {
     engine.displayLoadingUI(); // Show loading screen
     const virtualWorldResult = await BABYLON.SceneLoader.ImportMeshAsync(
         "",
-        "https://www.babylonjs.com/Scenes/hillvalley/",
-        "HillValley.babylon",
+        "./",
+        "finalscene.glb",
         scene
     );
     engine.hideLoadingUI(); // Hide loading screen once loaded
@@ -370,7 +370,7 @@ ui.addControl(warningText);
         //let hole = BABYLON.MeshBuilder.CreateBox("hole", { size: 1, width: 1, height: 0.01 }, scene);
         let hole = BABYLON.MeshBuilder.CreateBox("hole", { 
             width: reticleBoundingInfo.boundingBox.extendSizeWorld.x * 2, 
-            height: 0.001, 
+            height: 1, 
             depth: reticleBoundingInfo.boundingBox.extendSizeWorld.y * 2 
         }, scene);
 
