@@ -590,7 +590,7 @@ ui.addControl(warningText);
         rahmenU.material = neonMaterial;
 
         // Add particle effects to the portal (using provided snippet IDs)
-        BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#488", scene, false).then(system => {
+/*         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#488", scene, false).then(system => {
             system.emitter = rahmenO;
         });
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#489", scene, false).then(system => {
@@ -598,7 +598,7 @@ ui.addControl(warningText);
         });
         BABYLON.ParticleHelper.ParseFromSnippetAsync("UY098C#489", scene, false).then(system => {
             system.emitter = rahmenR;
-        });
+        }); */
     }
 
     // -----------------------------
