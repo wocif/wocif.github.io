@@ -452,7 +452,7 @@ ui.addControl(warningText);
         occluder.isVisible = true; 
         //occluderFrontBottom.isVisible = false;//changed //bottom
         occluderReverse.isVisible = false;
-        occluderFloor.isVisible = false; //changed
+        occluderFloor.isVisible = false; //changed !!!!!!!!!!!!!!!
         occluderTop.isVisible = true;
         occluderRight.isVisible = true;
         occluderLeft.isVisible = true;
@@ -550,7 +550,7 @@ ui.addControl(warningText);
         
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderFloor.translate(BABYLON.Axis.Y, 1);
-        occluderFloor.translate(BABYLON.Axis.Z, 1.5); //changed
+        occluderFloor.translate(BABYLON.Axis.Z, 3.5); //changed
         occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderTop.translate(BABYLON.Axis.Y, -2);
         occluderTop.translate(BABYLON.Axis.Z, 3.5);        
