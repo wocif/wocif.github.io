@@ -143,7 +143,7 @@ const createScene = async function () {
     rootPilar.rotationQuaternion = new BABYLON.Quaternion();
 
     // lower ground of 3d scene
-    rootScene.position.y -= 1.5;
+    rootScene.position.y -= 1.6;
 
 
 
