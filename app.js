@@ -550,7 +550,7 @@ ui.addControl(warningText);
         
         occluderFloor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderFloor.translate(BABYLON.Axis.Y, 1);
-        occluderFloor.translate(BABYLON.Axis.Z, 3.5);
+        occluderFloor.translate(BABYLON.Axis.Z, 1.5); //changed
         occluderTop.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2);
         occluderTop.translate(BABYLON.Axis.Y, -2);
         occluderTop.translate(BABYLON.Axis.Z, 3.5);        
