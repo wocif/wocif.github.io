@@ -330,7 +330,7 @@ ui.addControl(warningText);
                         warningText.isVisible = true;
                         // virtual world
                         occluder.isVisible = false;
-                        occluderFrontBottom.isVisible = false; //bottom
+                        //occluderFrontBottom.isVisible = false; //bottom
                         occluderReverse.isVisible = true; //changed
                         occluderFloor.isVisible = false;
                         occluderTop.isVisible = false;
@@ -341,7 +341,7 @@ ui.addControl(warningText);
                         warningText.isVisible = false;
                         // real world: 
                         occluder.isVisible = true; 
-                        occluderFrontBottom.isVisible = false; //bottom 
+                        //occluderFrontBottom.isVisible = false; //bottom 
                         occluderReverse.isVisible = false;
                         occluderFloor.isVisible = true;  //changed
                         occluderTop.isVisible = true;  //changed
@@ -392,7 +392,7 @@ ui.addControl(warningText);
         occluderMat.diffuseColor = new BABYLON.Color3(0, 1, 0);  // Beispiel für eine grüne Farbe
         occluder.material = occluderMat;
 
-        let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFrontBottom", { width: 2, depth: 6, height: 0.001 }, scene); //bottom
+        //let occluderFrontBottom = BABYLON.MeshBuilder.CreateBox("occluderFrontBottom", { width: 2, depth: 6, height: 0.001 }, scene); //bottom
         let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
         let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", { width: 7, depth: 7, height: 0.001 }, scene); // on floot infront portal
         let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", { width: 7, depth: 7, height: 0.001 }, scene);
@@ -407,7 +407,7 @@ ui.addControl(warningText);
 
         // Apply material to occluders
         occluder.material = occluderMaterial;
-        occluderFrontBottom.material = occluderMaterial; // bottom
+        //occluderFrontBottom.material = occluderMaterial; // bottom
         occluderReverse.material = occluderMaterial;
         occluderFloor.material = occluderMaterial;
         occluderTop.material = occluderMaterial;
@@ -428,7 +428,7 @@ ui.addControl(warningText);
 
         // Set occluders to rendering group 0
         occluder.renderingGroupId = 0;
-        occluderFrontBottom.renderingGroupId = 0; //bottom
+        //occluderFrontBottom.renderingGroupId = 0; //bottom
         occluderReverse.renderingGroupId = 0;
         occluderFloor.renderingGroupId = 0;
         occluderTop.renderingGroupId = 0;
@@ -438,7 +438,7 @@ ui.addControl(warningText);
 
         // Parent occluders to rootOccluder
         occluder.parent = rootOccluder;
-        occluderFrontBottom.parent = rootOccluder; //bottom
+        //occluderFrontBottom.parent = rootOccluder; //bottom
         occluderReverse.parent = rootOccluder;
         occluderFloor.parent = rootOccluder;
         occluderTop.parent = rootOccluder;
@@ -450,7 +450,7 @@ ui.addControl(warningText);
         const oclVisibility = 0.001;
         //const DEBUG_visibility = 0.35;
         occluder.isVisible = true; 
-        occluderFrontBottom.isVisible = false;//changed //bottom
+        //occluderFrontBottom.isVisible = false;//changed //bottom
         occluderReverse.isVisible = false;
         occluderFloor.isVisible = true; //changed
         occluderTop.isVisible = true;
@@ -458,7 +458,7 @@ ui.addControl(warningText);
         occluderLeft.isVisible = true;
         occluderback.isVisible = true;
         occluder.visibility = oclVisibility;
-        occluderFrontBottom.visibility = oclVisibility; //bottom
+        //occluderFrontBottom.visibility = oclVisibility; //bottom
         occluderReverse.visibility = oclVisibility;
         occluderFloor.visibility = oclVisibility;
         occluderTop.visibility = oclVisibility;
@@ -468,7 +468,7 @@ ui.addControl(warningText);
 
 
         
-        const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
+        //const portalOcc_posBottom_boundingInfo = occluderFrontBottom.getBoundingInfo();
         //const occluderHeight = occluderBoundingInfo.boundingBox.maximumWorld.y - occluderBoundingInfo.boundingBox.minimumWorld.y;
         //portalOcc_posBottom = reticleBoundingInfo.boundingBox.minimumWorld.y - occluderHeight / 2;
         //occluderFrontBottom.position.set(portalPosition.x, portalOcc_posBottom, portalPosition.z);
@@ -567,7 +567,7 @@ ui.addControl(warningText);
 
 
         // ALIGN FRONT TO RETICLE
-        occluderFrontBottom.translate(BABYLON.Axis.Z, -3);
+        //occluderFrontBottom.translate(BABYLON.Axis.Z, -3);
     
     
     
