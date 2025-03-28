@@ -452,7 +452,7 @@ ui.addControl(warningText);
         occluder.isVisible = true; 
         //occluderFrontBottom.isVisible = false;//changed //bottom
         occluderReverse.isVisible = false;
-        occluderFloor.isVisible = true; //changed
+        occluderFloor.isVisible = false; //changed
         occluderTop.isVisible = true;
         occluderRight.isVisible = true;
         occluderLeft.isVisible = true;
