@@ -125,7 +125,7 @@ const createScene = async function () {
     // Create the hit-test marker (a torus) as in the original Babylon code
     const path = [
         new BABYLON.Vector3(-0.5, 0, 0),  // Linkes Ende
-        new BABYLON.Vector3(0, 0, 0.02),  // Mitte (leicht angehoben für Dicke)
+        new BABYLON.Vector3(0, 0, 0),     // Mitte (bleibt auf 0)
         new BABYLON.Vector3(0.5, 0, 0)    // Rechtes Ende
     ];
     
@@ -134,11 +134,7 @@ const createScene = async function () {
         closeArray: false
     }, scene);
     
-    marker.scaling = new BABYLON.Vector3(1, 1, 0.2); // Dünner in der Höhe
-    
-    // Material für weiche Kanten
-    marker.material = neonMaterial;
-    neonMaterial.alpha = 0.8;
+    marker.scaling = new BABYLON.Vector3(1, 1, 0.2); // Macht die Linie dünner
 
     
     marker.isVisible = false;
