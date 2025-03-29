@@ -558,7 +558,7 @@ const createScene = async function () {
         //Höhe der vertikalen Säulen und Größe
         const pillarWidth = 0.01;
         const pillarDepth = 0.01;
-        const pillarHeight = reticleSizeY + pillarWidth + pillarDepth;
+        const pillarHeight = reticleSizeY + ((pillarWidth + pillarDepth)/2);
 
         //4 säulen werden erstellt
         const rahmenL = BABYLON.MeshBuilder.CreateBox("rahmenL", {
