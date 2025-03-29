@@ -147,7 +147,7 @@ const createScene = async function () {
 
     //Material erstellen für den Marker und das Portal-Rahmen
     const neonMaterial = new BABYLON.StandardMaterial("neonMaterial", scene);
-    neonMaterial.emissiveColor = new BABYLON.Color3(0.35, 0.96, 0.88);
+    neonMaterial.emissiveColor = new BABYLON.Color3(0.95, 0.96, 0.88);
 
     //------------------------------
     //HitTestMarker wird erstellt
