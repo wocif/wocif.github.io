@@ -3,6 +3,8 @@
 // Combines original Babylon "complex code" with reticle adjustments (from THREE)
 // ================================================================
 
+//Hauptquelle: https://babylonjs.medium.com/visual-effects-a-portal-in-webxr-0241b0962426
+
 // -----------------------------
 // Global Variables and Constants
 // -----------------------------
@@ -38,12 +40,14 @@ var createDefaultEngine = function() {
     }); 
 };
 
+
 // -----------------------------
 // Main Scene Creation Function
 // -----------------------------
 const createScene = async function () {
     // Create the scene and set up camera
     const scene = new BABYLON.Scene(engine);
+
     const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
     //camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
@@ -58,6 +62,8 @@ const createScene = async function () {
     // -----------------------------
     // Create GUI for non-AR mode and AR availability check
     // -----------------------------
+
+    //Quelle: https://doc.babylonjs.com/features/featuresDeepDive/gui/gui/#fullscreen-mode
     const arAvailable = await BABYLON.WebXRSessionManager.IsSessionSupportedAsync('immersive-ar');
 
     const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("FullscreenUI");
@@ -87,9 +93,13 @@ const createScene = async function () {
         nonXRPanel.addControl(text1);
     }
 
+
+
     // -----------------------------
     // Create the WebXR Experience Helper for AR
     // -----------------------------
+
+    //Quelle: https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRExperienceHelpers
     const xr = await scene.createDefaultXRExperienceAsync({
         uiOptions: {
             sessionMode: "immersive-ar",
@@ -102,6 +112,8 @@ const createScene = async function () {
     // -----------------------------
     // Hit-Test and Marker Setup
     // -----------------------------
+
+    //Quelle: https://medium.com/taikonauten-magazine-english/webxr-with-babylon-js-part-4-hit-testing-2994a0866534
     const fm = xr.baseExperience.featuresManager;
     const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
     const xrCamera = xr.baseExperience.camera;
@@ -192,7 +204,6 @@ const createScene = async function () {
             reticleMesh.isVisible = false;
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity();
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1);
-            
 
         }
     }
@@ -234,6 +245,7 @@ const createScene = async function () {
             }
         }
     };
+
 
     // -----------------------------
     // Gamepad Input Handling for Reticle Adjustments
