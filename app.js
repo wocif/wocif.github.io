@@ -390,6 +390,7 @@ const createScene = async function () {
         const booleanRCSG = holeCSG.subtract(groundCSG);
 
         // Create main occluder meshes
+        //Quelle: https://youtu.be/8yie1UJWPFA?si=ULKALgneo1ZBOP02
         let occluder = booleanCSG.toMesh("occluder", null, scene);
         
 
