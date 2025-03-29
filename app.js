@@ -160,7 +160,7 @@ const createScene = async function () {
 
 
     // -----------------------------
-    // Load the Virtual World (Hill Valley Scene)
+    // Load the Virtual World 
     // -----------------------------
     engine.displayLoadingUI(); // Show loading screen
     const virtualWorldResult = await BABYLON.SceneLoader.ImportMeshAsync(
