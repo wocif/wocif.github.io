@@ -194,6 +194,13 @@ const createScene = async function () {
             hitTest = results[0];
             //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
             hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
+        // Korrigiere die Rotation nach dem Setzen der Transformation
+            const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
+            const up = BABYLON.Vector3.Up(); // Y bleibt oben
+            const right = BABYLON.Vector3.Cross(up, forward).normalize(); // Breite des Markers (X)
+
+            // Setze die korrigierte Rotation
+            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, up);
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
@@ -201,7 +208,11 @@ const createScene = async function () {
         }
     });
 
+    
 
+
+
+    
     // -----------------------------
     // Root-Transform Nodes für virtuelle Welt und Occluder , Portal
     // -----------------------------
