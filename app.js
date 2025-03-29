@@ -183,12 +183,12 @@ const createScene = async function () {
             hitTest = results[0];
             //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
             hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
-            const forward = camera.getForwardRay().direction; // Kamera-Blickrichtung
-            const up = BABYLON.Vector3.Up();
-            const right = marker.getDirection(new BABYLON.Vector3(0, 1, 0)).normalize();
+/*             const forward = camera.getForwardRay().direction; // Kamera-Blickrichtung
+const up = BABYLON.Vector3.Up();
+const right = marker.getDirection(new BABYLON.Vector3(1, 0, 0)).normalize();
 
-            // Überschreibe die Rotation des Hit-Tests mit einer neuen Orientierung
-            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
+// Überschreibe die Rotation des Hit-Tests mit einer neuen Orientierung
+marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right); */
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
