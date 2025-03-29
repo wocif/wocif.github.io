@@ -556,7 +556,7 @@ const createScene = async function () {
 
 
         //Höhe der vertikalen Säulen und Größe
-        const pillarHeight = reticleSizeY;
+        const pillarHeight = reticleSizeY + pillarWidth + pillarDepth;
         const pillarWidth = 0.01;
         const pillarDepth = 0.01;
 
