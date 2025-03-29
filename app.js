@@ -163,9 +163,10 @@ const createScene = async function () {
     scene.onBeforeRenderObservable.add(() => {
         const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
         const up = BABYLON.Vector3.Up(); // Y-Achse bleibt oben
-        const right = BABYLON.Vector3.Cross(forward, up).normalize(); // Neue width-Achse des Markers
-        
-        marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(right, up);
+        const right = BABYLON.Vector3.Cross(up, forward).normalize(); // X-Achse des Markers (width)
+    
+        // Neue Rotationsmatrix, damit die lange Seite (width) zur Kamera zeigt
+        marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(-forward, up);
     });
     
 
