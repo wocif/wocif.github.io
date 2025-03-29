@@ -181,18 +181,18 @@ const createScene = async function () {
     let hitTest;
     xrTest.onHitTestResultObservable.add((results) => {
         if (results.length) {
-            //zeigt den Marker an, wenn das Hit-Test-Feature Ergebnisse liefert
             marker.isVisible = !portalAppeared && (state === 0);
-            //speichert das 1. des Hit-Tests
             hitTest = results[0];
-            //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
+    
+            // Zerlegt die Transformation und setzt die Position + Rotation des Markers
             hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
-        // Korrigiere die Rotation nach dem Setzen der Transformation
-            const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
-            //const up = BABYLON.Vector3.Up(); // Y bleibt oben
-
-            // Setze die korrigierte Rotation
-            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward);
+    
+            // **Hier Rotation direkt nach dem Hit-Test korrigieren**
+            const forward = camera.getForwardRay().direction;
+            const up = BABYLON.Vector3.Up();
+            const right = marker.getDirection(new BABYLON.Vector3(1, 0, 0)).normalize();
+    
+            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
