@@ -190,7 +190,6 @@ const createScene = async function () {
         // Korrigiere die Rotation nach dem Setzen der Transformation
             const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
             const up = BABYLON.Vector3.Up(); // Y bleibt oben
-            const right = BABYLON.Vector3.Cross(up, forward).normalize(); // Breite des Markers (X)
 
             // Setze die korrigierte Rotation
             marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, up);
