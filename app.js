@@ -194,6 +194,10 @@ const createScene = async function () {
             hitTest = results[0];
             //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
             hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
+            const forward = new BABYLON.Vector3(0, 0, -1); // Richtung zum User (globale -Z-Achse)
+            const up = BABYLON.Vector3.Up(); // Y-Achse bleibt oben
+            reticleMesh.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, up);
+            
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
@@ -280,7 +284,10 @@ const createScene = async function () {
             reticleMesh.material = reticleMat;
             reticleMesh.renderingGroupId = 2;  //hat eigene renderingsgruppe
             reticleMesh.isVisible = false; //nicht sichtbar bis zur ersten Interaktion
+
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity(); //default-Rotation
+
+
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1); //standard größe
 
         }
