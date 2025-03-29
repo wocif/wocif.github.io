@@ -189,10 +189,10 @@ const createScene = async function () {
             hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
         // Korrigiere die Rotation nach dem Setzen der Transformation
             const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
-            const up = BABYLON.Vector3.Up(); // Y bleibt oben
+            //const up = BABYLON.Vector3.Up(); // Y bleibt oben
 
             // Setze die korrigierte Rotation
-            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(-forward, up);
+            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward);
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
