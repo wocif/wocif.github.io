@@ -147,7 +147,7 @@ const createScene = async function () {
 
     //Material erstellen für den Marker und das Portal-Rahmen
     const neonMaterial = new BABYLON.StandardMaterial("neonMaterial", scene);
-    neonMaterial.emissiveColor = new BABYLON.Color3(0.95, 0.96, 0.88);
+    neonMaterial.emissiveColor = new BABYLON.Color3(0.95, 0.86, 0.88);
 
     //------------------------------
     //HitTestMarker wird erstellt
@@ -555,12 +555,12 @@ const createScene = async function () {
         //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
 
 
-        //Höhe der vertikalen Säulen und Größe
+        //Säulen für Fensterrahmen
         const pillarWidth = 0.01;
         const pillarDepth = 0.01;
         const pillarHeight = reticleSizeY + ((pillarWidth + pillarDepth)/2);
 
-        //4 säulen werden erstellt
+        //4 säulen werden erstellt für Fensterrahmen
         const rahmenL = BABYLON.MeshBuilder.CreateBox("rahmenL", {
             height: pillarHeight,
             width: pillarWidth,
