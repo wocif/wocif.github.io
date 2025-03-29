@@ -160,17 +160,6 @@ const createScene = async function () {
         depth: 0.05   // Width of the line
     }, scene);
 
-    scene.onBeforeRenderObservable.add(() => {
-        const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
-        const up = BABYLON.Vector3.Up(); // Y-Achse bleibt oben
-        const right = BABYLON.Vector3.Cross(forward, up).normalize(); // X-Achse des Markers
-    
-        // Erzeuge die Rotation so, dass die Tiefe (Z) der Kamera folgt
-        marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
-    });
-    
-    
-
     // Optional: Material for color and transparency
     const material = new BABYLON.StandardMaterial("markerMaterial", scene);
     material.diffuseColor = new BABYLON.Color3(1, 0, 0); // Red color
@@ -201,12 +190,7 @@ const createScene = async function () {
         }
     });
 
-    hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
-    
 
-
-
-    
     // -----------------------------
     // Root-Transform Nodes für virtuelle Welt und Occluder , Portal
     // -----------------------------
