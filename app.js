@@ -162,11 +162,12 @@ const createScene = async function () {
 
     scene.onBeforeRenderObservable.add(() => {
         const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
-        const up = BABYLON.Vector3.Up();
-        const right = BABYLON.Vector3.Cross(up, forward).normalize(); // X-Achse des Markers
+        const up = BABYLON.Vector3.Up(); // Y-Achse bleibt oben
+        const right = BABYLON.Vector3.Cross(forward, up).normalize(); // Neue width-Achse des Markers
         
-        marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
+        marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(right, up);
     });
+    
 
     // Optional: Material for color and transparency
     const material = new BABYLON.StandardMaterial("markerMaterial", scene);
