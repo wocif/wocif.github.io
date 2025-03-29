@@ -123,11 +123,28 @@ const createScene = async function () {
     neonMaterial.emissiveColor = new BABYLON.Color3(0.35, 0.96, 0.88);
 
     // Create the hit-test marker (a torus) as in the original Babylon code
-    const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.05, tessellation: 32 }, scene);
+    const path = [
+        new BABYLON.Vector3(-0.5, 0, 0),  // Linkes Ende
+        new BABYLON.Vector3(0, 0, 0.02),  // Mitte (leicht angehoben für Dicke)
+        new BABYLON.Vector3(0.5, 0, 0)    // Rechtes Ende
+    ];
+    
+    const marker = BABYLON.MeshBuilder.CreateRibbon("marker", {
+        pathArray: [path], 
+        closeArray: false
+    }, scene);
+    
+    marker.scaling = new BABYLON.Vector3(1, 1, 0.2); // Dünner in der Höhe
+    
+    // Material für weiche Kanten
+    marker.material = neonMaterial;
+    neonMaterial.alpha = 0.8;
+
+    
     marker.isVisible = false;
     marker.rotationQuaternion = new BABYLON.Quaternion();
     marker.renderingGroupId = 2;
-    marker.material = neonMaterial;
+
 
     // Update marker's transform using hit-test results
     let hitTest;
