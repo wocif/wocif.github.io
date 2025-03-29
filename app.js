@@ -191,10 +191,8 @@ const createScene = async function () {
             const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
             const up = BABYLON.Vector3.Up(); // Y bleibt oben
 
-            const right = BABYLON.Vector3.Cross(up, forward).normalize(); // X-Achse des Markers (Breite)
-
-            // Setze die korrigierte Rotation basierend auf `right`
-            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
+            // Setze die korrigierte Rotation
+            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, up);
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
