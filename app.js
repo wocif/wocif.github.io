@@ -192,7 +192,7 @@ const createScene = async function () {
             const up = BABYLON.Vector3.Up(); // Y bleibt oben
 
             // Setze die korrigierte Rotation
-            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, -up);
+            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(-forward, up);
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
