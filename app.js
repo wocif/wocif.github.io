@@ -160,7 +160,14 @@ const createScene = async function () {
         depth: 0.05   // Width of the line
     }, scene);
 
-
+    scene.onBeforeRenderObservable.add(() => {
+        const forward = camera.getForwardRay().direction; // Blickrichtung der Kamera
+        const up = BABYLON.Vector3.Up(); // Y-Achse bleibt oben
+        const right = BABYLON.Vector3.Cross(forward, up).normalize(); // X-Achse des Markers
+    
+        // Erzeuge die Rotation so, dass die Tiefe (Z) der Kamera folgt
+        marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
+    });
     
     
 
@@ -181,18 +188,12 @@ const createScene = async function () {
     let hitTest;
     xrTest.onHitTestResultObservable.add((results) => {
         if (results.length) {
+            //zeigt den Marker an, wenn das Hit-Test-Feature Ergebnisse liefert
             marker.isVisible = !portalAppeared && (state === 0);
+            //speichert das 1. des Hit-Tests
             hitTest = results[0];
-    
-            // Zerlegt die Transformation und setzt die Position + Rotation des Markers
+            //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
             hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
-    
-            // **Hier Rotation direkt nach dem Hit-Test korrigieren**
-            const forward = camera.getForwardRay().direction;
-            const up = BABYLON.Vector3.Up();
-            const right = marker.getDirection(new BABYLON.Vector3(1, 0, 0)).normalize();
-    
-            marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
@@ -200,6 +201,7 @@ const createScene = async function () {
         }
     });
 
+    hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
     
 
 
