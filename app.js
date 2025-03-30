@@ -136,7 +136,6 @@ const createScene = async function () {
         optionalFeatures: true //optionale features aktivieren falls verfügbar
     });
 
-   // ui.addControl(warningText);
 
     // -----------------------------
     // Hit-test und Marker
@@ -202,17 +201,27 @@ const createScene = async function () {
     //---------------------------------------------------------------
 
     // Wird verwendet, um auf Marker2 sowie Reticle einen Text einzublenden
-    function writeTextOnTexture(textArray, texture) { 
+    function writeTextOnTexture(textArray, texture, mode) { 
         const x = 256;
         let y = 60; // Startposition für den Text
         const lineHeight = 60; // Abstand zwischen den Zeilen
 
         const ctx = texture.getContext();
+
         ctx.clearRect(0, 0, 512, 256); // clear
-        ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  //Hintergrund
-        ctx.fillRect(0, 0, 512, 256); // Füllt das ganze Canvas
-        ctx.font = "bold 40px Arial"; // Schrift
-        ctx.fillStyle = "red"; // Textfarbe
+
+        if (mode === "bigRed") {
+            ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  //Hintergrund
+            ctx.fillRect(0, 0, 512, 256);
+            ctx.font = "bold 40px Arial"; // Schrift
+            ctx.fillStyle = "red"; // Textfarbe
+        } else if (mode === "smallWhite") {
+            ctx.fillStyle = "rgba(255, 255, 255, 0)";  //Hintergrund
+            ctx.fillRect(0, 0, 512, 256);
+            ctx.font = "20px Arial"; // Schrift
+            ctx.fillStyle = "white"; // Textfarbe
+        }
+        
         ctx.textAlign = "center";
 
         //Schreibe jeden Bucket in neue Zeile (Höhe: -lineHeight darunter)
@@ -238,7 +247,7 @@ const createScene = async function () {
     marker2.material = textMaterial;
 
     
-    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], textTextur)
+    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], textTextur, "bigRed")
 
 
 
@@ -337,24 +346,13 @@ const createScene = async function () {
     // Tutorial Text
     // -----------------------------
 
-    // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
-    var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Click Me");
-    button1.width = "150px"
-    button1.height = "40px";
-    button1.color = "white";
-    button1.cornerRadius = 20;
-    button1.background = "green";
-    button1.onPointerUpObservable.add(function() {
-        alert("you did it!");
-    });
-    advancedTexture.addControl(button1);   
-
-    const warningText = new BABYLON.GUI.TextBlock("warningText", "placeholder");
-    warningText.color = "red";
-    warningText.fontSize = 48;
-    warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-    warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    warningText.isVisible = false;  
+    // GUI hat leider Darstellungsfehler. Wir troubleshooten über Textur mit Text, weil das bereits geklappt hat.
+/*     const infoText = new BABYLON.GUI.TextBlock("infoText", "placeholder");
+    infoText.color = "red";
+    infoText.fontSize = 48;
+    infoText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    infoText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    infoText.isVisible = false;  */ 
 
     
 
@@ -391,9 +389,9 @@ const createScene = async function () {
             //zustand = 0: noch nichts ist platziert
             //erst wenn auf dem Controller gedrückt wird, wird der Marker sichtbar -> für den Start den Hittest
             if (state === 0 && hitTest) {
-                advancedTexture.layer.layerMask = 2;
-                advancedTexture.addControl(warningText);
-                warningText.isVisible = true;  
+                //advancedTexture.layer.layerMask = 2;
+                //advancedTexture.addControl(infoText);
+                //infoText.isVisible = true;  
                 createReticle(); //rectile erstellen
                 reticleMesh.position.copyFrom(marker.position); //setze die Position des Reticles auf die des Markers
                 reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
@@ -443,28 +441,28 @@ const createScene = async function () {
                     if (state === 1) {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
-                        writeTextOnTexture(["Positionierung","in der Höhe"], textTextur)
-                        warningText.text = "a";
+                        writeTextOnTexture(["Positionierung","in der Höhe"], textTextur, "bigRed")
+                        //infoText.text = "a";
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Fensters)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
-                        writeTextOnTexture(["Skalierung","in der Höhe"], textTextur)
-                        warningText.text = "b";
+                        writeTextOnTexture(["Skalierung","in der Höhe"], textTextur, "bigRed")
+                        //infoText.text = "b";
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
-                        writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur)
-                        warningText.text = "c";
+                        writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur, "bigRed")
+                        //infoText.text = "c";
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
-                        writeTextOnTexture(["Skalierung","in der Breite"], textTextur)
-                        warningText.text = "d";
+                        writeTextOnTexture(["Skalierung","in der Breite"], textTextur, "bigRed")
+                        //infoText.text = "d";
 
                     } else if (state === 5) {
                         //180 Grad Drehung für richtige Ausrichtung
@@ -478,8 +476,8 @@ const createScene = async function () {
                         //Rotation um Y-Achse
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
-                        writeTextOnTexture(["Rotation"], textTextur)
-                        warningText.text = "e";
+                        writeTextOnTexture(["Rotation"], textTextur, "bigRed")
+                        //infoText.text = "e";
 
                     }
                 }
