@@ -92,7 +92,7 @@ const createScene = async function () {
     //Erstellung eines schwarzen Rechtecks für die Anzeige
     const rectangle = new BABYLON.GUI.Rectangle("rect");
     rectangle.background = "black"; //Hintergrundfarbe
-    rectangle.color = "blue"; //Randfarbe
+    rectangle.color = "green"; //Randfarbe
     rectangle.width = "80%"; //Breite
     rectangle.height = "50%"; //Höhe
     advancedTexture.addControl(rectangle); //Rechteck zur GUI hinzufügen
