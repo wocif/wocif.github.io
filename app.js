@@ -145,7 +145,7 @@ const createScene = async function () {
     const xrCamera = xr.baseExperience.camera;
 
 
-    //Material erstellen für den Marker und das Portal-Rahmen
+    //Material für Fensterrahmen
     const rahmenMaterial = new BABYLON.StandardMaterial("rahmenMaterial", scene);
     rahmenMaterial.emissiveColor = new BABYLON.Color3(0.85, 0.76, 0.78);
 
@@ -176,7 +176,7 @@ const createScene = async function () {
 
 
     //---------------------------------------------------------------
-    //Markierung wird basierend auf dem Hit-Test-Feature aktualisiert
+    // Marker an Hit-Test-Position zeichnen, stetig aktualisiert, In Richtung der Kamera rotieren
     //----------------------------------------------------------------
     let hitTest;
     xrTest.onHitTestResultObservable.add((results) => {
