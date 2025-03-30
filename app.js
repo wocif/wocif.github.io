@@ -199,12 +199,13 @@ const createScene = async function () {
     // Schreibe den Text auf die Texture
     const ctx = texture.getContext();
     // **1. Hintergrundfarbe zeichnen**
-    //ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  // Ändere die Farbe nach Wunsch (z.B. "rgba(0, 126, 252, 0.47)" für Transparenz)
+    ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  // Ändere die Farbe nach Wunsch (z.B. "rgba(0, 126, 252, 0.47)" für Transparenz)
     ctx.fillRect(0, 0, 512, 256); // Füllt das ganze Canvas
-    ctx.font = "bold 60px Arial"; // Schriftgröße & Stil
+    //ctx.clearRect(0, 0, 512, 256); // Leert das Canvas
+    ctx.font = "bold 40px Arial"; // Schriftgröße & Stil
     ctx.fillStyle = "red"; // Textfarbe
     ctx.textAlign = "center";
-    ctx.fillText("Mein Marker", 256, 128); // Text positionieren
+    ctx.fillText("grobe Ausrichtung + Rotation", 256, 128); // Text positionieren
 
     // Aktualisiere die Textur, damit die Änderungen sichtbar werden
     texture.update();
