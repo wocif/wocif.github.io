@@ -168,6 +168,8 @@ const createScene = async function () {
 
     marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
     marker.material.alpha = 0.5; 
+    marker.backFaceCulling = false;
+    
 
     marker.isVisible = false;
     marker.rotationQuaternion = new BABYLON.Quaternion();
