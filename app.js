@@ -60,7 +60,7 @@ warningText.fontSize = 48;
 warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
 warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
 warningText.isVisible = true;  
-ui.addControl(warningText);
+
 
 
 
@@ -145,7 +145,7 @@ const createScene = async function () {
         optionalFeatures: true //optionale features aktivieren falls verfügbar
     });
 
-
+    ui.addControl(warningText);
 
     // -----------------------------
     // Hit-test und Marker
