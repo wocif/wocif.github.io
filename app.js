@@ -115,7 +115,7 @@ const createScene = async function () {
         nonXRPanel.addControl(text1);
         return scene;
     } else {
-        text1.text = "TODO";
+        text1.text = "Willkommen. Hole dir ein virtuelles Fenster zu einer virtuellen Welt in dein Zuhause. Platziere es entweder an Stelle eines echten vorhandenen Fensters oder stattdessen an Stelle einer Tür, um in die virtuelle Realität gänzlich abzutauchen. Vergewissere dich immer, ob es sicher ist, dich zu bewegen! Wir übernehmen keine Haftung. Mai Phuong Nguyen, Tom Schmidt, Informatik in Kultur und Gesundheit, Wintersemester 2024/25 HTW Berlin";
         nonXRPanel.addControl(text1);
     }
 
