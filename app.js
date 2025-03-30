@@ -332,7 +332,6 @@ const createScene = async function () {
     //Der Occluder wird verwendet, um Objekte auszublenden, die nicht sichtbar sein sollen (z. B. hinter einer Wand)
     rootScene.setEnabled(false);
     rootOccluder.setEnabled(false);
-    advancedTexture.rootContainer.isVisible = true;
 
     // -----------------------------
     // Tutorial Text
@@ -678,16 +677,13 @@ const createScene = async function () {
         //Höhe und Breite des Reticles werden ermittelt
         const reticleSizeX = (reticlePosXMax - reticlePosXMin)
         const reticleSizeY = (reticlePosYMax - reticlePosYMin)
-        //const reticleSizeX = reticleMesh.scaling.x; // Breite des Rechtecks
-        //const reticleSizeY = reticleMesh.scaling.y; // Höhe des Rechtecks
 
 
-        //Höhe der vertikalen Säulen und Größe
+        //Höhe der vertikalen Rahmenteile und Größe: Grundlage Reticlegröße
         const pillarWidth = 0.01;
         const pillarDepth = 0.01;
         const pillarHeight = reticleSizeY + ((pillarWidth + pillarDepth)/2);
 
-        //4 säulen werden erstellt
         const rahmenL = BABYLON.MeshBuilder.CreateBox("rahmenL", {
             height: pillarHeight,
             width: pillarWidth,
@@ -701,15 +697,15 @@ const createScene = async function () {
         }, scene);
         const rahmenU = rahmenO.clone("rahmenU");
 
-        //Positionierung der vertikalen Säulen (links & rechts)
+        //Positionierung der vertikalen Rahmenteile (links & rechts)
         rahmenL.position.set(-reticleSizeX / 2, 0, 0); // Linke Kante
         rahmenR.position.set(reticleSizeX / 2, 0, 0);  // Rechte Kante
 
-        //Positionierung der horizontalen Säulen (oben & unten)
-        rahmenO.rotation.z = Math.PI / 2;  // Rotation für horizontale Säulen
+        //Positionierung der horizontalen Rahmenteile (oben & unten)
+        rahmenO.rotation.z = Math.PI / 2;  // Rotation für horizontale Rahmenteile
         rahmenO.position.set(0, reticleSizeY / 2, 0); // Obere Kante (keine Manipulation der Z-Achse)
 
-        rahmenU.rotation.z = Math.PI / 2;  //Rotation für horizontale Säulen
+        rahmenU.rotation.z = Math.PI / 2;  //Rotation für horizontale Rahmenteile
         rahmenU.position.set(0, -reticleSizeY / 2, 0); //Untere Kante (keine Manipulation der Z-Achse)
 
         rahmenL.rotation.x = reticleMesh.rotation.x;
@@ -775,6 +771,12 @@ const createScene = async function () {
     });
     xr.baseExperience.sessionManager.onXRSessionEnded.add(() => {
         rectangle.isVisible = true;
+    });
+    xr.baseExperience.sessionManager.onXRSessionInit.add(() => { // TODO
+        button1.isVisible = false;
+    });
+    xr.baseExperience.sessionManager.onXRSessionEnded.add(() => { // TODO
+        button1.isVisible = true;
     });
 
 
