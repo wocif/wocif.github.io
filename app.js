@@ -307,7 +307,7 @@ const createScene = async function () {
         scene
     );
     engine.hideLoadingUI(); //erst nach dem Laden der Szene wird der Ladescreen ausgeblendet
-
+    
 
     //weist alle Meshes der virtuellen Welt dem  rootScene-Knoten zu und setzt die Rendering-Gruppe auf 1
     for (let child of virtualWorldResult.meshes) {
@@ -345,14 +345,15 @@ const createScene = async function () {
         alert("you did it!");
     });
     advancedTexture.addControl(button1);   
-    
+
     const warningText = new BABYLON.GUI.TextBlock("warningText", "placeholder");
     warningText.color = "red";
     warningText.fontSize = 48;
     warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     warningText.isVisible = false;  
-    
+    advancedTexture.renderScale = 1; // Erzwingt die Skalierung im XR-Modus
+    advancedTexture.useInvalidateRectOptimization = false; // Verhindert Probleme mit partiellen UI-Updates
 
 
     // -----------------------------
