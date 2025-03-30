@@ -773,10 +773,10 @@ const createScene = async function () {
         rectangle.isVisible = true;
     });
     xr.baseExperience.sessionManager.onXRSessionInit.add(() => { // TODO
-        button1.isVisible = false;
+        button1.isVisible = true;
     });
     xr.baseExperience.sessionManager.onXRSessionEnded.add(() => { // TODO
-        button1.isVisible = true;
+        button1.isVisible = false;
     });
 
 
