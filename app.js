@@ -154,10 +154,17 @@ const createScene = async function () {
     //------------------------------
 
     // Create the hit-test marker (a torus) as in the original Babylon code
+    const faceColors = new Array(6);
+
+    // Definiere die Farben für die gewünschten Flächen
+    faceColors[4] = new BABYLON.Color4(1, 0, 0, 1); // Rot für die Oberseite (Top)
+    faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün für die Vorderseite (Front)
+    
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
-        width: 0.5,   // Length of the line
-        height: 0.02, // Thickness (adjust as needed)
-        depth: 0.05   // Width of the line
+        width: 0.5,   // Länge des Markers
+        height: 0.02, // Dicke
+        depth: 0.05,  // Breite
+        faceColors: faceColors // Anwenden der Farben auf die Flächen
     }, scene);
 
     // Optional: Material for color and transparency
@@ -359,16 +366,17 @@ const createScene = async function () {
                         gamepad.axes[2] = 0;
 
                     } else if (state === 5) {
-                        //Rotation um Y-Achse
+                        //180 Grad Drehung für richtige Ausrichtung
                         reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity();
                         let targetRotation = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, Math.PI);
-                        reticleMesh.rotationQuaternion = BABYLON.Quaternion.Slerp(
+                        reticleMesh.rotationQuaternion = BABYLON.Quaternion.Slerp( // https://doc.babylonjs.com/typedoc/classes/BABYLON.Quaternion#slerp
                             reticleMesh.rotationQuaternion, targetRotation, 0.1
                         );
                         state = 6;
                         
                         gamepad.axes[2] = 0;
                     } else if (state === 6) {
+                        //Rotation um Y-Achse
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         gamepad.axes[2] = 0;
