@@ -320,9 +320,9 @@ const createScene = async function () {
     // -----------------------------
 
     //Stellt das automatische Löschen des Tiefenpuffers für verschiedene Rendering-Gruppen ein
-    scene.setRenderingAutoClearDepthStencil(1, false, false, false);
-    scene.setRenderingAutoClearDepthStencil(0, true, true, true);
-    scene.setRenderingAutoClearDepthStencil(2, false, false, false);
+    //scene.setRenderingAutoClearDepthStencil(1, false, false, false);
+    //scene.setRenderingAutoClearDepthStencil(0, true, true, true);
+    
     scene.autoClear = true; //aktiviert das automatische Löschen des Bildschirms für nächste Renderings
 
 
