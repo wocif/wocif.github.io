@@ -443,10 +443,11 @@ const createScene = async function () {
             } else if (state === 5) {
                 state = 6;
             } else if (state === 6) {
+                state = 7;
+            } else if (state === 7) {
+                writeTextOnTexture([" "], textTextur_GUI, "smallWhite") //remove Anleitung
                 guiTraeger.isVisible = false;
                 platziereFenster();
-            } else if (state === 7) {
-                writeTextOnTexture([" "], textTextur_GUI, "smallWhite")
             }
         }
     };
