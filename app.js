@@ -189,7 +189,8 @@ const createScene = async function () {
     // https://wiki.selfhtml.org/wiki/Canvas/Text#fillText 
     //---------------------------------------------------------------
 
-    function writeTextOnTexture(textArray, texture) {
+    // Wird verwendet, um auf Marker2 sowie Reticle einen Text einzublenden
+    function writeTextOnTexture(textArray, texture) { 
         const x = 256;
         let y = 60; // Startposition für den Text
         const lineHeight = 60; // Abstand zwischen den Zeilen
@@ -212,20 +213,20 @@ const createScene = async function () {
     }
 
 
-    const marker2Texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
-    marker2Texture.hasAlpha = true; // Ermöglicht Transparenz
+    const textTextur = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
+    textTextur.hasAlpha = true; // Ermöglicht Transparenz
 
     // Erstelle ein Material mit dieser Textur
     const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
-    textMaterial.diffuseTexture = marker2Texture;
+    textMaterial.diffuseTexture = textTextur;
     textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
-    textMaterial.opacityTexture = marker2Texture; // Nutzt Alpha-Kanal für Transparenz
+    textMaterial.opacityTexture = textTextur; // Nutzt Alpha-Kanal für Transparenz
 
     // Weisen wir das Material dem Marker zu
     marker2.material = textMaterial;
 
     
-    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], marker2Texture)
+    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], textTextur)
 
 
 
@@ -354,7 +355,7 @@ const createScene = async function () {
                 createReticle(); //rectile erstellen
                 reticleMesh.position.copyFrom(marker.position); //setze die Position des Reticles auf die des Markers
                 reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
-              
+                
                 reticleMesh.isVisible = true;
                 state = 1;  //dann wird in den 1. Zustand gewechselt
             } else if (state === 1) {
@@ -396,23 +397,27 @@ const createScene = async function () {
                     if (state === 1) {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
+                        writeTextOnTexture(["Positionierung","in der Höhe"], textTextur)
                         gamepad.axes[2] = 0; //setzt dann xachse wieder auf 0, um konflikte zu vermeiden
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Portals)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
+                        writeTextOnTexture(["Skalierung","in der Höhe"], textTextur)
                         gamepad.axes[2] = 0; //setzt dann xachse wieder auf 0, um konflikte zu vermeiden
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
+                        writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur)
                         gamepad.axes[2] = 0;
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
+                        writeTextOnTexture(["Skalierung","in der Breite"], textTextur)
                         gamepad.axes[2] = 0;
 
                     } else if (state === 5) {
@@ -429,6 +434,7 @@ const createScene = async function () {
                         //Rotation um Y-Achse
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
+                        writeTextOnTexture(["Rotation"], textTextur)
                         gamepad.axes[2] = 0;
                     }
                 }
