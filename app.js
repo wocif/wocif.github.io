@@ -202,7 +202,7 @@ const createScene = async function () {
     //---------------------------------------------------------------
 
     // Wird verwendet, um auf Marker2 sowie Reticle einen Text einzublenden
-    function writeTextOnTexture(textArray, texture, mode, space = 60) { 
+    function writeTextOnTexture(textArray, texture, mode, space = 30) { 
         const x = 256;
         let y = 60; // Startposition für den Text
         let lineHeight; // Abstand zwischen den Zeilen
@@ -300,7 +300,7 @@ const createScene = async function () {
             marker2.rotationQuaternion = marker.rotationQuaternion.clone();
 
             guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
-            guiTraeger.position = marker.position.clone();
+            guiTraeger.position = marker.position.clone().add(new BABYLON.Vector3(0, 0.5, 0));
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
