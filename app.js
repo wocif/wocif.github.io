@@ -160,8 +160,8 @@ const createScene = async function () {
     faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün Front
     
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
-        width: 1,   
-        height: 0.3, 
+        width: 0.8,   
+        height: 0.1, 
         depth: 0.05,  
         faceColors: faceColors
     }, scene);
