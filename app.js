@@ -152,19 +152,7 @@ const createScene = async function () {
     const xrCamera = xr.baseExperience.camera;
 
 
-    // -----------------------------
-    // Tutorial Text
-    // -----------------------------
-    const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-    // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
-    const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
-    warningText.color = "red";
-    warningText.fontSize = 48;
-    warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-    warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    warningText.isVisible = true;  
-    ui.addControl(warningText);
 
 
     //Material für Fensterrahmen
@@ -340,7 +328,21 @@ const createScene = async function () {
     rootScene.setEnabled(false);
     rootOccluder.setEnabled(false);
 
+    // -----------------------------
+    // Tutorial Text
+    // -----------------------------
+    const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
+    // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
+    const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
+    warningText.color = "red";
+    warningText.fontSize = 48;
+    warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    warningText.isVisible = true;  
+    ui.addControl(warningText);
+
+    
     // -----------------------------
     // Erstellung des Rechtecks (also die Platzierung des Portals)
     // -----------------------------
