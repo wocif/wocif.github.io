@@ -320,8 +320,8 @@ const createScene = async function () {
     // -----------------------------
 
     //Stellt das automatische Löschen des Tiefenpuffers für verschiedene Rendering-Gruppen ein
-    //scene.setRenderingAutoClearDepthStencil(1, false, false, false);
-    //scene.setRenderingAutoClearDepthStencil(0, true, true, true);
+    scene.setRenderingAutoClearDepthStencil(1, false, false, false);
+    scene.setRenderingAutoClearDepthStencil(0, true, true, true);
     
     scene.autoClear = true; //aktiviert das automatische Löschen des Bildschirms für nächste Renderings
 
@@ -355,12 +355,11 @@ const createScene = async function () {
     warningText.isVisible = false;  
 
     scene.onBeforeRenderObservable.add(() => {
-        if (scene.activeCamera && scene.activeCamera.isLeftCamera) {
-            warningText.isVisible = false;
-        } else {
-            warningText.isVisible = true;
+        if (scene.activeCamera) {
+            advancedTexture.renderingGroupId = 1;  // Stelle sicher, dass nur eine Gruppe verwendet wird
         }
     });
+    
 
     // -----------------------------
     // Erstellung des Rechtecks (also die Platzierung des Portals)
@@ -773,7 +772,7 @@ const createScene = async function () {
     // -----------------------------
     //GUI wird ausgeblendet, wenn die AR-Session gestartet wird
     // -----------------------------
-    xr.baseExperience.sessionManager.onXRSessionInit.add(() => {
+    xr.baseExperience.sessionManager.onXRSessionInit.add(() => { // TODO
         rectangle.isVisible = false;
     });
     xr.baseExperience.sessionManager.onXRSessionEnded.add(() => {
