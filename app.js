@@ -272,7 +272,7 @@ const createScene = async function () {
     guiTraeger.isVisible = true;
 
     guiTraeger.material = textMaterial_GUI;
-    guiTraeger.position.set(marker.position.x, 1.5, marker.position.z)
+    guiTraeger.position.set(1, 1.5, marker.position.z)
     writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 20)
 
 
