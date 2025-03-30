@@ -188,17 +188,6 @@ const createScene = async function () {
     // https://webgl2fundamentals.org/webgl/lessons/webgl-text-texture.html
     // https://wiki.selfhtml.org/wiki/Canvas/Text#fillText 
     //---------------------------------------------------------------
-    const marker2Texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
-    marker2Texture.hasAlpha = true; // Ermöglicht Transparenz
-
-    // Erstelle ein Material mit dieser Textur
-    const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
-    textMaterial.diffuseTexture = marker2Texture;
-    textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
-    textMaterial.opacityTexture = marker2Texture; // Nutzt Alpha-Kanal für Transparenz
-
-    // Weisen wir das Material dem Marker zu
-    marker2.material = textMaterial;
 
     function writeTextOnTexture(textArray, texture) {
         const x = 256;
@@ -221,6 +210,21 @@ const createScene = async function () {
 
         texture.update();
     }
+
+    
+    const marker2Texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
+    marker2Texture.hasAlpha = true; // Ermöglicht Transparenz
+
+    // Erstelle ein Material mit dieser Textur
+    const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
+    textMaterial.diffuseTexture = marker2Texture;
+    textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
+    textMaterial.opacityTexture = marker2Texture; // Nutzt Alpha-Kanal für Transparenz
+
+    // Weisen wir das Material dem Marker zu
+    marker2.material = textMaterial;
+
+    
     writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], marker2Texture)
 
 
