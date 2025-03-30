@@ -321,6 +321,7 @@ const createScene = async function () {
 
     //Stellt das automatische Löschen des Tiefenpuffers für verschiedene Rendering-Gruppen ein
     scene.setRenderingAutoClearDepthStencil(1, false, false, false);
+    scene.setRenderingAutoClearDepthStencil(3, false, true, true);
     scene.setRenderingAutoClearDepthStencil(0, true, true, true);
     
     scene.autoClear = true; //aktiviert das automatische Löschen des Bildschirms für nächste Renderings
@@ -356,7 +357,7 @@ const createScene = async function () {
 
     scene.onBeforeRenderObservable.add(() => {
         if (scene.activeCamera) {
-            advancedTexture.renderingGroupId = 1;  // Stelle sicher, dass nur eine Gruppe verwendet wird
+            advancedTexture.renderingGroupId = 3;  // Stelle sicher, dass nur eine Gruppe verwendet wird
         }
     });
     
@@ -642,7 +643,7 @@ const createScene = async function () {
         const oclVisibility = 0.001;
         occluder.isVisible = true;
         occluderReverse.isVisible = false;
-        occluderFloor.isVisible = false; //changed !!!!!!!!!!!!!!!
+        occluderFloor.isVisible = false; 
         occluderTop.isVisible = true;
         occluderRight.isVisible = true;
         occluderLeft.isVisible = true;
