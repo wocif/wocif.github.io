@@ -273,6 +273,11 @@ const createScene = async function () {
 
     guiTraeger.material = textMaterial_GUI;
     guiTraeger.position.set(marker.position.x, 1.5, 1)
+    const forward = camera.getForwardRay().direction; // Kamera-Blickrichtung
+    const right = marker.getDirection(new BABYLON.Vector3(0, 1, 0)).normalize();
+    guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
+    guiTraeger.position = marker.position.clone();
+
     writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 20)
 
 
