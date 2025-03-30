@@ -48,18 +48,7 @@ var createDefaultEngine = function () {
     });
 };
 
-// -----------------------------
-// Tutorial Text
-// -----------------------------
-const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-// Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
-const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
-warningText.color = "red";
-warningText.fontSize = 48;
-warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-warningText.isVisible = true;  
 
 
 
@@ -161,6 +150,21 @@ const createScene = async function () {
 
     //Zugriff auf die XR-Kamera
     const xrCamera = xr.baseExperience.camera;
+
+
+    // -----------------------------
+    // Tutorial Text
+    // -----------------------------
+    const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
+    const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
+    warningText.color = "red";
+    warningText.fontSize = 48;
+    warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    warningText.isVisible = true;  
+
 
 
     //Material für Fensterrahmen
