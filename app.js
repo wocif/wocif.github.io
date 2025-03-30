@@ -298,8 +298,6 @@ const createScene = async function () {
                     BABYLON.Quaternion.RotationYawPitchRoll(Math.PI, 0, 0)
                 ); */
                 
-                //reticleMesh.rotationQuaternion = flipY.multiply(reticleMesh.rotationQuaternion);
-
                 reticleMesh.isVisible = true;
                 state = 1;  //dann wird in den 1. Zustand gewechselt
             } else if (state === 1) {
@@ -313,8 +311,6 @@ const createScene = async function () {
             } else if (state === 5) {
                 state = 6;
             } else if (state === 6) {
-                state = 7;
-
                 //wenn alle Einstellungen abgeschlossen sind, dann wird das Portal aktiviert
                 activatePortal();
             }
@@ -364,15 +360,16 @@ const createScene = async function () {
 
                     } else if (state === 5) {
                         //Rotation um Y-Achse
-                        let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
-                        reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
+                        const flipY = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, Math.PI);
+                        reticleMesh.rotationQuaternion = flipY.multiply(reticleMesh.rotationQuaternion);
+                        state = 6;
                         
                         gamepad.axes[2] = 0;
                     } else if (state === 6) {
-                        const flipY = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, Math.PI);
-                        reticleMesh.rotationQuaternion = flipY.multiply(reticleMesh.rotationQuaternion);
+                        let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
+                        reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
+                        gamepad.axes[2] = 0;
                     }
-
                 }
             }
         }
