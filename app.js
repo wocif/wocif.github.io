@@ -263,8 +263,8 @@ const createScene = async function () {
 
     // Erstellen eines unsichtbaren GUI-Rechtecks als Träger für Text-Material
     const guiTraeger = BABYLON.MeshBuilder.CreatePlane("guiTraeger", {
-        width: 5,   
-        height: 5, 
+        width: 3.5,   
+        height: 3.5, 
         depth: 0.05,  
     }, scene);
 
