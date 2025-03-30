@@ -167,6 +167,7 @@ const createScene = async function () {
     }, scene);
 
     marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
+    // Quelle material.alpha: https://www.babylonjs-playground.com/#20OAV9#16
     marker.material.alpha = 0.5; 
     marker.backFaceCulling = false; // Lässt Fensterindikator verschwinden, wenn falsch gedreht! :D Lucky incidence
     
@@ -175,9 +176,35 @@ const createScene = async function () {
     marker.rotationQuaternion = new BABYLON.Quaternion();
     marker.renderingGroupId = 2;
 
+    marker.isVisible = false;
+
     // Marker zwei Fensterindikator
     const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
-    marker.isVisible = false;
+
+    // Schrifttextur:
+    // Erstelle eine DynamicTexture mit einer Größe von 512x256
+    const texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
+    texture.hasAlpha = true; // Ermöglicht Transparenz
+
+    // Erstelle ein Material mit dieser Textur
+    const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
+    textMaterial.diffuseTexture = texture;
+    textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
+    textMaterial.opacityTexture = texture; // Nutzt Alpha-Kanal für Transparenz
+
+    // Weisen wir das Material dem Marker zu
+    marker2.material = textMaterial;
+
+    // Schreibe den Text auf die Texture
+    const ctx = texture.getContext();
+    ctx.clearRect(0, 0, 512, 256); // Leert das Canvas
+    ctx.font = "bold 60px Arial"; // Schriftgröße & Stil
+    ctx.fillStyle = "red"; // Textfarbe
+    ctx.textAlign = "center";
+    ctx.fillText("Mein Marker", 256, 128); // Text positionieren
+
+    // Aktualisiere die Textur, damit die Änderungen sichtbar werden
+    texture.update();
 
 
 
