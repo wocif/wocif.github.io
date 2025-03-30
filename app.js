@@ -457,7 +457,7 @@ const createScene = async function () {
             const xrSession = xr.baseExperience.sessionManager.session;
 
 
-            guiTraeger.position.set(reticleMesh.position.x-1, 1, reticleMesh.position.z)
+            guiTraeger.position.set(reticleMesh.position.x, 2, reticleMesh.position.z)
             guiTraeger.isVisible = true;
 
 
