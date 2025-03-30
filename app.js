@@ -810,6 +810,6 @@ initFunction().then(() => {
 // -----------------------------
 // Resize Event Listener
 // -----------------------------
-window.addEventListener("resize", function () {
+/* window.addEventListener("resize", function () {
     engine.resize(); //passt engine an fenstergrößen an
-});
+}); */
