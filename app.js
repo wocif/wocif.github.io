@@ -270,20 +270,7 @@ const createScene = async function () {
 
     
     
-    scene.onBeforeRenderObservable.add(() => {
-        // Berechne die Vorwärtsrichtung der Kamera
-        const forwardDirection = camera.getForwardRay().direction;
-    
-        // Positioniere das Rechteck 1 Meter vor der Kamera und 2 Einheiten höher
-        const offsetPosition = camera.position.add(forwardDirection.scale(1)); // 1 Meter vor der Kamera
-        guiTraeger.position = offsetPosition.add(BABYLON.Vector3.Up().scale(2)); // 2 Einheiten höher
-    
-        // Setze die Rotation so, dass es immer zur Kamera ausgerichtet ist
-        guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forwardDirection, BABYLON.Vector3.Up());
-        
-        // Optional: Debugging - Sichere, dass das UI-Element sichtbar ist
-        guiTraeger.isVisible = true;
-    });
+
 
 
     //---------------------------------------------------------------
@@ -463,6 +450,19 @@ const createScene = async function () {
     //Funktion wird vor jeden Rendering durchgeführt, um Angaben des Gamepads zu verarbeiten
     scene.onBeforeRenderObservable.add(() => {
 
+        // Berechne die Vorwärtsrichtung der Kamera
+        const forwardDirection = camera.getForwardRay().direction;
+    
+        // Positioniere das Rechteck 1 Meter vor der Kamera und 2 Einheiten höher
+        const offsetPosition = camera.position.add(forwardDirection.scale(1)); // 1 Meter vor der Kamera
+        guiTraeger.position = offsetPosition.add(BABYLON.Vector3.Up().scale(2)); // 2 Einheiten höher
+    
+        // Setze die Rotation so, dass es immer zur Kamera ausgerichtet ist
+        guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forwardDirection, BABYLON.Vector3.Up());
+        
+        // Optional: Debugging - Sichere, dass das UI-Element sichtbar ist
+        guiTraeger.isVisible = true;
+        
         //zuerst wird geprüft, ob die webxr-Session aktiv ist und ob der Reticle-Mesh existiert (also ob das Fenster auch schon aktiviert ist)
         if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 7) {
             const xrSession = xr.baseExperience.sessionManager.session;
