@@ -322,6 +322,7 @@ const createScene = async function () {
     //Stellt das automatische Löschen des Tiefenpuffers für verschiedene Rendering-Gruppen ein
     scene.setRenderingAutoClearDepthStencil(1, false, false, false);
     scene.setRenderingAutoClearDepthStencil(0, true, true, true);
+    scene.setRenderingAutoClearDepthStencil(2, false, false, false);
     scene.autoClear = true; //aktiviert das automatische Löschen des Bildschirms für nächste Renderings
 
 
@@ -352,9 +353,14 @@ const createScene = async function () {
     warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     warningText.isVisible = false;  
-    advancedTexture.renderScale = 1; // Erzwingt die Skalierung im XR-Modus
-    advancedTexture.useInvalidateRectOptimization = false; // Verhindert Probleme mit partiellen UI-Updates
 
+    scene.onBeforeRenderObservable.add(() => {
+        if (scene.activeCamera && scene.activeCamera.isLeftCamera) {
+            warningText.isVisible = false;
+        } else {
+            warningText.isVisible = true;
+        }
+    });
 
     // -----------------------------
     // Erstellung des Rechtecks (also die Platzierung des Portals)
