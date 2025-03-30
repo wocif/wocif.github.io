@@ -169,7 +169,7 @@ const createScene = async function () {
     marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
     // Quelle material.alpha: https://www.babylonjs-playground.com/#20OAV9#16
     marker.material.alpha = 0.5; 
-    //marker.backFaceCulling = false; // Lässt Fensterindikator verschwinden, wenn falsch gedreht! :D Lucky incidence
+    marker.backFaceCulling = false; // Lässt Fensterindikator verschwinden, wenn falsch gedreht! :D Lucky incidence
     
 
     marker.isVisible = false;
@@ -224,7 +224,7 @@ const createScene = async function () {
     textMaterial.opacityTexture = marker2Texture; // Nutzt Alpha-Kanal für Transparenz
 
     // Marker zwei Fensterindikator
-    const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
+    const marker2 = BABYLON.MeshBuilder.CreatePlane("marker2", {width: 1, height: 0.5}, scene);
     // Weisen wir das Material dem Marker zu
     marker2.material = textMaterial;
 
