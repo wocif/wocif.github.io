@@ -200,22 +200,29 @@ const createScene = async function () {
     // Weisen wir das Material dem Marker zu
     marker2.material = textMaterial;
 
-    function writeTextOnTexture(text, texture) {
-        // Schreibe den Text auf die Texture
+    function writeTextOnTexture(textArray, texture) {
+        const x = 256;
+        let y = 20; // Startposition für den Text
+        const lineHeight = 60; // Abstand zwischen den Zeilen
+
         const ctx = texture.getContext();
-        // **1. Hintergrundfarbe zeichnen**
-        ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  // Ändere die Farbe nach Wunsch (z.B. "rgba(0, 126, 252, 0.47)" für Transparenz)
+        ctx.clearRect(0, 0, 512, 256); // clear
+        ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  //Hintergrund
         ctx.fillRect(0, 0, 512, 256); // Füllt das ganze Canvas
-        //ctx.clearRect(0, 0, 512, 256); // Leert das Canvas
-        ctx.font = "bold 40px Arial"; // Schriftgröße & Stil
+        ctx.font = "bold 40px Arial"; // Schrift
         ctx.fillStyle = "red"; // Textfarbe
         ctx.textAlign = "center";
-        ctx.fillText(text, 256, 128); // Text positionieren
 
-        // Aktualisiere die Textur, damit die Änderungen sichtbar werden
+        //Schreibe jeden Bucket in neue Zeile (Höhe: -lineHeight darunter)
+        for (let i = 0; i < textArray.length; i++) {
+            ctx.fillText(textArray[i], x, y);
+            y += lineHeight;
+        }
+
         texture.update();
     }
-    writeTextOnTexture("Ausrichtung \n + Rotation \n (Grobjustierung)", marker2Texture)
+    
+    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], marker2Texture)
 
 
 
