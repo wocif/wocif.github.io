@@ -274,7 +274,7 @@ const createScene = async function () {
     guiTraeger.material = textMaterial_GUI;
     //guiTraeger.position.set(marker.position.x, 1.5, 1)
 
-    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 30)
+    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob. Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen. Nutze die Daumentasten deines Controllers in horizontaler Richtung, um es zu rotieren.", "Bestätigen mit dem Zeigefinger-Knopf (hinten)."], textTextur_GUI, "smallWhite", 30)
 
 
     //---------------------------------------------------------------
@@ -411,7 +411,10 @@ const createScene = async function () {
     // Quelle: https://doc.babylonjs.com/features/featuresDeepDive/scene/interactWithScenes
     // -----------------------------
 
-    //es reagiert auf Benutzerinteraktionen während der Session
+    // Mit dem PointerDown am Controler wird durch den User bestimmt, 
+    // auf welche Weise das Reticle manipuliert werden soll, in dem es die variable "state" incrementiert, 
+    // welche dann verschiedene Funktionalitäten aktiviert
+    // Siehe "Gamepad Input Handling für rechteckeinstellungen"
     scene.onPointerDown = (evt, pickInfo) => {
         //zuerst wird geprüft, ob man sich in einer WebXR-Session befindet
         if (xr.baseExperience.state === BABYLON.WebXRState.IN_XR) {
@@ -460,8 +463,6 @@ const createScene = async function () {
     //Funktion wird vor jeden Rendering durchgeführt, um Angaben des Gamepads zu verarbeiten
     scene.onBeforeRenderObservable.add(() => {
 
-        
-
         //zuerst wird geprüft, ob die webxr-Session aktiv ist und ob der Reticle-Mesh existiert (also ob das Fenster auch schon aktiviert ist)
         if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 8) {
             const xrSession = xr.baseExperience.sessionManager.session;
@@ -482,27 +483,27 @@ const createScene = async function () {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["Positionierung","in der Höhe"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture([" ","Nutze jetzt den Daumen-Knopf deines Controllers", "in VERTIKALER Richtung...", "Um die Position deines Fensters", "in der Höhe zu bestimmen!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture(["Nutze jetzt den Daumen-Knopf deines Controllers", "in VERTIKALER Richtung...", "Um die Position deines Fensters", "in der Höhe zu bestimmen!", "Bestätigen mit dem Zeigefinger-Knopf (hinten)."], textTextur_GUI, "smallWhite")
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Fensters)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Höhe"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture([" ","Nutze jetzt den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Höhe zu bestimmen!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture(["Nutze jetzt den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Höhe zu bestimmen!", "Bestätigen mit dem Zeigefinger-Knopf (hinten)."], textTextur_GUI, "smallWhite")
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture([" ","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um erneut die Position deines Fensters", "in der Höhe anzupassen!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture(["Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um erneut die Position deines Fensters", "in der Höhe anzupassen!", "Bestätigen mit dem Zeigefinger-Knopf (hinten)."], textTextur_GUI, "smallWhite")
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Breite"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture([" ","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Breite zu bestimmen!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture(["Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Breite zu bestimmen!", "Bestätigen mit dem Zeigefinger-Knopf (hinten)."], textTextur_GUI, "smallWhite")
 
                     } else if (state === 5) {
                         //180 Grad Drehung für richtige Ausrichtung
@@ -517,7 +518,7 @@ const createScene = async function () {
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         writeTextOnTexture(["Rotation"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture([" ","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture(["Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!", "Bestätigen mit dem Zeigefinger-Knopf (hinten)."], textTextur_GUI, "smallWhite")
                         state = 7;
                     }
                 }
