@@ -183,32 +183,39 @@ const createScene = async function () {
 
     //---------------------------------------------------------------
     // Schrifttextur
+    // Quellen:
+    // https://doc.babylonjs.com/features/featuresDeepDive/materials/using/dynamicTexture/
+    // https://webgl2fundamentals.org/webgl/lessons/webgl-text-texture.html
+    // https://wiki.selfhtml.org/wiki/Canvas/Text#fillText 
     //---------------------------------------------------------------
-    const texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
-    texture.hasAlpha = true; // Ermöglicht Transparenz
+    const marker2Texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
+    marker2Texture.hasAlpha = true; // Ermöglicht Transparenz
 
     // Erstelle ein Material mit dieser Textur
     const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
-    textMaterial.diffuseTexture = texture;
+    textMaterial.diffuseTexture = marker2Texture;
     textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
-    textMaterial.opacityTexture = texture; // Nutzt Alpha-Kanal für Transparenz
+    textMaterial.opacityTexture = marker2Texture; // Nutzt Alpha-Kanal für Transparenz
 
     // Weisen wir das Material dem Marker zu
     marker2.material = textMaterial;
 
-    // Schreibe den Text auf die Texture
-    const ctx = texture.getContext();
-    // **1. Hintergrundfarbe zeichnen**
-    ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  // Ändere die Farbe nach Wunsch (z.B. "rgba(0, 126, 252, 0.47)" für Transparenz)
-    ctx.fillRect(0, 0, 512, 256); // Füllt das ganze Canvas
-    //ctx.clearRect(0, 0, 512, 256); // Leert das Canvas
-    ctx.font = "bold 40px Arial"; // Schriftgröße & Stil
-    ctx.fillStyle = "red"; // Textfarbe
-    ctx.textAlign = "center";
-    ctx.fillText("Ausrichtung \n + Rotation \n (Grobjustierung)", 256, 128); // Text positionieren
+    function writeTextOnTexture(text, texture) {
+        // Schreibe den Text auf die Texture
+        const ctx = texture.getContext();
+        // **1. Hintergrundfarbe zeichnen**
+        ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  // Ändere die Farbe nach Wunsch (z.B. "rgba(0, 126, 252, 0.47)" für Transparenz)
+        ctx.fillRect(0, 0, 512, 256); // Füllt das ganze Canvas
+        //ctx.clearRect(0, 0, 512, 256); // Leert das Canvas
+        ctx.font = "bold 40px Arial"; // Schriftgröße & Stil
+        ctx.fillStyle = "red"; // Textfarbe
+        ctx.textAlign = "center";
+        ctx.fillText(text, 256, 128); // Text positionieren
 
-    // Aktualisiere die Textur, damit die Änderungen sichtbar werden
-    texture.update();
+        // Aktualisiere die Textur, damit die Änderungen sichtbar werden
+        texture.update();
+    }
+    writeTextOnTexture("Ausrichtung \n + Rotation \n (Grobjustierung)", marker2Texture)
 
 
 
