@@ -199,7 +199,7 @@ const createScene = async function () {
     // Schreibe den Text auf die Texture
     const ctx = texture.getContext();
     // **1. Hintergrundfarbe zeichnen**
-    ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  // Ändere die Farbe nach Wunsch (z.B. "rgba(0, 126, 252, 0.47)" für Transparenz)
+    ctx.fillStyle = rgba(0, 126, 252, 0.47);  // Ändere die Farbe nach Wunsch (z.B. "rgba(0, 126, 252, 0.47)" für Transparenz)
     ctx.fillRect(0, 0, 512, 256); // Füllt das ganze Canvas
     ctx.clearRect(0, 0, 512, 256); // Leert das Canvas
     ctx.font = "bold 60px Arial"; // Schriftgröße & Stil
