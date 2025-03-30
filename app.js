@@ -173,6 +173,9 @@ const createScene = async function () {
     marker.rotationQuaternion = new BABYLON.Quaternion();
     marker.renderingGroupId = 2;
 
+    // Marker zwei Fensterindikator
+    const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
+
 
 
     //---------------------------------------------------------------
@@ -193,6 +196,7 @@ const createScene = async function () {
 
             // Überschreibe die Rotation des Hit-Tests mit einer neuen Orientierung
             marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
+            marker2.position = marker.position.clone().add(new BABYLON.Vector3(0, 1, 0));
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
@@ -207,7 +211,7 @@ const createScene = async function () {
 
 
     //Erstellt wird ein unsichtbaren Bereich, der Objekte in der AR-Umgebung blockieren kann
-    //Dies wird verwendet, um sicherzustellen, dass Teile der virtuellen Szene nicht durch die echte Welt sichtbar sind (sondern nur die Teile, die durch das Portal sichtbar sind)
+    //Dies wird verwendet, um sicherzustellen, dass Teile der virtuellen Szene nicht durch die echte Welt sichtbar sind (sondern nur die Teile, die durch das Fenster sichtbar sind)
     const rootOccluder = new BABYLON.TransformNode("rootOccluder", scene);
 
     //Erstellung des Hauptknotens für die virtuelle Welt
@@ -218,7 +222,7 @@ const createScene = async function () {
     const rootPilar = new BABYLON.TransformNode("rootPilar", scene);
     rootPilar.rotationQuaternion = new BABYLON.Quaternion();
 
-    //senkt virtuelle Szene leichtt, um sie an die Bodenhöhe anzupassen (in AR)
+    //senkt virtuelle Szene, um sie an die Bodenhöhe anzupassen
     rootScene.position.y -= 1.6;
 
 
@@ -272,7 +276,7 @@ const createScene = async function () {
             reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
             reticleMat.backFaceCulling = false; //deaktiviert das "Verstecken der Rückseite" für die Rückseite des reticles
             reticleMesh.material = reticleMat;
-            reticleMesh.renderingGroupId = 2;  //hat eigene renderingsgruppe
+            reticleMesh.renderingGroupId = 2; 
             reticleMesh.isVisible = false; //nicht sichtbar bis zur ersten Interaktion
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity(); //default-Rotation
             reticleMesh.scaling = new BABYLON.Vector3(1, 1, 1); //standard größe
@@ -296,12 +300,7 @@ const createScene = async function () {
                 createReticle(); //rectile erstellen
                 reticleMesh.position.copyFrom(marker.position); //setze die Position des Reticles auf die des Markers
                 reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
-
-                //passt die Rotation des Reticles an die des Markers an -> wird aber an der y-Achse gespiegelt
-                /* reticleMesh.rotationQuaternion = marker.rotationQuaternion.multiply(
-                    BABYLON.Quaternion.RotationYawPitchRoll(Math.PI, 0, 0)
-                ); */
-                
+              
                 reticleMesh.isVisible = true;
                 state = 1;  //dann wird in den 1. Zustand gewechselt
             } else if (state === 1) {
