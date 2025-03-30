@@ -156,7 +156,7 @@ const createScene = async function () {
     // Markerflächen einfärben
     // https://doc.babylonjs.com/features/featuresDeepDive/materials/using/texturePerBoxFace/
     const faceColors = new Array(6);
-    faceColors[5] = new BABYLON.Color4(1, 0, 0, 1); // Rot Back
+    faceColors[4] = new BABYLON.Color4(1, 0, 0, 1); // Rot Back
     faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün Front
     
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
@@ -167,8 +167,7 @@ const createScene = async function () {
     }, scene);
 
     marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
-    //marker.material.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND; 
-    marker.material.alpha = 0.5; // Alpha wird durch faceColors gesteuert
+    marker.material.alpha = 0.5; 
 
     // Optional: Material for color and transparency
     /* const material = new BABYLON.StandardMaterial("markerMaterial", scene);
