@@ -197,6 +197,7 @@ const createScene = async function () {
             // Überschreibe die Rotation des Hit-Tests mit einer neuen Orientierung
             marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
             marker2.position = marker.position.clone().add(new BABYLON.Vector3(0, 1, 0));
+            marker2.rotationQuaternion = marker.rotationQuaternion.clone();
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
