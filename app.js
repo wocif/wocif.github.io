@@ -529,12 +529,15 @@ const createScene = async function () {
     // Place Fenster: Finalize Placement and Create Fenster Geometry
     // -----------------------------
     function platziereFenster() {
-
+       
 
 
         platziert = true;
         if (reticleMesh) {
-            reticleMesh.isVisible = false;  //rechteck soll nicht mehr sichtbar sein, wenn das Fenster platziert wird
+            reticleMesh.isVisible = false; // Rechteck wird ersetzt durch Occluder, nur Maße wurden benötigt. Rechteck kann verschwinden
+        }
+        if (guiTraeger) {
+            guiTraeger.isVisible = false;  // Anleitung nicht weiter benötigt        
         }
 
         //aktiviert die virtuelle Welt und den Occluder-Wände
