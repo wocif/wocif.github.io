@@ -160,14 +160,13 @@ const createScene = async function () {
     faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün Front
     
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
-        width: 2,   
+        width: 3,   
         height: 0.03, 
         depth: 0.05,  
         faceColors: faceColors
     }, scene);
 
     marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
-    // Quelle material.alpha: https://www.babylonjs-playground.com/#20OAV9#16
     marker.material.alpha = 0.5; 
     marker.backFaceCulling = false; // Lässt Fensterindikator verschwinden, wenn falsch gedreht! :D Lucky incidence
     
@@ -176,60 +175,9 @@ const createScene = async function () {
     marker.rotationQuaternion = new BABYLON.Quaternion();
     marker.renderingGroupId = 2;
 
-    marker.isVisible = false;
-
-
-
-    //---------------------------------------------------------------
-    // Schrifttextur
-    // Quellen:
-    // https://doc.babylonjs.com/features/featuresDeepDive/materials/using/dynamicTexture/
-    // https://webgl2fundamentals.org/webgl/lessons/webgl-text-texture.html
-    // https://wiki.selfhtml.org/wiki/Canvas/Text#fillText 
-    //---------------------------------------------------------------
-
-    // Funktion zum Drucken von Texts auf eine Textur
-    function writeTextOnTexture(textArray, texture) {
-        const x = 256;
-        let y = 60; // Startposition für den Text
-        const lineHeight = 60; // Abstand zwischen den Zeilen
-
-        const ctx = texture.getContext();
-        ctx.clearRect(0, 0, 512, 256); // clear
-        ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  //Hintergrund
-        ctx.fillRect(0, 0, 512, 256); // Füllt das ganze Canvas
-        ctx.font = "bold 40px Arial"; // Schrift
-        ctx.fillStyle = "red"; // Textfarbe
-        ctx.textAlign = "center";
-
-        //Schreibe jeden Bucket in neue Zeile (Höhe: -lineHeight darunter)
-        for (let i = 0; i < textArray.length; i++) {
-            ctx.fillText(textArray[i], x, y);
-            y += lineHeight;
-        }
-
-        texture.update();
-    }
-
-    // ----------------------------------------------
-    // Drucken von Text auf Fensterindikator-Marker
-    // ----------------------------------------------
-    const marker2Texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
-    marker2Texture.hasAlpha = true; // Ermöglicht Transparenz
-
-    // Erstelle ein Material mit dieser Textur
-    const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
-    textMaterial.diffuseTexture = marker2Texture;
-    textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
-    textMaterial.opacityTexture = marker2Texture; // Nutzt Alpha-Kanal für Transparenz
-
     // Marker zwei Fensterindikator
     const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
-    // Weisen wir das Material dem Marker zu
-    marker2.material = textMaterial;
-
-    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], marker2Texture)
-    
+    marker.isVisible = false;
 
 
 
@@ -241,7 +189,7 @@ const createScene = async function () {
         if (results.length) {
             //zeigt die Marker an, wenn das Hit-Test-Feature Ergebnisse liefert
             marker.isVisible = !portalAppeared && (state === 0);
-            //marker2.isVisible = !portalAppeared && (state === 0);
+            marker2.isVisible = !portalAppeared && (state === 0);
             //speichert das 1. des Hit-Tests
             hitTest = results[0];
             //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
@@ -330,9 +278,10 @@ const createScene = async function () {
     function createReticle() {
         if (!reticleMesh) {
             reticleMesh = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
+            let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
             reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
             reticleMat.backFaceCulling = false; //deaktiviert das "Verstecken der Rückseite" für die Rückseite des reticles
-            reticleMesh.material = reticleMat; //
+            reticleMesh.material = reticleMat;
             reticleMesh.renderingGroupId = 2; 
             reticleMesh.isVisible = false; //nicht sichtbar bis zur ersten Interaktion
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity(); //default-Rotation
