@@ -294,9 +294,10 @@ const createScene = async function () {
                 reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
 
                 //passt die Rotation des Reticles an die des Markers an -> wird aber an der y-Achse gespiegelt
-                reticleMesh.rotationQuaternion = marker.rotationQuaternion.multiply(
+                /* reticleMesh.rotationQuaternion = marker.rotationQuaternion.multiply(
                     BABYLON.Quaternion.RotationYawPitchRoll(Math.PI, 0, 0)
-                );
+                ); */
+                reticleMesh.lookAt(camera.position);
                 reticleMesh.isVisible = true;
                 state = 1;  //dann wird in den 1. Zustand gewechselt
             } else if (state === 1) {
