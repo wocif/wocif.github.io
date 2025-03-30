@@ -428,27 +428,27 @@ const createScene = async function () {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["Positionierung","in der Höhe"], textTextur)
-                        //warningText.text = "a";
+                        warningText.text = "a";
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Portals)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Höhe"], textTextur)
-                        //warningText.text = "b";
+                        warningText.text = "b";
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur)
-                        //warningText.text = "c";
+                        warningText.text = "c";
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Breite"], textTextur)
-                        //warningText.text = "d";
+                        warningText.text = "d";
 
                     } else if (state === 5) {
                         //180 Grad Drehung für richtige Ausrichtung
@@ -463,7 +463,7 @@ const createScene = async function () {
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         writeTextOnTexture(["Rotation"], textTextur)
-                        //warningText.text = "e";
+                        warningText.text = "e";
 
                     }
                 }
