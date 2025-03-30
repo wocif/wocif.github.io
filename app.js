@@ -297,7 +297,9 @@ const createScene = async function () {
                 /* reticleMesh.rotationQuaternion = marker.rotationQuaternion.multiply(
                     BABYLON.Quaternion.RotationYawPitchRoll(Math.PI, 0, 0)
                 ); */
-                reticleMesh.lookAt(camera.position);
+                const flipY = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, Math.PI);
+                reticleMesh.rotationQuaternion = flipY.multiply(reticleMesh.rotationQuaternion);
+                
                 reticleMesh.isVisible = true;
                 state = 1;  //dann wird in den 1. Zustand gewechselt
             } else if (state === 1) {
