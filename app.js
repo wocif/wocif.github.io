@@ -63,6 +63,7 @@ const createScene = async function () {
 
     //Kamera erstellen -> FreeCamera verwendet für freie Bewegung
     const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
+    camera.layerMask = 1;
     //durch attachControl() wird die Kamera an das Canvas gebunden
     camera.attachControl(canvas, true);
 
@@ -86,6 +87,7 @@ const createScene = async function () {
     //Erstellung einer FullScreenGUI für die Anzeige
     //Quelle: https://doc.babylonjs.com/features/featuresDeepDive/gui/gui/#fullscreen-mode
     const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("FullscreenUI");
+
 
     //Erstellung eines schwarzen Rechtecks für die Anzeige
     const rectangle = new BABYLON.GUI.Rectangle("rect");
@@ -331,7 +333,6 @@ const createScene = async function () {
     // -----------------------------
     // Tutorial Text
     // -----------------------------
-    //const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
 
     // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
     const warningText = new BABYLON.GUI.TextBlock("warningText", "placeholder");
@@ -376,6 +377,7 @@ const createScene = async function () {
             //zustand = 0: noch nichts ist platziert
             //erst wenn auf dem Controller gedrückt wird, wird der Marker sichtbar -> für den Start den Hittest
             if (state === 0 && hitTest) {
+                advancedTexture.layer.layerMask = 2;
                 advancedTexture.addControl(warningText);
                 warningText.isVisible = true;  
                 createReticle(); //rectile erstellen
