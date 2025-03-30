@@ -236,41 +236,41 @@ const createScene = async function () {
 
 
     // erstelle 1. Textur, die Text darstellen kann (für Reticle)
-    const textTexturReticle = new BABYLON.DynamicTexture("textTexturReticle", { width: 512, height: 256 }, scene, true);
-    textTexturReticle.hasAlpha = true; // Ermöglicht Transparenz
+    const textTextur_Reticle = new BABYLON.DynamicTexture("textTexturReticle", { width: 512, height: 256 }, scene, true);
+    textTextur_Reticle.hasAlpha = true; // Ermöglicht Transparenz
 
     // Erstelle ein Material mit dieser Textur
-    const textMaterialReticle = new BABYLON.StandardMaterial("textMaterialReticle", scene);
-    textMaterialReticle.diffuseTexture = textTexturReticle;
-    textMaterialReticle.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
-    textMaterialReticle.opacityTexture = textTexturReticle; // Nutzt Alpha-Kanal für Transparenz
+    const textMaterial_Reticle = new BABYLON.StandardMaterial("textMaterialReticle", scene);
+    textMaterial_Reticle.diffuseTexture = textTextur_Reticle;
+    textMaterial_Reticle.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
+    textMaterial_Reticle.opacityTexture = textTextur_Reticle; // Nutzt Alpha-Kanal für Transparenz
 
     // Material auf Marker (reticle) anwenden
-    marker2.material = textMaterialReticle;
+    marker2.material = textMaterial_Reticle;
 
     // erstelle 2. Textur, die Text darstellen kann (für Helper GUI)
-    const textTexturGUI = new BABYLON.DynamicTexture("textTexturGUI", { width: 512, height: 256 }, scene, true);
-    textTexturGUI.hasAlpha = true; // Ermöglicht Transparenz
+    const textTextur_GUI = new BABYLON.DynamicTexture("textTexturGUI", { width: 512, height: 256 }, scene, true);
+    textTextur_GUI.hasAlpha = true; // Ermöglicht Transparenz
 
     // Erstelle ein Material mit dieser Textur
-    const textMaterialGUI = new BABYLON.StandardMaterial("textMaterialGUI", scene);
-    textMaterialGUI.diffuseTexture = textTexturGUI;
-    textMaterialGUI.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
-    textMaterialGUI.opacityTexture = textTexturGUI; // Nutzt Alpha-Kanal für Transparenz
+    const textMaterial_GUI = new BABYLON.StandardMaterial("textMaterialGUI", scene);
+    textMaterial_GUI.diffuseTexture = textTextur_GUI;
+    textMaterial_GUI.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
+    textMaterial_GUI.opacityTexture = textTextur_GUI; // Nutzt Alpha-Kanal für Transparenz
 
     
-    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], textTexturReticle, "bigRed")
+    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], textTextur_Reticle, "bigRed")
 
     // Erstellen eines unsichtbaren GUI-Rechtecks als Träger für Text-Material
     const guiTraeger = BABYLON.MeshBuilder.CreatePlane("guiTraeger", {
         width: 2,   
-        height: 0.5, 
+        height: 1, 
         depth: 0.05,  
     }, scene);
 
-    guiTraeger.material = textMaterialGUI;
+    guiTraeger.material = textMaterial_GUI;
     
-
+    writeTextOnTexture(["Anleitung"], textTextur_GUI, "smallWhite")
 
 
     //---------------------------------------------------------------
@@ -389,7 +389,7 @@ const createScene = async function () {
             let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
             reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
             reticleMat.backFaceCulling = false; //deaktiviert das "Verstecken der Rückseite" für die Rückseite des reticles
-            reticleMesh.material = textMaterialReticle;//reticleMat;
+            reticleMesh.material = textMaterial_Reticle;//reticleMat;
             reticleMesh.renderingGroupId = 2; 
             reticleMesh.isVisible = false; //nicht sichtbar bis zur ersten Interaktion
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity(); //default-Rotation
@@ -457,7 +457,7 @@ const createScene = async function () {
             const xrSession = xr.baseExperience.sessionManager.session;
 
 
-            guiTraeger.position.set(reticleMesh.position.x, 2, reticleMesh.position.z)
+            guiTraeger.position.set(reticleMesh.position.x, 0.5, reticleMesh.position.z)
             guiTraeger.isVisible = true;
 
 
@@ -471,28 +471,28 @@ const createScene = async function () {
                     if (state === 1) {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
-                        writeTextOnTexture(["Positionierung","in der Höhe"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Position deines Fensters", "in der Höhe zu bestimmen!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["Positionierung","in der Höhe"], textTextur_Reticle, "bigRed")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Position deines Fensters", "in der Höhe zu bestimmen!"], textTextur_GUI, "smallWhite")
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Fensters)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
-                        writeTextOnTexture(["Skalierung","in der Höhe"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Höhe zu bestimmen!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["Skalierung","in der Höhe"], textTextur_Reticle, "bigRed")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Höhe zu bestimmen!"], textTextur_GUI, "smallWhite")
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
-                        writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um erneut die Position deines Fensters", "in der Höhe anzupassen!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur_Reticle, "bigRed")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um erneut die Position deines Fensters", "in der Höhe anzupassen!"], textTextur_GUI, "smallWhite")
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
-                        writeTextOnTexture(["Skalierung","in der Breite"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Breite zu bestimmen!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["Skalierung","in der Breite"], textTextur_Reticle, "bigRed")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Breite zu bestimmen!"], textTextur_GUI, "smallWhite")
 
                     } else if (state === 5) {
                         //180 Grad Drehung für richtige Ausrichtung
@@ -507,8 +507,8 @@ const createScene = async function () {
                         //Rotation um Y-Achse
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
-                        writeTextOnTexture(["Rotation"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["Rotation"], textTextur_Reticle, "bigRed")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!"], textTextur_GUI, "smallWhite")
 
                     }
                 }
