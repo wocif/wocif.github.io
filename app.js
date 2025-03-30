@@ -241,7 +241,7 @@ const createScene = async function () {
         if (results.length) {
             //zeigt die Marker an, wenn das Hit-Test-Feature Ergebnisse liefert
             marker.isVisible = !portalAppeared && (state === 0);
-            marker2.isVisible = !portalAppeared && (state === 0);
+            //marker2.isVisible = !portalAppeared && (state === 0);
             //speichert das 1. des Hit-Tests
             hitTest = results[0];
             //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
