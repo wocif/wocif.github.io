@@ -376,7 +376,7 @@ const createScene = async function () {
             //zustand = 0: noch nichts ist platziert
             //erst wenn auf dem Controller gedrückt wird, wird der Marker sichtbar -> für den Start den Hittest
             if (state === 0 && hitTest) {
-                ui.addControl(warningText);
+                advancedTexture.addControl(warningText);
                 warningText.isVisible = true;  
                 createReticle(); //rectile erstellen
                 reticleMesh.position.copyFrom(marker.position); //setze die Position des Reticles auf die des Markers
