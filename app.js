@@ -274,7 +274,7 @@ const createScene = async function () {
     guiTraeger.material = textMaterial_GUI;
     //guiTraeger.position.set(marker.position.x, 1.5, 1)
 
-    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 10)
+    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 20)
 
 
     //---------------------------------------------------------------
@@ -443,7 +443,7 @@ const createScene = async function () {
             } else if (state === 5) {
                 state = 6;
             } else if (state === 6) {
-                //wenn alle Einstellungen abgeschlossen sind, dann wird das Fenster aktiviert
+                guiTraeger.isVisible = false;
                 platziereFenster();
             }
         }
