@@ -274,7 +274,7 @@ const createScene = async function () {
     guiTraeger.material = textMaterial_GUI;
     //guiTraeger.position.set(marker.position.x, 1.5, 1)
 
-    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 20)
+    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 10)
 
 
     //---------------------------------------------------------------
@@ -479,27 +479,27 @@ const createScene = async function () {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["Positionierung","in der Höhe"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Position deines Fensters", "in der Höhe zu bestimmen!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture([" ","Nutze jetzt den Daumen-Knopf deines Controllers", "in VERTIKALER Richtung...", "Um die Position deines Fensters", "in der Höhe zu bestimmen!"], textTextur_GUI, "smallWhite")
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Fensters)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Höhe"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Höhe zu bestimmen!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture([" ","Nutze jetzt den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Höhe zu bestimmen!"], textTextur_GUI, "smallWhite")
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um erneut die Position deines Fensters", "in der Höhe anzupassen!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture([" ","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um erneut die Position deines Fensters", "in der Höhe anzupassen!"], textTextur_GUI, "smallWhite")
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Breite"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Breite zu bestimmen!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture([" ","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Breite zu bestimmen!"], textTextur_GUI, "smallWhite")
 
                     } else if (state === 5) {
                         //180 Grad Drehung für richtige Ausrichtung
@@ -515,7 +515,7 @@ const createScene = async function () {
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         writeTextOnTexture(["Rotation"], textTextur_Reticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!"], textTextur_GUI, "smallWhite")
+                        writeTextOnTexture([" ","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!"], textTextur_GUI, "smallWhite")
 
                     }
                 }
