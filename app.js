@@ -360,6 +360,7 @@ const createScene = async function () {
 
                     } else if (state === 5) {
                         //Rotation um Y-Achse
+                        reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity();
                         let targetRotation = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, Math.PI);
                         reticleMesh.rotationQuaternion = BABYLON.Quaternion.Slerp(
                             reticleMesh.rotationQuaternion, targetRotation, 0.1
