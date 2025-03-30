@@ -519,7 +519,6 @@ const createScene = async function () {
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         writeTextOnTexture(["Rotation"], textTextur_Reticle, "bigRed")
                         writeTextOnTexture(["Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!", "Bestätigen mit dem Zeigefinger-Knopf (hinten)."], textTextur_GUI, "smallWhite")
-                        state = 7;
                     }
                 }
             }
