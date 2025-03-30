@@ -297,8 +297,8 @@ const createScene = async function () {
                 /* reticleMesh.rotationQuaternion = marker.rotationQuaternion.multiply(
                     BABYLON.Quaternion.RotationYawPitchRoll(Math.PI, 0, 0)
                 ); */
-                const flipY = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, Math.PI);
-                reticleMesh.rotationQuaternion = flipY.multiply(reticleMesh.rotationQuaternion);
+                
+                //reticleMesh.rotationQuaternion = flipY.multiply(reticleMesh.rotationQuaternion);
 
                 reticleMesh.isVisible = true;
                 state = 1;  //dann wird in den 1. Zustand gewechselt
@@ -369,6 +369,7 @@ const createScene = async function () {
                         
                         gamepad.axes[2] = 0;
                     } else if (state === 6) {
+                        const flipY = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, Math.PI);
                         reticleMesh.rotationQuaternion = flipY.multiply(reticleMesh.rotationQuaternion);
                     }
 
