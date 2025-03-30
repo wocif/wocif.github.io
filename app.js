@@ -178,8 +178,7 @@ const createScene = async function () {
 
     marker.isVisible = false;
 
-    // Marker zwei Fensterindikator
-    const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
+
 
     //---------------------------------------------------------------
     // Schrifttextur
@@ -188,18 +187,8 @@ const createScene = async function () {
     // https://webgl2fundamentals.org/webgl/lessons/webgl-text-texture.html
     // https://wiki.selfhtml.org/wiki/Canvas/Text#fillText 
     //---------------------------------------------------------------
-    const marker2Texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
-    marker2Texture.hasAlpha = true; // Ermöglicht Transparenz
 
-    // Erstelle ein Material mit dieser Textur
-    const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
-    textMaterial.diffuseTexture = marker2Texture;
-    textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
-    textMaterial.opacityTexture = marker2Texture; // Nutzt Alpha-Kanal für Transparenz
-
-    // Weisen wir das Material dem Marker zu
-    marker2.material = textMaterial;
-
+    // Funktion zum Drucken von Texts auf eine Textur
     function writeTextOnTexture(textArray, texture) {
         const x = 256;
         let y = 60; // Startposition für den Text
@@ -222,7 +211,25 @@ const createScene = async function () {
         texture.update();
     }
 
+    // ----------------------------------------------
+    // Drucken von Text auf Fensterindikator-Marker
+    // ----------------------------------------------
+    const marker2Texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
+    marker2Texture.hasAlpha = true; // Ermöglicht Transparenz
+
+    // Erstelle ein Material mit dieser Textur
+    const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
+    textMaterial.diffuseTexture = marker2Texture;
+    textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
+    textMaterial.opacityTexture = marker2Texture; // Nutzt Alpha-Kanal für Transparenz
+
+    // Marker zwei Fensterindikator
+    const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
+    // Weisen wir das Material dem Marker zu
+    marker2.material = textMaterial;
+
     writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], marker2Texture)
+    
 
 
 
@@ -323,10 +330,9 @@ const createScene = async function () {
     function createReticle() {
         if (!reticleMesh) {
             reticleMesh = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
-            let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
             reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
             reticleMat.backFaceCulling = false; //deaktiviert das "Verstecken der Rückseite" für die Rückseite des reticles
-            reticleMesh.material = reticleMat;
+            reticleMesh.material = textMaterial; //
             reticleMesh.renderingGroupId = 2; 
             reticleMesh.isVisible = false; //nicht sichtbar bis zur ersten Interaktion
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity(); //default-Rotation
