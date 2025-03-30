@@ -263,8 +263,8 @@ const createScene = async function () {
 
     // Erstellen eines unsichtbaren GUI-Rechtecks als Träger für Text-Material
     const guiTraeger = BABYLON.MeshBuilder.CreatePlane("guiTraeger", {
-        width: 3.5,   
-        height: 1, 
+        width: 7,   
+        height: 0.5, 
         depth: 0.05,  
     }, scene);
 
@@ -472,27 +472,27 @@ const createScene = async function () {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["Positionierung","in der Höhe"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um die Position deines Fensters in der Höhe zu bestimmen!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Position deines Fensters", "in der Höhe zu bestimmen!"], textTexturGUI, "smallWhite")
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Fensters)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Höhe"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um die Skalierung deines Fensters in der Höhe zu bestimmen!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Höhe zu bestimmen!"], textTexturGUI, "smallWhite")
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um erneut die Position deines Fensters in der Höhe anzupassen!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um erneut die Position deines Fensters", "in der Höhe anzupassen!"], textTexturGUI, "smallWhite")
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Breite"], textTexturReticle, "bigRed")
-                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um die Skalierung deines Fensters in der Breite zu bestimmen!"], textTexturGUI, "smallWhite")
+                        writeTextOnTexture(["Anleitung:","Nutze den Daumen-Knopf deines Controllers", "in vertikaler Richtung...", "Um die Skalierung deines Fensters", "in der Breite zu bestimmen!"], textTexturGUI, "smallWhite")
 
                     } else if (state === 5) {
                         //180 Grad Drehung für richtige Ausrichtung
