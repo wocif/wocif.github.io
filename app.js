@@ -48,6 +48,22 @@ var createDefaultEngine = function () {
     });
 };
 
+// -----------------------------
+// Tutorial Text
+// -----------------------------
+const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+// Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
+const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
+warningText.color = "red";
+warningText.fontSize = 48;
+warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+warningText.isVisible = true;  
+ui.addControl(warningText);
+
+
+
 
 // -----------------------------
 //Hauptfunktion für die Szenenerstellung
@@ -359,22 +375,8 @@ const createScene = async function () {
                 reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
 
                 reticleMesh.isVisible = true;
+                
 
-                // -----------------------------
-                // Tutorial Text
-                // -----------------------------
-/*                 const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-
-                // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
-                const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
-                warningText.color = "red";
-                warningText.fontSize = 48;
-                warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-                warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-                warningText.isVisible = false;  // zunächst unsichtbar
-                ui.addControl(warningText);
-
-                warningText.isVisible = true; //enable tutorial */
 
                 state = 1;  //dann wird in den 1. Zustand gewechselt
             } else if (state === 1) {
