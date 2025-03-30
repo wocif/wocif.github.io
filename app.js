@@ -181,8 +181,9 @@ const createScene = async function () {
     // Marker zwei Fensterindikator
     const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
 
-    // Schrifttextur:
-    // Erstelle eine DynamicTexture mit einer Größe von 512x256
+    //---------------------------------------------------------------
+    // Schrifttextur
+    //---------------------------------------------------------------
     const texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
     texture.hasAlpha = true; // Ermöglicht Transparenz
 
@@ -197,6 +198,9 @@ const createScene = async function () {
 
     // Schreibe den Text auf die Texture
     const ctx = texture.getContext();
+    // **1. Hintergrundfarbe zeichnen**
+    ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  // Ändere die Farbe nach Wunsch (z.B. "rgba(0, 126, 252, 0.47)" für Transparenz)
+    ctx.fillRect(0, 0, 512, 256); // Füllt das ganze Canvas
     ctx.clearRect(0, 0, 512, 256); // Leert das Canvas
     ctx.font = "bold 60px Arial"; // Schriftgröße & Stil
     ctx.fillStyle = "red"; // Textfarbe
