@@ -205,19 +205,20 @@ const createScene = async function () {
     function writeTextOnTexture(textArray, texture, mode, space = 60) { 
         const x = 256;
         let y = 60; // Startposition für den Text
-        let lineHeight = space; // Abstand zwischen den Zeilen
+        let lineHeight; // Abstand zwischen den Zeilen
 
         const ctx = texture.getContext();
 
         ctx.clearRect(0, 0, 512, 256); // clear
 
         if (mode === "bigRed") {
+            lineHeight = space;
             ctx.fillStyle = "rgba(0, 126, 252, 0.47)";  //Hintergrund
             ctx.fillRect(0, 0, 512, 256);
             ctx.font = "bold 40px Arial"; // Schrift
             ctx.fillStyle = "red"; // Textfarbe
         } else if (mode === "smallWhite") {
-            lineHeight = 40; //overwrite default
+            lineHeight = space; //overwrite default
             ctx.fillStyle = "rgba(255, 255, 255, 0)";  //Hintergrund
             ctx.fillRect(0, 0, 512, 256);
             ctx.font = "16px Helvetica"; // Schrift
@@ -271,8 +272,8 @@ const createScene = async function () {
     guiTraeger.isVisible = true;
 
     guiTraeger.material = textMaterial_GUI;
-    
-    writeTextOnTexture(["Anleitung"], textTextur_GUI, "smallWhite")
+    guiTraeger.position.set(marker.position.x, 1.5, marker.position.z)
+    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 20)
 
 
     //---------------------------------------------------------------
