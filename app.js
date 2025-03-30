@@ -192,8 +192,9 @@ const createScene = async function () {
     // Marker zwei Fensterindikator
     const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
 
-    //---------------------------------------------------------------
-    // Schrifttextur
+    
+    //-------------------------------
+    // Text-Texturen für Usability (GUI, Tips)
     // Quellen:
     // https://doc.babylonjs.com/features/featuresDeepDive/materials/using/dynamicTexture/
     // https://webgl2fundamentals.org/webgl/lessons/webgl-text-texture.html
@@ -234,20 +235,38 @@ const createScene = async function () {
     }
 
 
-    const textTextur = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
-    textTextur.hasAlpha = true; // Ermöglicht Transparenz
+    // erstelle 1. Textur, die Text darstellen kann (für Reticle)
+    const textTexturReticle = new BABYLON.DynamicTexture("textTexturReticle", { width: 512, height: 256 }, scene, true);
+    textTexturReticle.hasAlpha = true; // Ermöglicht Transparenz
 
     // Erstelle ein Material mit dieser Textur
-    const textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
-    textMaterial.diffuseTexture = textTextur;
-    textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
-    textMaterial.opacityTexture = textTextur; // Nutzt Alpha-Kanal für Transparenz
+    const textMaterialReticle = new BABYLON.StandardMaterial("textMaterialReticle", scene);
+    textMaterialReticle.diffuseTexture = textTexturReticle;
+    textMaterialReticle.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
+    textMaterialReticle.opacityTexture = textTexturReticle; // Nutzt Alpha-Kanal für Transparenz
 
-    // Weisen wir das Material dem Marker zu
-    marker2.material = textMaterial;
+    // Material auf Marker (reticle) anwenden
+    marker2.material = textMaterialReticle;
+
+    // erstelle 2. Textur, die Text darstellen kann (für Helper GUI)
+    const textTexturGUI = new BABYLON.DynamicTexture("textTexturGUI", { width: 512, height: 256 }, scene, true);
+    textTexturGUI.hasAlpha = true; // Ermöglicht Transparenz
+
+    // Erstelle ein Material mit dieser Textur
+    const textMaterialGUI = new BABYLON.StandardMaterial("textMaterialGUI", scene);
+    textMaterialGUI.diffuseTexture = textTexturGUI;
+    textMaterialGUI.emissiveColor = new BABYLON.Color3(1, 1, 1); // Leuchtet unabhängig vom Licht
+    textMaterialGUI.opacityTexture = textTexturGUI; // Nutzt Alpha-Kanal für Transparenz
 
     
-    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], textTextur, "bigRed")
+    writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], textTexturReticle, "bigRed")
+
+    // Erstellen eines unsichtbaren GUI-Rechtecks als Träger für Text-Material
+    const guiTraeger = BABYLON.MeshBuilder.CreatePlane("guiTraeger", {
+        width: 5,   
+        height: 5, 
+        depth: 0.05,  
+    }, scene);
 
 
 
@@ -367,7 +386,7 @@ const createScene = async function () {
             let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
             reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
             reticleMat.backFaceCulling = false; //deaktiviert das "Verstecken der Rückseite" für die Rückseite des reticles
-            reticleMesh.material = textMaterial;//reticleMat;
+            reticleMesh.material = textMaterialReticle;//reticleMat;
             reticleMesh.renderingGroupId = 2; 
             reticleMesh.isVisible = false; //nicht sichtbar bis zur ersten Interaktion
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity(); //default-Rotation
@@ -441,27 +460,27 @@ const createScene = async function () {
                     if (state === 1) {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
-                        writeTextOnTexture(["Positionierung","in der Höhe"], textTextur, "bigRed")
+                        writeTextOnTexture(["Positionierung","in der Höhe"], textTexturReticle, "bigRed")
                         //infoText.text = "a";
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Fensters)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
-                        writeTextOnTexture(["Skalierung","in der Höhe"], textTextur, "bigRed")
+                        writeTextOnTexture(["Skalierung","in der Höhe"], textTexturReticle, "bigRed")
                         //infoText.text = "b";
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
-                        writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur, "bigRed")
+                        writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTexturReticle, "bigRed")
                         //infoText.text = "c";
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
-                        writeTextOnTexture(["Skalierung","in der Breite"], textTextur, "bigRed")
+                        writeTextOnTexture(["Skalierung","in der Breite"], textTexturReticle, "bigRed")
                         //infoText.text = "d";
 
                     } else if (state === 5) {
@@ -476,7 +495,7 @@ const createScene = async function () {
                         //Rotation um Y-Achse
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
-                        writeTextOnTexture(["Rotation"], textTextur, "bigRed")
+                        writeTextOnTexture(["Rotation"], textTexturReticle, "bigRed")
                         //infoText.text = "e";
 
                     }
