@@ -202,7 +202,7 @@ const createScene = async function () {
 
     function writeTextOnTexture(textArray, texture) {
         const x = 256;
-        let y = 20; // Startposition für den Text
+        let y = 60; // Startposition für den Text
         const lineHeight = 60; // Abstand zwischen den Zeilen
 
         const ctx = texture.getContext();
@@ -221,7 +221,7 @@ const createScene = async function () {
 
         texture.update();
     }
-    
+
     writeTextOnTexture(["Ausrichtung","+ Rotation", "(Grobjustierung)"], marker2Texture)
 
 
