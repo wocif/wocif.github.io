@@ -211,7 +211,7 @@ const createScene = async function () {
         texture.update();
     }
 
-    
+
     const marker2Texture = new BABYLON.DynamicTexture("dynamicTexture", { width: 512, height: 256 }, scene, true);
     marker2Texture.hasAlpha = true; // Ermöglicht Transparenz
 
@@ -329,7 +329,7 @@ const createScene = async function () {
             let reticleMat = new BABYLON.StandardMaterial("reticleMaterial", scene);
             reticleMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
             reticleMat.backFaceCulling = false; //deaktiviert das "Verstecken der Rückseite" für die Rückseite des reticles
-            reticleMesh.material = reticleMat;
+            reticleMesh.material = textMaterial;//reticleMat;
             reticleMesh.renderingGroupId = 2; 
             reticleMesh.isVisible = false; //nicht sichtbar bis zur ersten Interaktion
             reticleMesh.rotationQuaternion = BABYLON.Quaternion.Identity(); //default-Rotation
