@@ -444,6 +444,7 @@ const createScene = async function () {
             } else if (state === 4) {
                 state = 5;
             } else if (state === 5) {
+                 //180 Grad Drehung für richtige Ausrichtung
                 state = 6;
             } else if (state === 6) {
                 state = 7;
@@ -512,6 +513,7 @@ const createScene = async function () {
                         reticleMesh.rotationQuaternion = BABYLON.Quaternion.Slerp( // https://doc.babylonjs.com/typedoc/classes/BABYLON.Quaternion#slerp
                             reticleMesh.rotationQuaternion, targetRotation, 0.1
                         );
+                        state = 6;
                         
                     } else if (state === 6) {
                         //Rotation um Y-Achse
@@ -519,7 +521,7 @@ const createScene = async function () {
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         writeTextOnTexture(["Rotation"], textTextur_Reticle, "bigRed")
                         writeTextOnTexture(["Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!", "Bestätigen mit dem Zeigefinger-Knopf (hinten)."], textTextur_GUI, "smallWhite")
-                    }
+                    } 
                 }
             }
         }
