@@ -129,27 +129,7 @@ const createScene = async function () {
         optionalFeatures: true //optionale features aktivieren falls verfügbar
     });
 
-    // -----------------------------
-    // Tutorial Text
-    // -----------------------------
-    const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-    // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
-    const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
-    warningText.color = "red";
-    warningText.fontSize = 48;
-    warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-    warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    warningText.isVisible = false;  // zunächst unsichtbar
-    ui.addControl(warningText);
-
-    // In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
-    scene.onBeforeRenderObservable.add(() => {
-        // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
-        let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
-        let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
-
-    });
 
     // -----------------------------
     // Hit-test und Marker
@@ -379,6 +359,21 @@ const createScene = async function () {
                 reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
 
                 reticleMesh.isVisible = true;
+
+                // -----------------------------
+                // Tutorial Text
+                // -----------------------------
+                const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+                // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
+                const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
+                warningText.color = "red";
+                warningText.fontSize = 48;
+                warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+                warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+                warningText.isVisible = false;  // zunächst unsichtbar
+                ui.addControl(warningText);
+
                 warningText.isVisible = true; //enable tutorial
 
                 state = 1;  //dann wird in den 1. Zustand gewechselt
@@ -472,6 +467,8 @@ const createScene = async function () {
     // Activate Portal: Finalize Placement and Create Portal Geometry
     // -----------------------------
     function activatePortal() {
+
+
 
         portalAppeared = true;
         if (reticleMesh) {
