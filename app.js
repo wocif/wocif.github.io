@@ -204,8 +204,8 @@ const createScene = async function () {
     // Wird verwendet, um auf Marker2 sowie Reticle einen Text einzublenden
     function writeTextOnTexture(textArray, texture, mode, space = 60) { 
         const x = 256;
-        let y = space; // Startposition für den Text
-        const lineHeight = 60; // Abstand zwischen den Zeilen
+        let y = 60; // Startposition für den Text
+        const lineHeight = space; // Abstand zwischen den Zeilen
 
         const ctx = texture.getContext();
 
@@ -217,7 +217,7 @@ const createScene = async function () {
             ctx.font = "bold 40px Arial"; // Schrift
             ctx.fillStyle = "red"; // Textfarbe
         } else if (mode === "smallWhite") {
-            space = 40;
+            lineHeight = 40; //overwrite default
             ctx.fillStyle = "rgba(255, 255, 255, 0)";  //Hintergrund
             ctx.fillRect(0, 0, 512, 256);
             ctx.font = "16px Helvetica"; // Schrift
