@@ -1,7 +1,7 @@
 // ================================================================
 // - Im Projekt geht es darum, ein Rechteck in AR skalieren und platzieren zu können.
 // - Das Rechteck soll dann als Fenster oder auch Tür dienen.
-// - Das Rechteck wird dann als Portal verwendet, wo man dann durch eine 3D-Szene gehen kann.
+// - Das Rechteck wird dann als Fenster verwendet, wo man dann durch eine 3D-Szene gehen kann.
 // - 3D-Szene wird als .glb-Datei geladen und wurde in Blender erstellt.
 // ================================================================
 
@@ -11,10 +11,10 @@
 // -----------------------------
 // Globale Einstellungen & Variablen
 // -----------------------------
-let state = 0; //state = 0: nicht platziert, 1: Rotation, 2: Höhe, 3: Skalierung, 4: Portal aktiviert
-let reticleMesh = null;  //Rechteck-Mesh, welches man zum skalieren nutzt, um zu entscheiden, wie groß das Portal sein soll
-let portalAppeared = false;  //portal sichtbar oder nicht?
-let portalPosition = new BABYLON.Vector3();  //endgültige Position des Portals
+let state = 0; 
+let reticleMesh = null;  //Rechteck-Mesh, welches man zum skalieren nutzt, um zu entscheiden, wie groß das Fenster sein soll
+let platziert = false;  //boolean für platzzuweisung abgeschlossen
+let fensterPosition = new BABYLON.Vector3();  //endgültige Position des Fensters
 
 // -----------------------------
 //Grundsetup BabylonJS
@@ -22,8 +22,8 @@ let portalPosition = new BABYLON.Vector3();  //endgültige Position des Portals
 
 
 var canvas = document.getElementById("renderCanvas");
-var engine = null; // Babylon 3D engine (aber erst später erstellt)
-var scene = null; // Babylon 3D scene (aber erst später erstellt)
+var engine = null; // Babylon 3D engine deklaration
+var scene = null; // Babylon 3D scene deklaration
 var sceneToRender = null;
 
 
@@ -115,7 +115,7 @@ const createScene = async function () {
         nonXRPanel.addControl(text1);
         return scene;
     } else {
-        text1.text = "WebXR Demo: AR Portal.\n\nEnter AR and look at the floor for a hit-test marker to appear. Then tap anywhere to begin placement.";
+        text1.text = "TODO";
         nonXRPanel.addControl(text1);
     }
 
@@ -249,8 +249,8 @@ const createScene = async function () {
     xrTest.onHitTestResultObservable.add((results) => {
         if (results.length) {
             //zeigt die Marker an, wenn das Hit-Test-Feature Ergebnisse liefert
-            marker.isVisible = !portalAppeared && (state === 0);
-            marker2.isVisible = !portalAppeared && (state === 0);
+            marker.isVisible = !platziert && (state === 0);
+            marker2.isVisible = !platziert && (state === 0);
             //speichert das 1. des Hit-Tests
             hitTest = results[0];
             //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
@@ -273,7 +273,7 @@ const createScene = async function () {
 
 
     // -----------------------------
-    // Root-Transform Nodes für virtuelle Welt und Occluder , Portal
+    // Root-Transform Nodes für virtuelle Welt und Occluder , Fenster
     // -----------------------------
 
 
@@ -285,7 +285,7 @@ const createScene = async function () {
     const rootScene = new BABYLON.TransformNode("rootScene", scene);
     rootScene.rotationQuaternion = new BABYLON.Quaternion();
 
-    //Erstellung von seperate Knoten für die Portal-Säulen
+    //Erstellung von seperate Knoten für die Fenster-Säulen
     const rootPilar = new BABYLON.TransformNode("rootPilar", scene);
     rootPilar.rotationQuaternion = new BABYLON.Quaternion();
 
@@ -328,7 +328,7 @@ const createScene = async function () {
     scene.autoClear = true; //aktiviert das automatische Löschen des Bildschirms für nächste Renderings
 
 
-    //Deaktiviert virtuelle Welt und den Occluder-Knoten bis zur Portal aktiviert wird
+    //Deaktiviert virtuelle Welt und den Occluder-Knoten bis Fenster aktiviert wird
     //Der Occluder wird verwendet, um Objekte auszublenden, die nicht sichtbar sein sollen (z. B. hinter einer Wand)
     rootScene.setEnabled(false);
     rootOccluder.setEnabled(false);
@@ -359,10 +359,10 @@ const createScene = async function () {
     
 
     // -----------------------------
-    // Erstellung des Rechtecks (also die Platzierung des Portals)
+    // Erstellung des Rechtecks (also die Platzierung des Fensters)
     // -----------------------------
 
-    //Funktion zur Erstellung eines Reticle Meshes für das Portal
+    //Funktion zur Erstellung eines Reticle Meshes für das Fenster
     function createReticle() {
         if (!reticleMesh) {
             reticleMesh = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
@@ -380,7 +380,7 @@ const createScene = async function () {
 
 
     // -----------------------------
-    // onPointerDown(): steuert den Prozess von der  Skalierung & Platzierung des Portals
+    // onPointerDown(): steuert den Prozess von der  Skalierung & Platzierung des Fensters
     // -----------------------------
 
     //es reagiert auf Benutzerinteraktionen während der Session
@@ -415,8 +415,8 @@ const createScene = async function () {
             } else if (state === 5) {
                 state = 6;
             } else if (state === 6) {
-                //wenn alle Einstellungen abgeschlossen sind, dann wird das Portal aktiviert
-                activatePortal();
+                //wenn alle Einstellungen abgeschlossen sind, dann wird das Fenster aktiviert
+                platziereFenster();
             }
         }
     };
@@ -429,7 +429,7 @@ const createScene = async function () {
     //Funktion wird vor jeden Rendering durchgeführt, um Angaben des Gamepads zu verarbeiten
     scene.onBeforeRenderObservable.add(() => {
 
-        //zuerst wird geprüft, ob die webxr-Session aktiv ist und ob der Reticle-Mesh existiert (also ob das Portal auch schon aktiviert ist)
+        //zuerst wird geprüft, ob die webxr-Session aktiv ist und ob der Reticle-Mesh existiert (also ob das Fenster auch schon aktiviert ist)
         if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 7) {
             const xrSession = xr.baseExperience.sessionManager.session;
 
@@ -447,7 +447,7 @@ const createScene = async function () {
                         warningText.text = "a";
 
                     } else if (state === 2) {
-                        //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Portals)
+                        //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Fensters)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Höhe"], textTextur)
@@ -490,15 +490,15 @@ const createScene = async function () {
     });
 
     // -----------------------------
-    // Activate Portal: Finalize Placement and Create Portal Geometry
+    // Place Fenster: Finalize Placement and Create Fenster Geometry
     // -----------------------------
-    function activatePortal() {
+    function platziereFenster() {
 
 
 
-        portalAppeared = true;
+        platziert = true;
         if (reticleMesh) {
-            reticleMesh.isVisible = false;  //rechteck soll nicht mehr sichtbar sein, wenn das Portal aktiviert wird
+            reticleMesh.isVisible = false;  //rechteck soll nicht mehr sichtbar sein, wenn das Fenster platziert wird
         }
 
         //aktiviert die virtuelle Welt und den Occluder-Wände
@@ -506,17 +506,17 @@ const createScene = async function () {
         rootOccluder.setEnabled(true);
 
         // -----------------------------
-        // Update Occluder Visibility based on XR Camera vs. Portal Position
+        // Update Occluder Visibility based on XR Camera vs. Fenster Position
         // -----------------------------
 
         //Funktion wird in jedem Rendering aufgerufen, um die Sichtbarkeit der Occluder zu aktualisieren
         scene.onBeforeRenderObservable.add(() => {
 
-            //wenn die XR-Kamera und die Portal-Position definiert sind
-            if ((xrCamera !== undefined) && (portalPosition !== undefined)) {
+            //wenn die XR-Kamera und die Fenster-Position definiert sind
+            if ((xrCamera !== undefined) && (fensterPosition !== undefined)) {
 
-                //wenn Kamera vor Portal steht, dann wird die virtuelle Welt sichtbar und die Occluder unsichtbar
-                if (xrCamera.position.z > portalPosition.z && (xr.baseExperience.state === BABYLON.WebXRState.IN_XR)) {
+                //wenn Kamera vor Fenster steht, dann wird die virtuelle Welt sichtbar und die Occluder unsichtbar
+                if (xrCamera.position.z > fensterPosition.z && (xr.baseExperience.state === BABYLON.WebXRState.IN_XR)) {
                     //virtuelle Welt
                     //occluder sind unsichtbar
                     occluder.isVisible = false;
@@ -544,10 +544,10 @@ const createScene = async function () {
         //infos von boundingsbox des reticle
         const reticleBoundingInfo = reticleMesh.getBoundingInfo();
 
-        //berechnung der portal-postion basierend auf der boundingbox des reticles
-        portalPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x + reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
-        portalPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y + reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
-        portalPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z + reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
+        //berechnung der fenster-postion basierend auf der boundingbox des reticles
+        fensterPosition.x = (reticleBoundingInfo.boundingBox.minimumWorld.x + reticleBoundingInfo.boundingBox.maximumWorld.x) / 2
+        fensterPosition.y = (reticleBoundingInfo.boundingBox.minimumWorld.y + reticleBoundingInfo.boundingBox.maximumWorld.y) / 2
+        fensterPosition.z = (reticleBoundingInfo.boundingBox.minimumWorld.z + reticleBoundingInfo.boundingBox.maximumWorld.z) / 2
 
 
         /* 
@@ -556,7 +556,7 @@ const createScene = async function () {
             ----------------------------- 
         // */
 
-        //Bodenfläche (um die virtuelle Welt zu blockieren) wird erstellt und ein "Loch", um die Sicht durch das Portal zu ermöglichen
+        //Bodenfläche (um die virtuelle Welt zu blockieren) wird erstellt und ein "Loch", um die Sicht durch das Fenster zu ermöglichen
         let ground = BABYLON.MeshBuilder.CreateBox("ground", {width: 500, depth: 500, height: 0.001}, scene);
         let hole = BABYLON.MeshBuilder.CreateBox("hole", {
             width: reticleBoundingInfo.boundingBox.extendSizeWorld.x * 2,
@@ -566,7 +566,7 @@ const createScene = async function () {
 
 
 
-        //CSG (Constructive Solid Geometry) wird verwendet, um die Geometrie des Portals zu erstellen
+        //CSG (Constructive Solid Geometry) wird verwendet, um die Geometrie des Fensters zu erstellen
         const groundCSG = BABYLON.CSG.FromMesh(ground);
         const holeCSG = BABYLON.CSG.FromMesh(hole);
         const booleanCSG = groundCSG.subtract(holeCSG);
@@ -585,11 +585,11 @@ const createScene = async function () {
 
         //weiter occluder werden erstellt für andere Seiten
         let occluderReverse = booleanRCSG.toMesh("occluderR", null, scene);
-        let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", {width: 7, depth: 7, height: 0.001}, scene); // on floot infront portal
+        let occluderFloor = BABYLON.MeshBuilder.CreateBox("occluderFloor", {width: 7, depth: 7, height: 0.001}, scene); // on floot infront window
         let occluderTop = BABYLON.MeshBuilder.CreateBox("occluderTop", {width: 7, depth: 7, height: 0.001}, scene);
         let occluderRight = BABYLON.MeshBuilder.CreateBox("occluderRight", {width: 7, depth: 7, height: 0.001}, scene);
         let occluderLeft = BABYLON.MeshBuilder.CreateBox("occluderLeft", {width: 7, depth: 7, height: 0.001}, scene);
-        let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", {width: 7, depth: 7, height: 0.001}, scene); // vor Portal, hinter User
+        let occluderback = BABYLON.MeshBuilder.CreateBox("occluderback", {width: 7, depth: 7, height: 0.001}, scene); // vor Fenster, hinter User
 
         //matieral für diese alle occluder erstellen
         const occluderMaterial = new BABYLON.StandardMaterial("om", scene);
@@ -654,16 +654,16 @@ const createScene = async function () {
 
 
         //y = Höhe
-        rootScene.position.x = portalPosition.x;
-        rootScene.position.z = portalPosition.z;
+        rootScene.position.x = fensterPosition.x;
+        rootScene.position.z = fensterPosition.z;
 
 
         //-----------------------------
-        //Säulen erstelle vom Portal
+        //Säulen erstelle vom Fenster
         //-----------------------------
 
         //Säulen werden basierend auf der größe des Reticles erstellt
-        rootPilar.position.copyFrom(portalPosition);
+        rootPilar.position.copyFrom(fensterPosition);
         rootPilar.rotationQuaternion = reticleMesh.rotationQuaternion.clone(); //kopiere Rotation von reticle
 
 
@@ -720,7 +720,7 @@ const createScene = async function () {
         //Positionierung & Roation der Occluder
         //------------------------------
 
-        rootOccluder.position.copyFrom(portalPosition);
+        rootOccluder.position.copyFrom(fensterPosition);
         rootOccluder.rotationQuaternion = reticleMesh.rotationQuaternion.clone().multiply(
             BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(-1, 0, 0), Math.PI / 2)
         );
@@ -810,6 +810,6 @@ initFunction().then(() => {
 // -----------------------------
 // Resize Event Listener
 // -----------------------------
-/* window.addEventListener("resize", function () {
+window.addEventListener("resize", function () {
     engine.resize(); //passt engine an fenstergrößen an
-}); */
+});
