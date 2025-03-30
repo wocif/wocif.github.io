@@ -157,12 +157,12 @@ const createScene = async function () {
     // https://doc.babylonjs.com/features/featuresDeepDive/materials/using/texturePerBoxFace/
     const faceColors = new Array(6);
 
-    faceColors[4] = new BABYLON.Color4(1, 0, 0, 1); // Rot Top
-    faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün Front
+    faceColors[3] = new BABYLON.Color4(1, 0, 0, 0.5); // Rot Back
+    faceColors[1] = new BABYLON.Color4(0, 1, 0, 0.5); // Grün Front
     
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
         width: 0.5,   
-        height: 0.02, 
+        height: 1, 
         depth: 0.05,  
         faceColors: faceColors
     }, scene);
