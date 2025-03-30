@@ -175,6 +175,7 @@ const createScene = async function () {
 
     // Marker zwei Fensterindikator
     const marker2 = BABYLON.MeshBuilder.CreatePlane("reticleMesh", {width: 1, height: 0.5}, scene);
+    marker.isVisible = false;
 
 
 
@@ -184,8 +185,9 @@ const createScene = async function () {
     let hitTest;
     xrTest.onHitTestResultObservable.add((results) => {
         if (results.length) {
-            //zeigt den Marker an, wenn das Hit-Test-Feature Ergebnisse liefert
+            //zeigt die Marker an, wenn das Hit-Test-Feature Ergebnisse liefert
             marker.isVisible = !portalAppeared && (state === 0);
+            marker2.isVisible = !portalAppeared && (state === 0);
             //speichert das 1. des Hit-Tests
             hitTest = results[0];
             //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
@@ -201,6 +203,7 @@ const createScene = async function () {
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
+            marker2.isVisible = false;
             hitTest = undefined;
         }
     });
