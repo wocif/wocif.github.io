@@ -360,17 +360,10 @@ const createScene = async function () {
 
                     } else if (state === 5) {
                         //Rotation um Y-Achse
-                        let rotationStep = Math.PI / 60; // 3° pro Frame
-                        let frames = 0;
-                        let maxFrames = 60; // Nach 60 Frames ist die Drehung abgeschlossen
-
-                        scene.onBeforeRenderObservable.add(() => {
-                            if (frames < maxFrames) {
-                                const flipY = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, rotationStep);
-                                reticleMesh.rotationQuaternion = flipY.multiply(reticleMesh.rotationQuaternion);
-                                frames++;
-                            }
-                        });
+                        let targetRotation = BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, Math.PI);
+                        reticleMesh.rotationQuaternion = BABYLON.Quaternion.Slerp(
+                            reticleMesh.rotationQuaternion, targetRotation, 0.1
+                        );
                         state = 6;
                         
                         gamepad.axes[2] = 0;
