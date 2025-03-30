@@ -332,6 +332,7 @@ const createScene = async function () {
     //Der Occluder wird verwendet, um Objekte auszublenden, die nicht sichtbar sein sollen (z. B. hinter einer Wand)
     rootScene.setEnabled(false);
     rootOccluder.setEnabled(false);
+    advancedTexture.rootContainer.isVisible = true;
 
     // -----------------------------
     // Tutorial Text
