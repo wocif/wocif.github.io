@@ -69,11 +69,11 @@ const createScene = async function () {
 
     //Lichtquelle erstellen -> HemisphericLight für gleichmäßige Beleuchtung
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1000, 5), scene);
-    light.intensity = 1;
+    light.intensity = 0.2;
 
     //Lichtquelle erstellen -> PointLight für punktuelle Lichtquelle
     var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1000, 5), scene);
-    light2.intensity = 0.5;
+    light2.intensity = 0.1;
 
     // -----------------------------
     // GUI erstellen bevor AR-Session, um AR-Verfügbarkeit auf jeweiligen Gerät zu prüfen
