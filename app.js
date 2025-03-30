@@ -153,24 +153,24 @@ const createScene = async function () {
     //HitTestMarker wird erstellt
     //------------------------------
 
-    // Create the hit-test marker (a torus) as in the original Babylon code
+    // Markerflächen einfärben
+    // https://doc.babylonjs.com/features/featuresDeepDive/materials/using/texturePerBoxFace/
     const faceColors = new Array(6);
 
-    // Definiere die Farben für die gewünschten Flächen
-    faceColors[4] = new BABYLON.Color4(1, 0, 0, 1); // Rot für die Oberseite (Top)
-    faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün für die Vorderseite (Front)
+    faceColors[4] = new BABYLON.Color4(1, 0, 0, 1); // Rot Top
+    faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün Front
     
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
-        width: 0.5,   // Länge des Markers
-        height: 0.02, // Dicke
-        depth: 0.05,  // Breite
-        faceColors: faceColors // Anwenden der Farben auf die Flächen
+        width: 0.5,   
+        height: 0.02, 
+        depth: 0.05,  
+        faceColors: faceColors
     }, scene);
 
     // Optional: Material for color and transparency
-    const material = new BABYLON.StandardMaterial("markerMaterial", scene);
+    /* const material = new BABYLON.StandardMaterial("markerMaterial", scene);
     material.diffuseColor = new BABYLON.Color3(1, 0, 0); // Red color
-    marker.material = material;
+    marker.material = material; */
 
     marker.isVisible = false;
     marker.rotationQuaternion = new BABYLON.Quaternion();
