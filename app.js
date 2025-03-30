@@ -219,7 +219,7 @@ const createScene = async function () {
         } else if (mode === "smallWhite") {
             ctx.fillStyle = "rgba(255, 255, 255, 0)";  //Hintergrund
             ctx.fillRect(0, 0, 512, 256);
-            ctx.font = "20px Arial"; // Schrift
+            ctx.font = "16px Helvetica"; // Schrift
             ctx.fillStyle = "white"; // Textfarbe
         }
         
