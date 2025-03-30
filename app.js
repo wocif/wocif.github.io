@@ -268,6 +268,7 @@ const createScene = async function () {
         height: 1, 
         depth: 0.05,  
     }, scene);
+    guiTraeger.isVisible = true;
 
     guiTraeger.material = textMaterial_GUI;
     
