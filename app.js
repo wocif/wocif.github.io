@@ -205,7 +205,7 @@ const createScene = async function () {
     function writeTextOnTexture(textArray, texture, mode, space = 60) { 
         const x = 256;
         let y = 60; // Startposition für den Text
-        const lineHeight = space; // Abstand zwischen den Zeilen
+        let lineHeight = space; // Abstand zwischen den Zeilen
 
         const ctx = texture.getContext();
 
