@@ -169,7 +169,7 @@ const createScene = async function () {
     marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
     // Quelle material.alpha: https://www.babylonjs-playground.com/#20OAV9#16
     marker.material.alpha = 0.5; 
-    marker.backFaceCulling = false; // Lässt Fensterindikator verschwinden, wenn falsch gedreht! :D Lucky incidence
+    //marker.backFaceCulling = false; // Lässt Fensterindikator verschwinden, wenn falsch gedreht! :D Lucky incidence
     
 
     marker.isVisible = false;
