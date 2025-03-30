@@ -167,7 +167,7 @@ const createScene = async function () {
     }, scene);
 
     marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
-    marker.material.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND; 
+    //marker.material.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND; 
     marker.material.alpha = 0.5; // Alpha wird durch faceColors gesteuert
 
     // Optional: Material for color and transparency
