@@ -274,7 +274,7 @@ const createScene = async function () {
     guiTraeger.material = textMaterial_GUI;
     //guiTraeger.position.set(marker.position.x, 1.5, 1)
 
-    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 20)
+    writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 30)
 
 
     //---------------------------------------------------------------
@@ -445,6 +445,8 @@ const createScene = async function () {
             } else if (state === 6) {
                 guiTraeger.isVisible = false;
                 platziereFenster();
+            } else if (state === 7) {
+                writeTextOnTexture([" "], textTextur_GUI, "smallWhite")
             }
         }
     };
@@ -516,7 +518,7 @@ const createScene = async function () {
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         writeTextOnTexture(["Rotation"], textTextur_Reticle, "bigRed")
                         writeTextOnTexture([" ","Nutze den Daumen-Knopf deines Controllers in vertikaler Richtung...", "Um das Fenster zu rotieren!"], textTextur_GUI, "smallWhite")
-
+                        state = 7;
                     }
                 }
             }
