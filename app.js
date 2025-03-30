@@ -770,12 +770,7 @@ const createScene = async function () {
     xr.baseExperience.sessionManager.onXRSessionEnded.add(() => {
         rectangle.isVisible = true;
     });
-    xr.baseExperience.sessionManager.onXRSessionInit.add(() => { // TODO
-        button1.isVisible = true;
-    });
-    xr.baseExperience.sessionManager.onXRSessionEnded.add(() => { // TODO
-        button1.isVisible = false;
-    });
+
 
 
     return scene;
