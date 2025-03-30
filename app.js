@@ -155,7 +155,7 @@ const createScene = async function () {
     // -----------------------------
     // Tutorial Text
     // -----------------------------
-/*     const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
     // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
     const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
@@ -163,8 +163,8 @@ const createScene = async function () {
     warningText.fontSize = 48;
     warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    warningText.isVisible = true;   */
-
+    warningText.isVisible = true;  
+    ui.addControl(warningText);
 
 
     //Material für Fensterrahmen
