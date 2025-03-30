@@ -161,11 +161,15 @@ const createScene = async function () {
     faceColors[1] = new BABYLON.Color4(0, 1, 0, 0.5); // Grün Front
     
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
-        width: 0.5,   
-        height: 1, 
+        width: 1,   
+        height: 0.3, 
         depth: 0.05,  
         faceColors: faceColors
     }, scene);
+
+    marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
+    marker.material.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND; 
+    marker.material.alpha = 0.5; // Alpha wird durch faceColors gesteuert
 
     // Optional: Material for color and transparency
     /* const material = new BABYLON.StandardMaterial("markerMaterial", scene);
