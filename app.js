@@ -264,10 +264,17 @@ const createScene = async function () {
     // Erstellen eines unsichtbaren GUI-Rechtecks als Träger für Text-Material
     const guiTraeger = BABYLON.MeshBuilder.CreatePlane("guiTraeger", {
         width: 3.5,   
-        height: 3.5, 
+        height: 2, 
         depth: 0.05,  
     }, scene);
 
+    const forwardDirection = camera.getForwardRay().direction; // Richtung der Kamera nach vorne
+    const offsetPosition = camera.position.add(forwardDirection.scale(1)); // 1 Meter vor der Kamera
+    
+    scene.onBeforeRenderObservable.add(() => {
+        guiTraeger.position = offsetPosition.add(BABYLON.Vector3.Up().scale(2));
+        guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forwardDirection, BABYLON.Vector3.Up());
+    });
 
 
     //---------------------------------------------------------------
