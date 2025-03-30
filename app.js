@@ -311,8 +311,10 @@ const createScene = async function () {
 
     //weist alle Meshes der virtuellen Welt dem  rootScene-Knoten zu und setzt die Rendering-Gruppe auf 1
     for (let child of virtualWorldResult.meshes) {
-        child.renderingGroupId = 1; //definiert die Rendering-Gruppe für die virtuelle Welt
-        child.parent = rootScene; //alle Objekte werden rootScene untergeordnet
+        if (!(child instanceof BABYLON.GUI.Control)) { 
+            child.renderingGroupId = 1;
+            child.parent = rootScene;
+        } 
     }
 
     // -----------------------------
@@ -321,7 +323,6 @@ const createScene = async function () {
 
     //Stellt das automatische Löschen des Tiefenpuffers für verschiedene Rendering-Gruppen ein
     scene.setRenderingAutoClearDepthStencil(1, false, false, false);
-    scene.setRenderingAutoClearDepthStencil(3, false, false, true);
     scene.setRenderingAutoClearDepthStencil(0, true, true, true);
     
     scene.autoClear = true; //aktiviert das automatische Löschen des Bildschirms für nächste Renderings
@@ -355,11 +356,6 @@ const createScene = async function () {
     warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     warningText.isVisible = false;  
 
-    scene.onBeforeRenderObservable.add(() => {
-        if (scene.activeCamera) {
-            advancedTexture.renderingGroupId = 3;  // Stelle sicher, dass nur eine Gruppe verwendet wird
-        }
-    });
     
 
     // -----------------------------
