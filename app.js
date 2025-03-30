@@ -268,7 +268,7 @@ const createScene = async function () {
         depth: 0.05,  
     }, scene);
 
-    
+    guiTraeger.material = textMaterialGUI;
     
 
 
@@ -472,7 +472,7 @@ const createScene = async function () {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["Positionierung","in der Höhe"], textTexturReticle, "bigRed")
-                        //infoText.text = "a";
+                        writeTextOnTexture(["oaiwhdfaihfahfahfoaehnfgoaejgoiaehgoi aqwpihfaoinf oiawfoia nbfawe","awdawdojapwodjapJW"], textTexturGUI, "bigRed")
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Fensters)
