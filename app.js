@@ -450,14 +450,16 @@ const createScene = async function () {
     //Funktion wird vor jeden Rendering durchgeführt, um Angaben des Gamepads zu verarbeiten
     scene.onBeforeRenderObservable.add(() => {
 
-        guiTraeger.position.set(reticleMesh.position.x-1, 1, reticleMesh.position.z)
         
-        // Optional: Debugging - Sichere, dass das UI-Element sichtbar ist
-        guiTraeger.isVisible = true;
 
         //zuerst wird geprüft, ob die webxr-Session aktiv ist und ob der Reticle-Mesh existiert (also ob das Fenster auch schon aktiviert ist)
         if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 7) {
             const xrSession = xr.baseExperience.sessionManager.session;
+
+
+            guiTraeger.position.set(reticleMesh.position.x-1, 1, reticleMesh.position.z)
+            guiTraeger.isVisible = true;
+
 
             //alle gamepads input quellen werden durchlaufen, um eingaben zu erkenne
             for (const inputSource of xrSession.inputSources) {
