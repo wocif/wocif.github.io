@@ -511,7 +511,6 @@ const createScene = async function () {
                         reticleMesh.rotationQuaternion = BABYLON.Quaternion.Slerp( // https://doc.babylonjs.com/typedoc/classes/BABYLON.Quaternion#slerp
                             reticleMesh.rotationQuaternion, targetRotation, 0.1
                         );
-                        state = 6;
                         
                     } else if (state === 6) {
                         //Rotation um Y-Achse
