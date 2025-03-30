@@ -276,6 +276,7 @@ const createScene = async function () {
         const offsetPosition = camera.position.add(forwardDirection.scale(1)); // 1 Meter vor der Kamera
         guiTraeger.position = offsetPosition.add(BABYLON.Vector3.Up().scale(2));
         //guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forwardDirection, BABYLON.Vector3.Up());
+        guiTraeger.isVisible = true;
     });
 
 
