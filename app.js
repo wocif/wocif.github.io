@@ -331,10 +331,10 @@ const createScene = async function () {
     // -----------------------------
     // Tutorial Text
     // -----------------------------
-    const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
+    //const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
 
     // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
-    const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
+    const warningText = new BABYLON.GUI.TextBlock("warningText", "placeholder");
     warningText.color = "red";
     warningText.fontSize = 48;
     warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
