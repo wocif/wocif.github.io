@@ -130,6 +130,28 @@ const createScene = async function () {
     });
 
     // -----------------------------
+    // Tutorial Text
+    // -----------------------------
+    const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    // Erstelle einen Textblock, der als Hinweis dient (unsichtbar, bis die Bedingung erfüllt wird)
+    const warningText = new BABYLON.GUI.TextBlock("warningText", "Tue diesm tue jenes");
+    warningText.color = "red";
+    warningText.fontSize = 48;
+    warningText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    warningText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    warningText.isVisible = false;  // zunächst unsichtbar
+    ui.addControl(warningText);
+
+    // In deiner Bedingung (zum Beispiel in onBeforeRenderObservable)
+    scene.onBeforeRenderObservable.add(() => {
+        // Transformiere die Kamera-Position in das lokale Koordinatensystem des Portals
+        let invPortalMatrix = BABYLON.Matrix.Invert(reticleMesh.getWorldMatrix());
+        let localCameraPos = BABYLON.Vector3.TransformCoordinates(xrCamera.position, invPortalMatrix);
+
+    });
+
+    // -----------------------------
     // Hit-test und Marker
     // -----------------------------
 
@@ -150,7 +172,7 @@ const createScene = async function () {
     rahmenMaterial.emissiveColor = new BABYLON.Color3(0.85, 0.76, 0.78);
 
     //------------------------------
-    //HitTestMarker wird erstellt
+    // HitTestMarker wird erstellt
     //------------------------------
 
     // Markerflächen einfärben
@@ -355,10 +377,13 @@ const createScene = async function () {
                 createReticle(); //rectile erstellen
                 reticleMesh.position.copyFrom(marker.position); //setze die Position des Reticles auf die des Markers
                 reticleMesh.position.set(reticleMesh.position.x, 1, reticleMesh.position.z)
-                
+
                 reticleMesh.isVisible = true;
+                warningText.isVisible = true; //enable tutorial
+
                 state = 1;  //dann wird in den 1. Zustand gewechselt
             } else if (state === 1) {
+                
                 state = 2;
             } else if (state === 2) {
                 state = 3;
@@ -398,27 +423,27 @@ const createScene = async function () {
                         //Zustand 1: Anpassung der Höhe (y-Position) -> also Recticle nach oben/unten verschieben
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["Positionierung","in der Höhe"], textTextur)
-                        gamepad.axes[2] = 0; //setzt dann xachse wieder auf 0, um konflikte zu vermeiden
+                        warningText.text = "a";
 
                     } else if (state === 2) {
                         //Zustand 2: Skalierung des Reticle in Y-Richtung (Höhe des Portals)
                         const scaley = Math.max(0.1, reticleMesh.scaling.y + yAxis * 0.01); //verhindert negative Werte
                         reticleMesh.scaling.y = scaley; // Nur Y-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Höhe"], textTextur)
-                        gamepad.axes[2] = 0; //setzt dann xachse wieder auf 0, um konflikte zu vermeiden
+                        warningText.text = "b";
 
                     } else if (state === 3) {
                         //Noch mal Höhe
                         reticleMesh.position.y += yAxis * 0.01;
                         writeTextOnTexture(["erneute", "Positionierung", "in der Höhe"], textTextur)
-                        gamepad.axes[2] = 0;
+                        warningText.text = "c";
 
                     } else if (state === 4) {
                         //Skalierung in X-Richtung
                         const scalex = Math.max(0.1, reticleMesh.scaling.x + yAxis * 0.01);
                         reticleMesh.scaling.x = scalex; //Nur X-Achse ändern
                         writeTextOnTexture(["Skalierung","in der Breite"], textTextur)
-                        gamepad.axes[2] = 0;
+                        warningText.text = "d";
 
                     } else if (state === 5) {
                         //180 Grad Drehung für richtige Ausrichtung
@@ -427,15 +452,14 @@ const createScene = async function () {
                         reticleMesh.rotationQuaternion = BABYLON.Quaternion.Slerp( // https://doc.babylonjs.com/typedoc/classes/BABYLON.Quaternion#slerp
                             reticleMesh.rotationQuaternion, targetRotation, 0.1
                         );
-                        state = 6;
                         
-                        gamepad.axes[2] = 0;
                     } else if (state === 6) {
                         //Rotation um Y-Achse
                         let deltaRotation = BABYLON.Quaternion.RotationYawPitchRoll(yAxis * 0.005, 0, 0);
                         reticleMesh.rotationQuaternion = deltaRotation.multiply(reticleMesh.rotationQuaternion);
                         writeTextOnTexture(["Rotation"], textTextur)
-                        gamepad.axes[2] = 0;
+                        warningText.text = "e";
+
                     }
                 }
             }
