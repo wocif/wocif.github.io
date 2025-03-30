@@ -270,12 +270,18 @@ const createScene = async function () {
 
     
     
-    
     scene.onBeforeRenderObservable.add(() => {
-        const forwardDirection = camera.getForwardRay().direction; // Richtung der Kamera nach vorne
+        // Berechne die Vorwärtsrichtung der Kamera
+        const forwardDirection = camera.getForwardRay().direction;
+    
+        // Positioniere das Rechteck 1 Meter vor der Kamera und 2 Einheiten höher
         const offsetPosition = camera.position.add(forwardDirection.scale(1)); // 1 Meter vor der Kamera
-        guiTraeger.position = offsetPosition.add(BABYLON.Vector3.Up().scale(2));
-        //guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forwardDirection, BABYLON.Vector3.Up());
+        guiTraeger.position = offsetPosition.add(BABYLON.Vector3.Up().scale(2)); // 2 Einheiten höher
+    
+        // Setze die Rotation so, dass es immer zur Kamera ausgerichtet ist
+        guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forwardDirection, BABYLON.Vector3.Up());
+        
+        // Optional: Debugging - Sichere, dass das UI-Element sichtbar ist
         guiTraeger.isVisible = true;
     });
 
