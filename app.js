@@ -160,7 +160,7 @@ const createScene = async function () {
     faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün Front
     
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
-        width: 0.8,   
+        width: 0.1,   
         height: 0.1, 
         depth: 0.05,  
         faceColors: faceColors
@@ -168,7 +168,7 @@ const createScene = async function () {
 
     marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
     marker.material.alpha = 0.5; 
-    marker.backFaceCulling = false;
+    marker.backFaceCulling = false; // Lässt Fensterindikator verschwinden, wenn falsch gedreht! :D Lucky incidence
     
 
     marker.isVisible = false;
