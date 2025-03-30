@@ -398,6 +398,7 @@ const createScene = async function () {
 
     // -----------------------------
     // onPointerDown(): steuert den Prozess von der  Skalierung & Platzierung des Fensters
+    // Quelle: https://doc.babylonjs.com/features/featuresDeepDive/scene/interactWithScenes
     // -----------------------------
 
     //es reagiert auf Benutzerinteraktionen während der Session
