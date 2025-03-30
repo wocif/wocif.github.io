@@ -160,7 +160,7 @@ const createScene = async function () {
     faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // Grün Front
     
     const marker = BABYLON.MeshBuilder.CreateBox("marker", {
-        width: 3,   
+        width: 2,   
         height: 0.03, 
         depth: 0.05,  
         faceColors: faceColors
@@ -205,7 +205,7 @@ const createScene = async function () {
     ctx.font = "bold 40px Arial"; // Schriftgröße & Stil
     ctx.fillStyle = "red"; // Textfarbe
     ctx.textAlign = "center";
-    ctx.fillText("grobe Ausrichtung + Rotation", 256, 128); // Text positionieren
+    ctx.fillText("Ausrichtung \n + Rotation \n (Grobjustierung)", 256, 128); // Text positionieren
 
     // Aktualisiere die Textur, damit die Änderungen sichtbar werden
     texture.update();
