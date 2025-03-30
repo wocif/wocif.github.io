@@ -272,11 +272,7 @@ const createScene = async function () {
     guiTraeger.isVisible = true;
 
     guiTraeger.material = textMaterial_GUI;
-    guiTraeger.position.set(marker.position.x, 1.5, 1)
-    const forward = camera.getForwardRay().direction; // Kamera-Blickrichtung
-    const right = marker.getDirection(new BABYLON.Vector3(0, 1, 0)).normalize();
-    guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
-    guiTraeger.position = marker.position.clone();
+    //guiTraeger.position.set(marker.position.x, 1.5, 1)
 
     writeTextOnTexture(["Anleitung:", "Positioniere dein Fenster zunächst grob.", "Die Linie auf dem Boden (grün!)", "sollte unten an einer Wand liegen.", "Nutze die Daumentasten deines Controllers", "in horizontaler Richtung, um es zu rotieren."], textTextur_GUI, "smallWhite", 20)
 
@@ -295,13 +291,16 @@ const createScene = async function () {
             //zerlegt die Transformationen des Hit-Tests, um Position und Rotation zu aktualisieren
             hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
             const forward = camera.getForwardRay().direction; // Kamera-Blickrichtung
-            const up = BABYLON.Vector3.Up();
             const right = marker.getDirection(new BABYLON.Vector3(0, 1, 0)).normalize();
+            
 
             // Überschreibe die Rotation des Hit-Tests mit einer neuen Orientierung
             marker.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
             marker2.position = marker.position.clone().add(new BABYLON.Vector3(0, 1, 0));
             marker2.rotationQuaternion = marker.rotationQuaternion.clone();
+
+            guiTraeger.rotationQuaternion = BABYLON.Quaternion.FromLookDirectionRH(forward, right);
+            guiTraeger.position = marker.position.clone();
         } else {
             //keine markierung sichtbar, wenn kein Hit-Test ergebnis vorliegt
             marker.isVisible = false;
