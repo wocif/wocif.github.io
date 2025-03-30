@@ -462,7 +462,7 @@ const createScene = async function () {
         
 
         //zuerst wird geprüft, ob die webxr-Session aktiv ist und ob der Reticle-Mesh existiert (also ob das Fenster auch schon aktiviert ist)
-        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 7) {
+        if (xr.baseExperience && xr.baseExperience.sessionManager.session && reticleMesh && state < 8) {
             const xrSession = xr.baseExperience.sessionManager.session;
 
 
